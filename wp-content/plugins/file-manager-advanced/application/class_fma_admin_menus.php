@@ -94,6 +94,9 @@ class class_fma_admin_menus {
 		   $save['fma_locale'] = isset($_POST['fma_locale']) ? sanitize_text_field($_POST['fma_locale']) : 'en';
 		   $save['public_path'] = isset($_POST['public_path']) ? sanitize_text_field($_POST['public_path']) : '';
            $save['public_url'] = isset($_POST['public_url']) ? sanitize_text_field($_POST['public_url']) : '';
+		   //25122022
+		   $save['upload_max_size'] = isset($_POST['upload_max_size']) ? sanitize_text_field($_POST['upload_max_size']) : '0';
+		   $save['display_ui_options'] = isset($_POST['display_ui_options']) ? array_map('sanitize_text_field',$_POST['display_ui_options']) : array();
            $save['hide_path'] = isset($_POST['hide_path']) ? sanitize_text_field($_POST['hide_path']) : 0;
 		   $save['enable_trash'] = isset($_POST['enable_trash']) ? sanitize_text_field($_POST['enable_trash']) : 0;
 		   $save['enable_htaccess'] = isset($_POST['enable_htaccess']) ? sanitize_text_field($_POST['enable_htaccess']) : 0;
@@ -134,6 +137,21 @@ class class_fma_admin_menus {
 		'fma-redirect-script',
 		' window.location.href="'.$url.'" ;'
 	  );
+	}
+	public static function shortcodeUpdateNotice() {
+		if(class_exists('file_manager_advanced_shortcode')):
+			if(defined('fmas_ver')){ 
+				if(fmas_ver < '2.4') { 
+					return '<div class="error notice" style="background: #f7dfdf">
+					<p><strong>Advanced File manager shortcode addon update:</strong> You are using version <strong>'.fmas_ver.'</strong> we recommend you to update to latest version. If you did not receive update please download from <a href="https://advancedfilemanager.com/my-account/" target="_blank">my account</a> page.</p>
+					</div>';
+				}
+			} else {
+				return '<div class="error notice" style="background: #f7dfdf">
+					<p><strong>Advanced File manager shortcode addon update:</strong> You are using old version, we recommend you to update to latest version. If you did not receive update please download from <a href="https://advancedfilemanager.com/my-account/" target="_blank">my account</a> page.</p>
+					</div>';
+			}
+		endif;
 	}
 	/**
 	 * Get User Roles

@@ -13,7 +13,6 @@ class class_fma_main {
 			 add_action('admin_menu', array(&$this, 'fma_menus'));
 			 add_action( 'admin_enqueue_scripts', array(&$this,'fma_scripts'));
 			 add_action( 'wp_ajax_fma_load_fma_ui', array(&$this, 'fma_load_fma_ui'));
-			 add_action('wp_ajax_fma_review_ajax', array($this, 'fma_review_ajax'));
 			 $this->settings = get_option('fmaoptions');
 			}
 			public function fma_menus() {
@@ -148,13 +147,9 @@ class class_fma_main {
 				wp_enqueue_script( 'afm-view', plugins_url('library/js/commands/view.js', __FILE__));
 				wp_enqueue_script( 'afm-quicklook.googledocs', plugins_url('library/js/extras/quicklook.googledocs.js', __FILE__));
 
-				if(isset($this->settings['fma_locale'])) {
-					$locale = $this->settings['fma_locale'];
-					 wp_enqueue_script( 'fma_lang', plugins_url('library/js/i18n/elfinder.'.$locale.'.js', __FILE__));
-				   } else {
-					wp_enqueue_script( 'fma_lang', plugins_url('library/js/i18n/elfinder.en.js', __FILE__));   
-				   }
-
+				$locale = isset($this->settings['fma_locale']) ? $this->settings['fma_locale'] : 'en';
+				wp_enqueue_script( 'fma_lang', plugins_url('library/js/i18n/elfinder.'.$locale.'.js', __FILE__));
+				   
 				wp_enqueue_script( 'codemirror', plugins_url('library/codemirror/lib/codemirror.js',  __FILE__ ));
 				wp_enqueue_style( 'codemirror', plugins_url('library/codemirror/lib/codemirror.css', __FILE__));
 				wp_enqueue_script( 'htmlmixed', plugins_url('library/codemirror/mode/htmlmixed/htmlmixed.js',  __FILE__ ));
@@ -163,23 +158,25 @@ class class_fma_main {
 				wp_enqueue_script( 'javascript', plugins_url('library/codemirror/mode/javascript/javascript.js',  __FILE__ ));
 				wp_enqueue_script( 'clike', plugins_url('library/codemirror/mode/clike/clike.js',  __FILE__ ));
 				wp_enqueue_script( 'php', plugins_url('library/codemirror/mode/php/php.js',  __FILE__ ));	
-				wp_enqueue_script( 'elfinder_script', plugins_url('library/js/elfinder_script.js', __FILE__));
+				/**
+				 * Add Parameters
+				 */
+				$nonce = wp_create_nonce( 'fmaskey' );
+
+				$display_ui_options = isset($this->settings['display_ui_options']) ? $this->settings['display_ui_options'] : FMA_UI;
+
+				wp_enqueue_script( 'elfinder_script', plugins_url('library/js/elfinder_script.js', __FILE__), array(), FMA_VERSION);
+
+				wp_localize_script( 'elfinder_script', 'afm_object',
+				array( 
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'nonce' => $nonce,
+					'locale' => $locale,
+					'ui' => $display_ui_options
+				)
+	);
 
 				}
 		
 			}
-			/*
-         Close Help
-        */
-        public function fma_review_ajax()
-        {
-            $task = sanitize_text_field($_POST['task']);
-            $done = update_option('fma_hide_review_section', $task);
-                if ($done) {
-                    echo '1';
-                } else {
-                    echo '0';
-                }
-            die;
-        }
 }

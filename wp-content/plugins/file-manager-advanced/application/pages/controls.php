@@ -7,6 +7,7 @@ $type = (isset($_GET['status']) && !empty($_GET['status']) ? intval($_GET['statu
 $message = ($type == '2') ? 'Unable to save settings.' : 'Settings updated successfully.';
 $roles = $this->wpUserRoles();
 ?>
+<?php echo class_fma_admin_menus::shortcodeUpdateNotice();?>
 <div class="wrap fma" style="background:#fff; padding: 20px; border:1px solid #ccc;">
 <h3><?php _e('Settings','file-manager-advanced')?> <?php if(!class_exists('file_manager_advanced_shortcode')) { ?><a href="https://advancedfilemanager.com/pricing" class="button button-primary" target="_blank"><?php _e('Buy Shortcode Addon','file-manager-advanced')?></a><?php } ?> <a href="https://advancedfilemanager.com/documentation/" class="button" target="_blank"><?php _e('Documentation','file-manager-advanced')?></a></h3>
 <p style="width:100%; text-align:right;" class="description">
@@ -27,15 +28,14 @@ $roles = $this->wpUserRoles();
  }
 ?>
 <form action="<?php echo admin_url('admin.php?page=file_manager_advanced_controls');?>" method="post">
-<?php  wp_nonce_field( 'fmaform', '_fmaform' ); ?>
+<?php wp_nonce_field( 'fmaform', '_fmaform' ); ?>
 <table class="form-table">
 <tbody>
 <tr>
 <th>
-<?php _e('Who can access File Manager?')?>
+<?php _e('Who can access File Manager?', 'file-manager-advanced');?>
 </th>
 <td>
-
 <?php 
 unset($roles['administrator']); ?>
 <input type="checkbox" value="administrator" name="fma_user_role[]" checked="checked" disabled="disabled" /> <?php _e('Administrator (Default)','file-manager-advanced');?> <br/>
@@ -73,14 +73,14 @@ foreach($roles as $key => $role) {
 <option value="<?php echo esc_attr($locale);?>" <?php echo (isset($settings['fma_locale']) && $settings['fma_locale'] == $locale) ? 'selected="selected"' : '';?>><?php echo esc_attr($key);?></option>
 <?php } ?>
 </select>
-<p class="description"><?php _e('Select file manager advanced language. Default: en (English)','file-manager-advanced')?></p>
+<p class="description"><?php _e('Select file manager advanced language. Default: en (English)','file-manager-advanced');?></p>
 </td>
 </tr>
 <tr>
 <th><?php _e('Public Root Path','file-manager-advanced')?></th>
 <td>
 <input name="public_path" type="text" id="public_path" value="<?php echo isset($settings['public_path']) && !empty($settings['public_path']) ? esc_attr($settings['public_path']) : esc_attr($path);?>" class="regular-text">
-<p class="description"><?php _e('File Manager Advanced Root Path, you can change according to your choice.','file-manager-advanced')?></p>
+<p class="description"><?php _e('File Manager Advanced Root Path, you can change according to your choice.','file-manager-advanced');?></p>
 <p>Default: <code><?php echo esc_attr($path);?></code></p>
 </td>
 </tr>
@@ -88,8 +88,38 @@ foreach($roles as $key => $role) {
 <th><?php _e('Files URL','file-manager-advanced')?></th>
 <td>
 <input name="public_url" type="text" id="public_url" value="<?php echo isset($settings['public_url']) && !empty($settings['public_url']) ? esc_url($settings['public_url']) : esc_url($url);?>" class="regular-text">
-<p class="description"><?php _e('File Manager Advanced Files URL, you can change according to your choice.','file-manager-advanced')?></p>
+<p class="description"><?php _e('File Manager Advanced Files URL, you can change according to your choice.','file-manager-advanced');?></p>
 <p>Default: <code><?php echo esc_url($url);?></code></p>
+</td>
+</tr>
+<tr>
+<th><?php _e('Maximum Upload Size','file-manager-advanced')?></th>
+<td>
+<input type="text" name="upload_max_size" id="upload_max_size" class="regular-text" value="<?php echo isset($settings['upload_max_size']) && !empty($settings['upload_max_size']) ? esc_attr($settings['upload_max_size']) : 0;?>">
+<div>
+<p>
+<?php _e('Maximum upload file size. This size is per files. Can be set as number with unit like 10M, 500K, 1G. 0 means unlimited upload.','file-manager-advanced');?>
+</p>
+</div>
+</td>
+</tr>
+<tr>
+<th><?php _e('Default View Type','file-manager-advanced')?></th>
+<td>
+<?php
+    foreach(FMA_UI as $ui) {
+		$checked = '';
+		if(isset($settings['display_ui_options'])) {
+			if(in_array($ui, $settings['display_ui_options'])) {
+			  $checked = 'checked=checked';
+			}
+		} else {
+			$checked = 'checked=checked';	
+		}
+	?>
+<input type="checkbox" value="<?php echo esc_attr($ui);?>" name="display_ui_options[]" <?php echo esc_attr($checked); ?> /> <?php echo esc_attr($ui);?> <br/>
+<?php } ?>
+ <p><?php _e('You can control the view of file manager. By default, all options are checked.','file-manager-advanced');?></p>
 </td>
 </tr>
 <tr>
@@ -98,7 +128,7 @@ foreach($roles as $key => $role) {
 <td>
 <input name="hide_path" type="checkbox" id="hide_path" value="1" <?php echo isset($settings['hide_path']) && ($settings['hide_path'] == '1') ? 'checked="checked"' : '';?>>
 <p class="description"><?php _e('Hide real path of file on preview.','file-manager-advanced')?></p>
-<p>Default: <code><?php _e('Not Enabled','file-manager-advanced')?></code></p>
+<p>Default: <code><?php _e('Disabled','file-manager-advanced')?></code></p>
 </td>
 </tr>
 <tr>
@@ -107,7 +137,7 @@ foreach($roles as $key => $role) {
 <td>
 <input name="enable_trash" type="checkbox" id="enable_trash" value="1" <?php echo isset($settings['enable_trash']) && ($settings['enable_trash'] == '1') ? 'checked="checked"' : '';?>>
 <p class="description"><?php _e('Deleted files will go to trash folder, you can restore later.','file-manager-advanced')?></p>
-<p>Default: <code><?php _e('Not Enabled','file-manager-advanced')?></code></p>
+<p>Default: <code><?php _e('Disabled','file-manager-advanced')?></code></p>
 </td>
 </tr>
 <tr>
@@ -116,7 +146,7 @@ foreach($roles as $key => $role) {
 <td>
 <input name="enable_htaccess" type="checkbox" id="enable_htaccess" value="1" <?php echo isset($settings['enable_htaccess']) && ($settings['enable_htaccess'] == '1') ? 'checked="checked"' : '';?>>
 <p class="description"><?php _e('Will Display .htaccess file (if exists) in file manager.','file-manager-advanced')?></p>
-<p>Default: <code><?php _e('Not Enabled','file-manager-advanced')?></code></p>
+<p>Default: <code><?php _e('Disabled','file-manager-advanced')?></code></p>
 </td>
 </tr>
 <tr>
