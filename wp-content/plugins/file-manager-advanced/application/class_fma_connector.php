@@ -79,8 +79,6 @@ class class_fma_connector
 	if(isset($settings['fma_upload_allow']) && !empty($settings['fma_upload_allow'])) {
 		$allowUpload = explode(',',$settings['fma_upload_allow']);
     }
-    // restricting max upload size
-	$max_upload_size = isset($settings['upload_max_size']) ? $settings['upload_max_size']  : '0';
 
 				$opts = array(
 				'roots' => array(
@@ -95,9 +93,8 @@ class class_fma_connector
 						'uploadAllow'   => $allowUpload,// Mimetype `image` and `text/plain` allowed to upload
 						'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
 						'disabled'      => array('help','preference'),
-						'accessControl' => 'access',               
-						'acceptedName'  => 'validName',
-						'uploadMaxSize' => $max_upload_size, 
+						'accessControl' => 'access',                     // disable and hide dot starting files (OPTIONAL)
+						'acceptedName' => 'validName',
 						'attributes' => array(
 											   array(
 														 'pattern' => '/.tmb/',

@@ -220,7 +220,7 @@ abstract class SettingsBase {
 	 */
 	protected function is_main_menu_page() {
 		// Main menu page should have empty string as parent slug.
-		return ! $this->parent_slug();
+		return ! (bool) $this->parent_slug();
 	}
 
 	/**
@@ -364,15 +364,11 @@ abstract class SettingsBase {
 	 * Invoke relevant admin_enqueue_scripts() basing on tabs.
 	 */
 	public function base_admin_enqueue_scripts() {
-		global $cyr_to_lat_plugin;
-
-		$min = $cyr_to_lat_plugin->min_suffix();
-
 		$this->get_active_tab()->admin_enqueue_scripts();
 
 		wp_enqueue_style(
 			self::HANDLE,
-			$this->plugin_url() . "/assets/css/settings-base$min.css",
+			$this->plugin_url() . '/assets/css/settings-base.css',
 			[],
 			$this->plugin_version()
 		);
@@ -382,10 +378,6 @@ abstract class SettingsBase {
 	 * Setup settings sections.
 	 */
 	public function setup_sections() {
-		if ( ! $this->is_options_screen() ) {
-			return;
-		}
-
 		$tab = $this->get_active_tab();
 
 		foreach ( $this->form_fields as $form_field ) {
@@ -403,7 +395,12 @@ abstract class SettingsBase {
 	 * Setup tabs section.
 	 */
 	public function setup_tabs_section() {
-		if ( ! $this->is_options_screen() ) {
+		/**
+		 * Protection from the bug in \Automattic\Jetpack\Sync\Sender::get_items_to_send(),
+		 * which sets screen without loading of wp-admin/includes/template.php,
+		 * where add_settings_section() is defined.
+		 */
+		if ( ! function_exists( 'add_settings_section' ) ) {
 			return;
 		}
 

@@ -90,7 +90,6 @@ class Term_Conversion_Process extends Conversion_Process {
 	 * Filter term locale
 	 *
 	 * @return string
-	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	public function filter_term_locale() {
 		// Polylang filter.

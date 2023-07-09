@@ -32,7 +32,7 @@ class AdminExtras {
 	 * @param  array $cpel_links (Default) Array of plugin action links.
 	 * @return strings $cpel_links Settings & Menu Admin links.
 	 */
-	public function custom_settings_links( $cpel_links ) {
+	function custom_settings_links( $cpel_links ) {
 
 		$link_polylang  = '';
 		$link_elementor = '';
@@ -76,8 +76,8 @@ class AdminExtras {
 		return apply_filters(
 			'cpel/filter/plugins_page/settings_links',
 			$cpel_links,
-			$link_polylang, // additional param.
-			$link_elementor // additional param.
+			$link_polylang,     // additional param
+			$link_elementor     // additional param
 		);
 
 	}
@@ -87,13 +87,13 @@ class AdminExtras {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param  array  $cpel_links (Default) Array of plugin meta links.
-	 * @param  string $cpel_file  Path of base plugin file.
+	 * @param  array  $cpel_links (Default) Array of plugin meta links
+	 * @param  string $cpel_file  Path of base plugin file
 	 * @return array $cpel_links Array of plugin link strings to build HTML markup.
 	 */
-	public function plugin_links( $cpel_links, $cpel_file ) {
+	function plugin_links( $cpel_links, $cpel_file ) {
 
-		if ( CPEL_BASENAME === $cpel_file ) {
+		if ( $cpel_file === CPEL_BASENAME ) {
 
 			$cpel_links[] = '<a href="https://paypal.me/pacotole" title="Support this plugin\'s development">Donate</a>';
 			$cpel_links[] = '<a href="mailto:wespeakcomputer@gmail.com" title="Request personal one on one training on using Polylang + Elementor">Personal one-on-one training</a>';
@@ -110,10 +110,10 @@ class AdminExtras {
 	 *
 	 * @since  2.0.3
 	 *
-	 * @param  array $states list of states.
+	 * @param  array $states
 	 * @return array
 	 */
-	public function elementor_post_state_icon( $states ) {
+	function elementor_post_state_icon( $states ) {
 
 		if ( isset( $states['elementor'] ) && apply_filters( 'cpel/filter/elementor_icon', true ) ) {
 			unset( $states['elementor'] );

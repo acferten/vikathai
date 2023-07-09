@@ -105,10 +105,10 @@ function cpel_is_elementor_editor() {
  */
 function cpel_is_translation( $post_id = null ) {
 
-	$post_id = $post_id ? $post_id : get_the_ID();
+	$post_id = $post_id ?: get_the_ID();
 	$default = pll_default_language();
 
-	return pll_get_post_language( $post_id ) !== $default && pll_get_post( $post_id, $default );
+	return $default !== pll_get_post_language( $post_id ) && pll_get_post( $post_id, $default );
 
 }
 
@@ -118,7 +118,7 @@ function cpel_is_translation( $post_id = null ) {
  * @since 2.0.0
  * @since 2.0.5 don't return code for custom flags
  *
- * @param  string $flag_url full flag url.
+ * @param  string $flag_url
  * @return string|bool  flag code or false
  */
 function cpel_flag_code( $flag_url ) {
@@ -132,7 +132,7 @@ function cpel_flag_code( $flag_url ) {
  *
  * @since 2.0.0
  *
- * @param  string $flag_code flag two letters code.
+ * @param  string $flag_code
  * @return array|bool  SVG flag info or false
  */
 function cpel_flag_svg( $flag_code ) {
@@ -147,21 +147,5 @@ function cpel_flag_svg( $flag_code ) {
 	}
 
 	return false;
-
-}
-
-/**
- * Flag emoji
- *
- * @since 2.4.0
- *
- * @param  string $flag_code flag code.
- * @return string|false  flag emoji or false
- */
-function cpel_flag_emoji( $flag_code ) {
-
-	$emojis = include __DIR__ . '/util/emojis.php';
-
-	return apply_filters( 'cpel/filter/flag_emoji', isset( $emojis[ $flag_code ] ) ? $emojis[ $flag_code ] : false, $flag_code );
 
 }

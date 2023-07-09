@@ -6,11 +6,8 @@
  * @link    https://github.com/mihdan/wp-rocket-cli/blob/master/command.php
  */
 
-// phpcs:disable Generic.Commenting.DocComment.MissingShort
-/** @noinspection PhpUndefinedNamespaceInspection */
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
 /** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedFunctionInspection */
-// phpcs:disable Generic.Commenting.DocComment.MissingShort
 
 namespace Cyr_To_Lat;
 
@@ -57,7 +54,6 @@ class WP_CLI extends WP_CLI_Command {
 	 * @param array $assoc_args Arguments in associative array.
 	 *
 	 * @noinspection PhpUnusedParameterInspection
-	 * @noinspection PhpUndefinedMethodInspection
 	 */
 	public function regenerate( $args = [], $assoc_args = [] ) {
 

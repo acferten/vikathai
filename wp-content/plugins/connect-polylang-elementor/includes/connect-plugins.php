@@ -1,7 +1,7 @@
 <?php
 namespace ConnectPolylangElementor;
 
-use Elementor\Core\Settings\Manager as SettingsManager;
+use Elementor\Controls_Manager;
 
 
 defined( 'ABSPATH' ) || exit;
@@ -32,10 +32,8 @@ class ConnectPlugins {
 		add_filter( 'elementor/theme/get_location_templates/template_id', array( $this, 'template_id_translation' ) );
 		add_filter( 'elementor/theme/get_location_templates/condition_sub_id', array( $this, 'condition_sub_id_translation' ), 10, 2 );
 
-		// Shortcode [elementor-template] translate 'template_id'.
-		add_filter( 'pre_do_shortcode_tag', array( $this, 'shortcode_template_translate' ), 10, 3 );
-		// Widget Template translate 'template_id'.
-		add_action( 'elementor/frontend/widget/before_render', array( $this, 'widget_template_translate' ) );
+		// Shortcode template loading.
+		add_filter( 'pre_do_shortcode_tag', array( $this, 'template_shortcode_translate' ), 10, 3 );
 
 		// Elementor Kit template loading.
 		add_filter( 'option_elementor_active_kit', array( $this, 'elementor_kit_translation' ) );
@@ -72,7 +70,6 @@ class ConnectPlugins {
 
 			// Don't add "_elementor_css" meta.
 			add_filter( 'update_post_metadata', array( $this, 'prevent_elementor_css_meta' ), 10, 3 );
-			add_action( 'pll_post_synchronized', array( $this, 'bulk_delete_elementor_css_meta' ), 10, 3 );
 
 			// Edit links for each language domain.
 			if ( cpel_is_polylang_multidomain() ) {
@@ -84,11 +81,10 @@ class ConnectPlugins {
 			}
 		}
 
-		// Elementor editor menu links to translations.
+		// Elementor editor menu links to translations
 		add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'elementor_editor_script' ) );
-		add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'elementor_editor_style' ) );
 
-		// Elementor Site Editor template tweaks.
+		// Elementor Site Editor template tweaks
 		add_filter( 'elementor-pro/site-editor/data/template', array( $this, 'elementor_site_editor_template' ) );
 
 	}
@@ -100,8 +96,8 @@ class ConnectPlugins {
 	 *
 	 * @since  2.0.0
 	 *
-	 * @param array $types The list of post type names for which Polylang manages language and translations.
-	 * @param bool  $is_settings  True when displaying the list in Polylang settings.
+	 * @param array $types The list of post type names for which Polylang manages language and translations
+	 * @param bool  $is_settings  True when displaying the list in Polylang settings
 	 * @return array The list of post type names for which Polylang manages language and translations
 	 */
 	public function add_polylang_post_types( $types, $is_settings ) {
@@ -109,16 +105,16 @@ class ConnectPlugins {
 		$relevant_types = apply_filters(
 			'cpel/filter/polylang/post_types',
 			array(
-				'elementor_library',   // Elementor.
-				'e-landing-page',      // Elementor Landing pages.
-				'oceanwp_library',     // OceanWP Library.
-				'astra-advanced-hook', // Astra Custom Layouts (Astra Pro).
-				'gp_elements',         // GeneratePress Elements (GP Premium).
-				'jet-theme-core',      // JetThemeCore (Kava Pro/ CrocoBlock).
-				'jet-engine',          // JetEngine Listing Item (CrocoBlock).
-				'customify_hook',      // Customify (Customify Pro).
-				'wpbf_hooks',          // Page Builder Framework Sections (WPBF Premium).
-				'ae_global_templates', // AnyWhere Elementor plugin.
+				'elementor_library',   // Elementor
+				'e-landing-page',      // Elementor Landing pages
+				'oceanwp_library',     // OceanWP Library
+				'astra-advanced-hook', // Astra Custom Layouts (Astra Pro)
+				'gp_elements',         // GeneratePress Elements (GP Premium)
+				'jet-theme-core',      // JetThemeCore (Kava Pro/ CrocoBlock)
+				'jet-engine',          // JetEngine Listing Item (CrocoBlock)
+				'customify_hook',      // Customify (Customify Pro)
+				'wpbf_hooks',          // Page Builder Framework Sections (WPBF Premium)
+				'ae_global_templates', // AnyWhere Elementor plugin
 			)
 		);
 
@@ -137,8 +133,7 @@ class ConnectPlugins {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param WP_Query $query current query.
-	 * @return void
+	 * @param WP_Query $query
 	 */
 	public function query_all_languages( $query ) {
 
@@ -152,7 +147,7 @@ class ConnectPlugins {
 
 		$is_global_widget = isset( $query->query_vars['post_type'], $query->query_vars['meta_query'] )
 			&& 'elementor_library' === $query->query_vars['post_type']
-			&& in_array( $global_widget_meta_query, $query->query_vars['meta_query'], true );
+			&& in_array( $global_widget_meta_query, $query->query_vars['meta_query'] );
 
 		if ( $is_elementor_conditions || $is_global_widget ) {
 			$query->set( 'lang', '' );
@@ -165,9 +160,9 @@ class ConnectPlugins {
 	 *
 	 * @since  2.0.0
 	 *
-	 * @param  mixed  $null null for bypass.
-	 * @param  int    $post_id current post ID.
-	 * @param  string $meta_key name of meta key.
+	 * @param  mixed  $null
+	 * @param  int    $post_id
+	 * @param  string $meta_key
 	 * @return mixed null or empty array
 	 */
 	public function elementor_conditions_empty_on_translations( $null, $post_id, $meta_key ) {
@@ -181,7 +176,7 @@ class ConnectPlugins {
 	 *
 	 * @since  2.0.0
 	 *
-	 * @param  array $value array of theme builder conditions.
+	 * @param  array $value array of theme builder conditions
 	 * @return array  filtered array
 	 */
 	public function theme_builder_conditions_remove_empty( $value ) {
@@ -201,12 +196,12 @@ class ConnectPlugins {
 	 *
 	 * @uses   pll_get_post()
 	 *
-	 * @param  mixed  $false false or string with bypass output.
-	 * @param  string $tag   shortcode tag.
-	 * @param  array  $attr  shortcode attributes.
+	 * @param  mixed  $false false or string with bypass output
+	 * @param  string $tag   shortcode tag
+	 * @param  array  $attr  shortcode attributes
 	 * @return false|string  false or string with bypass output
 	 */
-	public function shortcode_template_translate( $false, $tag, $attr ) {
+	public function template_shortcode_translate( $false, $tag, $attr ) {
 
 		if ( 'elementor-template' !== $tag ) {
 			return $false;
@@ -217,7 +212,7 @@ class ConnectPlugins {
 		}
 
 		// Translate post_id.
-		$attr['id'] = pll_get_post( absint( $attr['id'] ) ) ?: $attr['id']; //phpcs:ignore WordPress.PHP.DisallowShortTernary
+		$attr['id'] = pll_get_post( absint( $attr['id'] ) ) ?: $attr['id'];
 		// Skip next call.
 		$attr['skip'] = 1;
 
@@ -231,28 +226,6 @@ class ConnectPlugins {
 	}
 
 	/**
-	 * Widget Template translate template_id
-	 *
-	 * @since  2.3.5
-	 *
-	 * @uses   pll_get_post()
-	 *
-	 * @param  \Elementor\Element_Base $element
-	 * @return void
-	 */
-	public function widget_template_translate( $element ) {
-
-		if ( 'template' !== $element->get_name() ) {
-			return;
-		}
-
-		$template_id = pll_get_post( $element->get_settings( 'template_id' ) ) ?: $element->get_settings( 'template_id' ); //phpcs:ignore WordPress.PHP.DisallowShortTernary
-
-		$element->set_settings( 'template_id', $template_id );
-
-	}
-
-	/**
 	 * Change Elementor Kit template with their translation for the current language (if exists).
 	 *
 	 * @since  2.3.0
@@ -260,7 +233,7 @@ class ConnectPlugins {
 	 * @uses   pll_get_post()
 	 * @uses   pll_get_post_language()
 	 *
-	 * @param  mixed $value Value of 'elementor_active_kit' option, the ID of current Elementor Kit.
+	 * @param  mixed $value Value of 'elementor_active_kit' option, the ID of current Elementor Kit
 	 * @return int The translation ID, or the original Elementor Kit ID
 	 */
 	public function elementor_kit_translation( $value ) {
@@ -268,9 +241,9 @@ class ConnectPlugins {
 		$translation = null;
 
 		// Is API REST '/wp-json/elementor/v1/globals'.
-		if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $_SERVER['HTTP_REFERER'] ) ) {
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 			// Referrer is Elementor Editor?
-			wp_parse_str( wp_parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY ), $query );
+			wp_parse_str( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY ), $query );
 
 			if ( isset( $query['action'], $query['post'] ) && 'elementor' === $query['action'] ) {
 				$translation = pll_get_post( $value, pll_get_post_language( intval( $query['post'] ) ) );
@@ -285,7 +258,7 @@ class ConnectPlugins {
 
 		}
 
-		return $translation ? $translation : $value;
+		return $translation ?: $value;
 
 	}
 
@@ -298,13 +271,13 @@ class ConnectPlugins {
 	 *
 	 * @uses   pll_get_post()
 	 *
-	 * @param  int $post_id ID of the current post.
+	 * @param  int $post_id ID of the current post
 	 * @return string Based translation, the translation ID, or the original Post ID
 	 */
 	public function template_id_translation( $post_id ) {
 
-		$post_id           = pll_get_post( $post_id ) ?: $post_id; //phpcs:ignore WordPress.PHP.DisallowShortTernary
-		$this->template_id = $post_id; // Save for check sub_id.
+		$post_id           = pll_get_post( $post_id ) ?: $post_id;
+		$this->template_id = $post_id; // Save for check sub_id
 
 		return $post_id;
 
@@ -321,21 +294,21 @@ class ConnectPlugins {
 	 * @uses   pll_get_post()
 	 * @uses   pll_get_term()
 	 *
-	 * @param  int   $sub_id ID of the object in subcondition.
-	 * @param  array $parsed_condition condition parts.
+	 * @param  int   $sub_id ID of the object in subcondition
+	 * @param  array $parsed_condition condition parts
 	 * @return int original sub ID or translated ID
 	 */
 	public function condition_sub_id_translation( $sub_id, $parsed_condition ) {
 
 		if ( $sub_id && cpel_is_translation( $this->template_id ) ) {
 
-			if ( in_array( $parsed_condition['sub_name'], get_post_types(), true ) ) {
+			if ( in_array( $parsed_condition['sub_name'], get_post_types() ) ) {
 
-				$sub_id = pll_get_post( $sub_id ) ?: $sub_id; //phpcs:ignore WordPress.PHP.DisallowShortTernary
+				$sub_id = pll_get_post( $sub_id ) ?: $sub_id;
 
 			} else {
 
-				$sub_id = pll_get_term( $sub_id ) ?: $sub_id; //phpcs:ignore WordPress.PHP.DisallowShortTernary
+				$sub_id = pll_get_term( $sub_id ) ?: $sub_id;
 
 			}
 		}
@@ -426,7 +399,7 @@ class ConnectPlugins {
 			$instances     = $theme_builder->get_conditions_manager()->get_document_instances( $default_post );
 
 			if ( empty( $instances ) ) {
-				$instances = array( 'none' => esc_html__( 'None', 'elementor-pro' ) ); // phpcs:ignore WordPress.WP.I18n
+				$instances = array( 'none' => esc_html__( 'None', 'elementor-pro' ) );
 			}
 
 			echo '<span style="opacity:.4">' . esc_html( implode( ', ', $instances ) ) . '</span><div class="hidden" aria-hidden="true">';
@@ -473,24 +446,6 @@ class ConnectPlugins {
 	}
 
 	/**
-	 * Delete '_elementor_css' meta on Polylang bulk translation
-	 *
-	 * Without this meta Elementor generates the css for the new post.
-	 *
-	 * @since 2.4.3
-	 *
-	 * @param  int $post_id
-	 * @param  int $tr_id
-	 * @param  string $lang
-	 * @return void
-	 */
-	public function bulk_delete_elementor_css_meta( $post_id, $tr_id, $lang ){
-
-		delete_post_meta( $tr_id, '_elementor_css' );
-
-	}
-
-	/**
 	 * Whitelist Elementor Pro home_url()
 	 *
 	 * Polylang add home_url() to whitelist for Elementor Pro
@@ -520,7 +475,7 @@ class ConnectPlugins {
 	 */
 	public function home_url_language_dir_slash( $url, $path ) {
 
-		return empty( $path ) && ! is_admin() && get_option( 'home' ) !== $url
+		return empty( $path ) && ! is_admin() && $url !== get_option( 'home' )
 			&& function_exists( 'PLL' ) && 1 === PLL()->options['force_lang'] ? trailingslashit( $url ) : $url;
 
 	}
@@ -538,13 +493,7 @@ class ConnectPlugins {
 	 */
 	public function search_form_home_url_filter( $url, $path ) {
 
-		if ( ! function_exists( 'PLL' ) || ! is_a( PLL()->curlang, 'PLL_Language', true ) ) {
-			return $url;
-		}
-
-		return method_exists( PLL()->curlang, 'get_search_url' ) ?
-			PLL()->curlang->get_search_url() :
-			PLL()->curlang->search_url;
+		return function_exists( 'PLL' ) ? PLL()->curlang->search_url : $url;
 
 	}
 
@@ -572,7 +521,7 @@ class ConnectPlugins {
 	 * @param  Element_Base $element
 	 * @return void
 	 */
-	public function remove_search_form_home_url_filter( $element ) {
+	function remove_search_form_home_url_filter( $element ) {
 
 		if ( 'search-form' === $element->get_name() ) {
 			remove_filter( 'home_url', array( $this, 'search_form_home_url_filter' ) );
@@ -593,82 +542,63 @@ class ConnectPlugins {
 
 		global $typenow, $post;
 
-		// If is post type translatable.
+		// If is post type translatable
 		if ( pll_is_translated_post_type( $typenow ) ) {
 
 			$languages    = pll_languages_list( array( 'fields' => '' ) );
 			$translations = pll_get_post_translations( $post->ID );
 			$current      = pll_get_post_language( $post->ID, 'name' );
-			$use_emojis   = apply_filters( 'cpel/filter/use_emojis', true );
 
 			$items = array();
 			foreach ( $languages as $language ) {
-				if ( $language->name === $current ) {
-					$translation_id = $translations[ $language->slug ];
+				if ( $language->name !== $current ) {
+					if ( isset( $translations[ $language->slug ] ) ) {
 
-					$items[] = array(
-						'name'     => 'cpel-current',
-						'icon'     => 'eicon-document-file',
-						'title'    => sprintf(
-							'%s — %s',
-							get_the_title( $translation_id ),
-							$use_emojis ? cpel_flag_emoji( $language->flag_code ) : $language->name
-						),
-						'callback' => 'function(){}',
-					);
+						$translation_id = $translations[ $language->slug ];
+						$link           = $this->fix_url_domain( get_edit_post_link( $translation_id, 'edit' ), $translation_id );
 
-				} elseif ( isset( $translations[ $language->slug ] ) ) {
+						if ( get_post_meta( $translation_id, '_elementor_edit_mode', true ) ) {
+							$link = add_query_arg( 'action', 'elementor', $link );
+						}
 
-					$translation_id = $translations[ $language->slug ];
-					$link           = $this->fix_url_domain( get_edit_post_link( $translation_id, 'edit' ), $translation_id );
+						$items[] = array(
+							'name'  => "cpel-{$language->slug}",
+							'icon'  => 'eicon-globe',
+							'title' => sprintf( '%s (%s)', get_the_title( $translation_id ), $language->slug ),
+							'type'  => 'link',
+							'link'  => $link,
+						);
+					} else {
 
-					if ( get_post_meta( $translation_id, '_elementor_edit_mode', true ) ) {
-						$link = add_query_arg( 'action', 'elementor', $link );
+						$args = array(
+							'post_type' => $typenow,
+							'from_post' => $post->ID,
+							'new_lang'  => $language->slug,
+							'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
+						);
+
+						$link = add_query_arg( $args, admin_url( 'post-new.php' ) );
+
+						$items[] = array(
+							'name'  => "cpel-{$language->slug}",
+							'icon'  => 'eicon-plus',
+							'title' => sprintf( __( 'Add a translation in %s', 'polylang' ), $language->name ),
+							'type'  => 'link',
+							'link'  => $link,
+						);
 					}
-
-					$items[] = array(
-						'name'  => "cpel-{$language->slug}",
-						'icon'  => 'eicon-document-file',
-						'title' => sprintf(
-							'%s — %s',
-							get_the_title( $translation_id ),
-							$use_emojis ? cpel_flag_emoji( $language->flag_code ) : $language->name
-						),
-						'type'  => 'link',
-						'link'  => $link,
-					);
-				} else {
-
-					$args = array(
-						'post_type' => $typenow,
-						'from_post' => $post->ID,
-						'new_lang'  => $language->slug,
-						'_wpnonce'  => wp_create_nonce( 'new-post-translation' ),
-					);
-
-					$link = add_query_arg( $args, admin_url( 'post-new.php' ) );
-
-					$items[] = array(
-						'name'  => "cpel-{$language->slug}",
-						'icon'  => 'eicon-plus',
-						'title' => $use_emojis
-							? sprintf( __( 'Add a translation — %s', 'connect-polylang-elementor' ), cpel_flag_emoji( $language->flag_code ) ) // phpcs:ignore WordPress.WP.I18n
-							: sprintf( __( 'Add a translation in %s', 'polylang' ), $language->name ), // phpcs:ignore WordPress.WP.I18n
-						'type'  => 'link',
-						'link'  => $link,
-					);
 				}
 			}
 
 			$group = array(
 				'name'  => 'cpel',
-				'title' => __( 'Languages', 'polylang' ), // phpcs:ignore WordPress.WP.I18n
+				'title' => sprintf( __( 'This item is in %s', 'polylang' ), $current ),
 				'items' => $items,
 			);
 
 			$script = 'jQuery(window).on("elementor:init", () => {
 				window.elementor.on("panel:init", () => {
-					setTimeout(() => { window.elementor.modules.layouts.panel.pages.menu.Menu.groups.add(' . wp_json_encode( $group ) . '); });
+					setTimeout(() => { window.elementor.modules.layouts.panel.pages.menu.Menu.groups.add(' . json_encode( $group ) . '); });
 				});
 			});';
 
@@ -680,52 +610,9 @@ class ConnectPlugins {
 	}
 
 	/**
-	 * Elementor editor script
-	 *
-	 * Add script with links to translations on Elementor editor panel.
-	 *
-	 * @since  2.3.5
-	 *
-	 * @return void
-	 */
-	public function elementor_editor_style() {
-
-		global $typenow;
-
-		// If is post type translatable.
-		if ( ! pll_is_translated_post_type( $typenow ) ) {
-			return;
-		}
-
-		$style = '' .
-			".elementor-panel .elementor-panel-menu-item.elementor-panel-menu-item-cpel-current {\n" .
-			"	background: #eceeef;\n" .
-			"	cursor: default;\n" .
-			'}';
-
-		wp_add_inline_style( 'elementor-editor', $style );
-
-		$ui_theme = SettingsManager::get_settings_managers( 'editorPreferences' )->get_model()->get_settings( 'ui_theme' );
-
-		if ( 'light' !== $ui_theme ) {
-			$ui_theme_media_queries = 'auto' === $ui_theme ? '(prefers-color-scheme: dark)' : 'all';
-
-			$dark = '' .
-				"@media $ui_theme_media_queries {\n" .
-				"	.elementor-panel .elementor-panel-menu-item.elementor-panel-menu-item-cpel-current {\n" .
-				"		background: #7d7e82;\n" .
-				"	}\n" .
-				'}';
-
-			wp_add_inline_style( 'elementor-editor-dark-mode', $dark );
-		}
-
-	}
-
-	/**
 	 * Elementor Site Editor template changes
 	 *
-	 * At 2.0.0 named "elementor_theme_editor_title"
+	 * at 2.0.0 named "elementor_theme_editor_title"
 	 *
 	 * @since  2.0.4
 	 *
@@ -737,11 +624,7 @@ class ConnectPlugins {
 		$post_id = $data['id'];
 
 		// Add lang info to title.
-		if ( apply_filters( 'cpel/filter/use_emojis', true ) ) {
-			$data['title'] = sprintf( '%s — %s', $data['title'], cpel_flag_emoji( pll_get_post_language( $post_id, 'flag_code' ) ) );
-		} else {
-			$data['title'] = sprintf( '%s — %s', $data['title'], pll_get_post_language( $post_id, 'name' ) );
-		}
+		$data['title'] = sprintf( '%s / %s', $data['title'], strtoupper( pll_get_post_language( $post_id ) ) );
 
 		// Show default language instances in translations (and recalc isActive).
 		if ( cpel_is_translation( $post_id ) ) {
@@ -753,13 +636,13 @@ class ConnectPlugins {
 			$instances     = $theme_builder->get_conditions_manager()->get_document_instances( $default_post );
 
 			if ( empty( $instances ) ) {
-				$instances = array( 'no_instances' => esc_html__( 'No instances', 'elementor-pro' ) ); // phpcs:ignore WordPress.WP.I18n
+				$instances = array( 'no_instances' => esc_html__( 'No instances', 'elementor-pro' ) );
 				$is_active = false;
 			} else {
 				$is_active = 'publish' === $data['status'];
 			}
 
-			$data['instances'] = array( 'cpel' => sprintf( esc_html__( '(from %s)', 'connect-polylang-elementor' ), strtoupper( $language ) ) ) + $instances; // phpcs:ignore WordPress.WP.I18n
+			$data['instances'] = array( 'cpel' => sprintf( esc_html__( '(from %s)', 'connect-polylang-elementor' ), strtoupper( $language ) ) ) + $instances;
 			$data['isActive']  = $is_active;
 		}
 
@@ -770,14 +653,14 @@ class ConnectPlugins {
 	/**
 	 * Fix url domain
 	 *
-	 * @param  mixed $url current url.
-	 * @param  mixed $post_id current post ID.
-	 * @return string fixed domain url
+	 * @param  mixed $url
+	 * @param  mixed $post_id
+	 * @return void
 	 */
 	private function fix_url_domain( $url, $post_id ) {
 
-		$current_host = wp_parse_url( pll_current_language( 'home_url' ) ?: trailingslashit( "//{$_SERVER['HTTP_HOST']}" ), PHP_URL_HOST ); //phpcs:ignore WordPress.PHP.DisallowShortTernary
-		$post_host    = wp_parse_url( pll_get_post_language( $post_id, 'home_url' ), PHP_URL_HOST );
+		$current_host = parse_url( pll_current_language( 'home_url' ) ?: trailingslashit( "//{$_SERVER['HTTP_HOST']}" ), PHP_URL_HOST );
+		$post_host    = parse_url( pll_get_post_language( $post_id, 'home_url' ), PHP_URL_HOST );
 
 		if ( $current_host !== $post_host ) {
 			$url = str_replace( $current_host, $post_host, $url );

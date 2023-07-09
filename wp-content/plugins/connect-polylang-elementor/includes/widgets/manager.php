@@ -17,11 +17,7 @@ class Manager {
 	 */
 	private function __construct() {
 
-		if ( version_compare( ELEMENTOR_VERSION, '3.5.0', '>=' ) ) {
-			add_action( 'elementor/widgets/register', array( $this, 'register_widget' ) );
-		} else {
-			add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widget' ) );
-		}
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widget' ) );
 		add_action( 'elementor/frontend/after_enqueue_styles', array( $this, 'register_styles' ) );
 
 	}
@@ -35,11 +31,7 @@ class Manager {
 	 */
 	public function register_widget() {
 
-		if ( version_compare( ELEMENTOR_VERSION, '3.5.0', '>=' ) ) {
-			Plugin::instance()->widgets_manager->register( new PolylangLanguageSwitcher() );
-		} else {
-			Plugin::instance()->widgets_manager->register_widget_type( new PolylangLanguageSwitcher() );
-		}
+		Plugin::instance()->widgets_manager->register_widget_type( new PolylangLanguageSwitcher() );
 
 	}
 

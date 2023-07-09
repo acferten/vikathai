@@ -216,11 +216,6 @@ elFinder.prototype.commands.upload = function() {
 					}
 				} catch(e) {}
 				
-                // fix for firefox
-				if(navigator.userAgent.search("Firefox") != '-1' && idx == '1') {
-					idx = 0;
-				}
-
 				if (kind === 'file' && (trf.items[idx].getAsEntry || trf.items[idx].webkitGetAsEntry || trf.items[idx].getAsFile)) {
 					file = trf;
 					type = 'data';

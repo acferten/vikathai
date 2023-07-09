@@ -15,9 +15,6 @@ class OpenStreetMap extends \acf_field {
 
 	public $show_in_rest = true;
 
-	/**
-	 *	@return ACFFieldOpenstreetmap\Field\OpenStreetMap
-	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
 			new self();
@@ -96,7 +93,10 @@ class OpenStreetMap extends \acf_field {
 
 		add_action( 'print_media_templates', [ $this, 'print_media_templates' ] );
 
-		parent::__construct();
+		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
+
+		// do not delete!
+    	parent::__construct();
 
 	}
 
@@ -126,9 +126,6 @@ class OpenStreetMap extends \acf_field {
 			return $template['name'];
 		}, $return_choices );
 
-		$is_legacy = version_compare( acf()->version, '6.0.0', '<' );
-
-
 		// return_format
 		acf_render_field_setting( $field, [
 			'label'			=> __('Return Format','acf'),
@@ -141,45 +138,6 @@ class OpenStreetMap extends \acf_field {
 			'layout'	=>	'horizontal',
 		]);
 
-		if ( $is_legacy ) {
-			$this->render_field_presentation_settings( $field );
-			$this->render_field_validation_settings( $field );
-		}
-
-	}
-
-	/**
-	 * Renders the field settings used in the "Validation" tab.
-	 *
-	 * @since 6.0
-	 *
-	 * @param array $field The field settings array.
-	 * @return void
-	 */
-	function render_field_validation_settings( $field ) {
-
-		// allow_layer selection
-		acf_render_field_setting( $field, [
-			'label'			=> __( 'Max. number of Markers', 'acf-openstreetmap-field' ),
-			'instructions'	=> __( 'Leave empty for infinite markers', 'acf-openstreetmap-field' ),
-			'name'			=> 'max_markers',
-			'type'			=> 'number',
-			'ui'			=> 1,
-			'min'			=> 0,
-			'step'			=> 1,
-		]);
-
-	}
-
-	/**
-	 * Renders the field settings used in the "Presentation" tab.
-	 *
-	 * @since 6.0
-	 *
-	 * @param array $field The field settings array.
-	 * @return void
-	 */
-	function render_field_presentation_settings( $field ) {
 		acf_render_field_setting( $field, [
 			'label'				=> __( 'Map Appearance', 'acf-openstreetmap-field' ),
 			'instructions'		=> __( 'Set zoom, center and select layers being displayed.', 'acf-openstreetmap-field' ),
@@ -202,10 +160,6 @@ class OpenStreetMap extends \acf_field {
 				'zoom'				=> $field['zoom'],
 				'layers'			=> $field['layers'],
 				'markers'			=> [],
-			],
-			'wrapper'      => [
-				'data-name' => 'wrapper',
-				'class'     => 'acf-field-setting-wrapper',
 			],
 		] );
 
@@ -263,8 +217,21 @@ class OpenStreetMap extends \acf_field {
 			'append'		=> 'px',
 		]);
 
-	}
 
+		// allow_layer selection
+		acf_render_field_setting( $field, [
+			'label'			=> __( 'Max. number of Markers', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Leave empty for infinite markers', 'acf-openstreetmap-field' ),
+			'name'			=> 'max_markers',
+			'type'			=> 'number',
+			'ui'			=> 1,
+			'min'			=> 0,
+			'step'			=> 1,
+		]);
+
+		// layers
+
+	}
 
 	/*
 	 *  render_field()
@@ -287,6 +254,9 @@ class OpenStreetMap extends \acf_field {
 		if ( is_null( $field['value'] ) ) {
 			$field['value'] = $this->sanitize_value( [], $field, 'display' );
 		}
+
+		// value
+		//$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
 		// json_encoded value
 		acf_hidden_input([
@@ -357,6 +327,8 @@ class OpenStreetMap extends \acf_field {
 			
 		}
 
+		// add this to admin template?
+
 		// markers
 		$markers = []; // $field['value']['markers'];
 
@@ -410,8 +382,6 @@ class OpenStreetMap extends \acf_field {
 		wp_enqueue_style('acf-input-osm');
 
 		wp_enqueue_style('leaflet');
-
-		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
 
 	}
 
@@ -515,18 +485,7 @@ class OpenStreetMap extends \acf_field {
  	 */
 	private function sanitize_value( $value, $field, $context = '' ) {
 
-		if ( is_string( $value ) ) {
-			// try to json-decode
-			$value = json_decode( $value );
-			if ( is_null( $value ) ) {
-				$value = [];
-			}
-		}
-
 		$value = (array) $value;
-
-		// sanitize field
-		$field = $this->sanitize_field( $field );
 
 		//
 		// Markers
@@ -676,9 +635,9 @@ class OpenStreetMap extends \acf_field {
 			return $value;
 		}
 
-		$value = $this->sanitize_value( $value, $field, 'display' );
-
 		if ( 'raw' === $field['return_format'] ) {
+
+			$value = $this->sanitize_value( $value, $field, 'display' );
 
 			// ensure backwards compatibility <= 1.0.1
 			$value['center_lat'] = $value['lat'];
@@ -888,9 +847,13 @@ class OpenStreetMap extends \acf_field {
 	 */
 	private function sanitize_field( $field, $context = '' ) {
 
-		$field = wp_parse_args( $field, $this->defaults );
+		$field = wp_parse_args( $field, [
+			'center_lat'	=> $this->defaults['center_lat'],
+			'center_lng'	=> $this->defaults['center_lng'],
+			'zoom'			=> $this->defaults['zoom'],
+		] );
 
-		// typecast and restrict values
+		// typecast values
 		$field['center_lat']	= floatval( $field['center_lat'] );
 		$field['center_lng']	= floatval( $field['center_lng'] );
 		$field['zoom'] 			= min( 22, max( 1, intval( $field['zoom'] ) ) );
@@ -932,3 +895,4 @@ class OpenStreetMap extends \acf_field {
 	}
 
 }
+

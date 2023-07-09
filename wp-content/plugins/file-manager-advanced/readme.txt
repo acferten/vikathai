@@ -2,9 +2,9 @@
 Contributors: modalweb,filemanager
 Tags: file manager, wordpress file manager, wp file manager, file manager pro, document management,file-manager, wp-filemanager, elfinder, wp-file-manager, ftp, filemanager
 Requires at least: 4.0
-Tested up to: 6.2.2
+Tested up to: 6.1.1
 Requires PHP: 7.0
-Stable tag: 5.1
+Stable tag: 5.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,9 +52,6 @@ Most powerful and user friendly file manager for wordpress. Edit, Delete, upload
  * **Browsing History:** File browsing history
  * **Responsive:** Works on tablet and phone
 
- > <strong>[Buy Shortcode Addon](https://advancedfilemanager.com/pricing/)</strong>
- > <strong>[Demo of Shortcode Addon](https://advancedfilemanager.com/shortcode-demo/)</strong>
-
 = Key Features of Advanced File Manager Shortcode =
 
 * **File Manager Access for Logged in Users:** Logged in users can access and manage files on your website front end. 
@@ -78,6 +75,7 @@ Most powerful and user friendly file manager for wordpress. Edit, Delete, upload
 * **Control User Operations:** You can control users operations in Shortcode. You can set operations for your users (upload,download etc).
 
 * **View:** Grid and list view for file manager in shortcode.
+
 
 == Installation ==
 
@@ -111,29 +109,6 @@ Yes you can, go to settings, change root path.
 
 
 == Changelog ==
-
-= 5.1 (11 June, 2023) =
-
-* Security fixes
-
-= 5.0.5 (22 May, 2023) =
-
-* Compatible with wp 6.2.2
-
-= 5.0.4 (16 Apr, 2023) =
-
-* Compatible with wp 6.2
-
-= 5.0.3 (07 Mar, 2023) =
-
-* Compatibility verified
-
-= 5.0.2 (07 Jan, 2023) =
-
-* Max upload limit field added in settings
-* User role compatibility added
-* Fixed firefox dragdrop issue
-* Performance enhancement
 
 = 5.0.1 (27 Nov, 2022) =
 
@@ -332,5 +307,5 @@ Yes you can, go to settings, change root path.
 
 == Minimum requirements for File Manager Advanced ==
 *   Wordpress 4.0+
-*   PHP > 7.0
+*   PHP > 5.0
 *   MySQL > 5.0
