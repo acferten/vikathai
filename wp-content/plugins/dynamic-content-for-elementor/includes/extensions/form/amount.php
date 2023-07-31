@@ -112,6 +112,7 @@ class Amount extends \ElementorPro\Modules\Forms\Fields\Field_Base
         $expression = \preg_replace('/\\[form:([^\\]]+)\\]/', ' getField("\\1") ', $expression);
         $expression = \preg_replace('/\\[field\\s+id\\s*=\\s*"([^"]+)"\\s*\\]/', ' getField("\\1") ', $expression);
         $field_index = $this->get_field_index();
+        /** @var string $expression */
         $full_code = <<<EOD
 dceAmountField.registerRefresherGenerator( {$field_index}, (getField) => {
 \t\treturn () => {

@@ -9,44 +9,52 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 if ( ! class_exists( 'Jet_Smart_Filters_Checkboxes_Filter' ) ) {
-
 	/**
 	 * Define Jet_Smart_Filters_Checkboxes_Filter class
 	 */
 	class Jet_Smart_Filters_Checkboxes_Filter extends Jet_Smart_Filters_Filter_Base {
-
 		/**
 		 * Get provider name
-		 *
-		 * @return string
 		 */
 		public function get_name() {
+
 			return __( 'Checkboxes list', 'jet-smart-filters' );
 		}
 
 		/**
 		 * Get provider ID
-		 *
-		 * @return string
 		 */
 		public function get_id() {
+
 			return 'checkboxes';
 		}
 
 		/**
+		 * Get icon URL
+		 */
+		public function get_icon_url() {
+
+			return jet_smart_filters()->plugin_url( 'admin/assets/img/filter-types/checkboxes.png' );
+		}
+
+		/**
+		 * Get info
+		 */
+		public function get_info() {
+
+			return jet_smart_filters()->utils->get_file_content( jet_smart_filters()->plugin_path( 'admin/templates/filter-info/checkboxes.php' ) );
+		}
+
+		/**
 		 * Get provider wrapper selector
-		 *
-		 * @return string
 		 */
 		public function get_scripts() {
+
 			return false;
 		}
 
 		/**
 		 * Prepare filter template argumnets
-		 *
-		 * @param  [type] $args [description]
-		 * @return [type]       [description]
 		 */
 		public function prepare_args( $args ) {
 
@@ -79,7 +87,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Checkboxes_Filter' ) ) {
 
 			switch ( $source ) {
 				case 'taxonomies':
-
 					$tax                 = get_post_meta( $filter_id, '_source_taxonomy', true );
 					$only_child          = filter_var( get_post_meta( $filter_id, '_only_child', true ), FILTER_VALIDATE_BOOLEAN );
 					$show_empty_terms    = filter_var( get_post_meta( $filter_id, '_show_empty_terms', true ), FILTER_VALIDATE_BOOLEAN );
@@ -116,7 +123,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Checkboxes_Filter' ) ) {
 					break;
 
 				case 'posts':
-
 					$post_type = get_post_meta( $filter_id, '_source_post_type', true );
 					$args      = array(
 						'post_type' => $post_type,
@@ -202,9 +208,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Checkboxes_Filter' ) ) {
 			}
 
 			return $result;
-
 		}
-
 	}
-
 }

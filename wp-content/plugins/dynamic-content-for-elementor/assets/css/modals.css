@@ -18,26 +18,36 @@
 .elementor-invisible.elementor-widget-dyncontel-popup {
     visibility: visible;
 }
-.elementor-align-justify .dce-button-popoup{
+.elementor-align-justify .dce-button-popup{
     display: block;
     width: 100%;
 }
-button.dce-button-popoup{
-  border: none;
+button.dce-button-popup{
+    border: none;
+    line-height: 1; /* otherwise the icon is not vertically aligned correctly */
 }
-.dce-button-popoup:not(.dce-button-hamburger):not(.dce-button-img){
+.dce-button-popup:not(.dce-button-hamburger):not(.dce-button-img){
     padding: 10px 20px;
     transition: background-color 0.5s, color 0.5s;
 
 }
-.elementor-element:not(.elementor-align-justify) .dce-button-popoup:not(.dce-button-hamburger):not(.dce-button-img){
-    display: inline-flex;
+.elementor-element:not(.elementor-align-justify) .dce-button-popup:not(.dce-button-hamburger):not(.dce-button-img){
+    display: flex;
     align-items: center;
 }
-.elementor-widget-dyncontel-popup.elementor-align-justify .dce-button-popoup:not(.dce-button-hamburger):not(.dce-button-img){
+.elementor-widget-dyncontel-popup.elementor-align-justify .dce-button-popup:not(.dce-button-hamburger):not(.dce-button-img){
     display: inline-block;
     text-align: center;
 }
+
+.dce-button-popup .elementor-align-icon-right {
+    order: 15;
+}
+
+.dce-button-popup .dce-button-text {
+    order: 10;
+}
+
 .dce-button-hamburger{
   display: inline-block;
   line-height: 0;
@@ -57,7 +67,7 @@ body.dce-modal-open, html.dce-modal-open{
   overflow: hidden;
 }
 
-.dce-button-popoup{
+.dce-button-popup {
     cursor: pointer;
     transition: all 0.5s ease;
 }
@@ -138,6 +148,12 @@ body.dce-modal-open, html.dce-modal-open{
 .dce-modal .close-right {
     right: 0;
 }
+
+/* button should occupy no space at all in case it's closed with X */
+.dce-modal .close-x {
+    padding: 0
+}
+
 .dce-modal .close-center {
     left: 0;
     right: 0;

@@ -12,8 +12,23 @@ if (!\defined('ABSPATH')) {
 class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
 {
     public $has_action = \true;
-    // first Dynamic.ooo form action to be run, because if there is an error it stops the other actions by dying. Not sure if it's a great idea.
     public $action_priority = 2;
+    public function run_once()
+    {
+        $save_guard = \DynamicContentForElementor\Plugin::instance()->save_guard;
+        $save_guard->register_unsafe_control('form', 'dce_form_save_type_obj_id');
+        $save_guard->register_unsafe_control('form', 'dce_form_save_type_user_role');
+        $save_guard->register_unsafe_control('form', 'dce_form_save_metas');
+        $save_guard->register_unsafe_control('form', 'dce_form_save_override');
+    }
+    public function get_script_depends()
+    {
+        return [];
+    }
+    public function get_style_depends()
+    {
+        return [];
+    }
     /**
      * Get Name
      *
@@ -25,14 +40,6 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
     public function get_name()
     {
         return 'dce_form_save';
-    }
-    public function get_script_depends()
-    {
-        return [];
-    }
-    public function get_style_depends()
-    {
-        return [];
     }
     /**
      * Get Label
@@ -56,8 +63,8 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
      */
     public function register_settings_section($widget)
     {
-        $roles = Helper::get_roles();
-        $post_types = Helper::get_post_types();
+        $roles = Helper::get_roles(\false, \true);
+        $post_types = Helper::get_public_post_types();
         $taxonomies = Helper::get_taxonomies();
         $widget->start_controls_section('section_dce_form_save', ['label' => $this->get_label(), 'condition' => ['submit_actions' => $this->get_name()]]);
         if (!\DynamicContentForElementor\Helper::can_register_unsafe_controls()) {
@@ -82,7 +89,7 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $widget->add_control('dce_form_save_metas', ['label' => __('Form fields to save as meta', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'placeholder' => 'name,message', 'description' => __('Type the field IDs here, separated by a comma. The field ID must be identical to the field name in your meta (i.e. your custom fields). If you want to save all fields, leave this empty', 'dynamic-content-for-elementor'), 'label_block' => 'true', 'condition' => ['dce_form_save_type!' => 'option']]);
         $widget->add_control('dce_form_save_type_post_title', ['label' => __('Post Title', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => __('Form Entry by', 'dynamic-content-for-elementor') . ' [field id="name"]', 'description' => __('You can use static text, field shortcode, tokens or mixed. Leave it empty for random values', 'dynamic-content-for-elementor'), 'condition' => ['dce_form_save_type' => 'post'], 'label_block' => 'true', 'separator' => 'before']);
         $widget->add_control('dce_form_save_type_post_content', ['label' => __('Post Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => '[field id="message"]', 'description' => __('Can use static text, field shortcode, and tokens', 'dynamic-content-for-elementor'), 'condition' => ['dce_form_save_type' => 'post'], 'label_block' => 'true']);
-        $widget->add_control('dce_form_save_type_post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => $post_types + array('dce_elementor_form' => __('Default', 'dynamic-content-for-elementor')), 'default' => 'dce_elementor_from', 'condition' => ['dce_form_save_type' => 'post', 'dce_form_save_override' => ''], 'label_block' => 'true']);
+        $widget->add_control('dce_form_save_type_post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => $post_types, 'default' => '', 'condition' => ['dce_form_save_type' => 'post', 'dce_form_save_override' => ''], 'label_block' => 'true']);
         $widget->add_control('dce_form_save_type_post_term', ['label' => __('Post Term', 'dynamic-content-for-elementor'), 'type' => 'ooo_query', 'placeholder' => __('All terms', 'dynamic-content-for-elementor'), 'label_block' => \true, 'query_type' => 'terms', 'condition' => ['dce_form_save_type' => 'post', 'dce_form_save_override' => '']]);
         $widget->add_control('dce_form_save_type_post_status', ['label' => __('Post Status', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => get_post_stati(), 'default' => 'publish', 'toggle' => \false, 'label_block' => 'true', 'condition' => ['dce_form_save_type' => 'post', 'dce_form_save_override' => '']]);
         $widget->add_control('dce_form_save_parent', ['label' => __('Current Post as Parent', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['dce_form_save_type' => 'post', 'dce_form_save_override' => '']]);
@@ -122,24 +129,6 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $fields = Helper::get_form_data($record);
         $settings = $record->get('form_settings');
         $this->save($fields, $settings, $ajax_handler);
-    }
-    /**
-     * On Export
-     *
-     * Clears form settings on export
-     * @access Public
-     * @param array $element
-     */
-    public function on_export($element)
-    {
-        $tmp = array();
-        if (!empty($element)) {
-            foreach ($element['settings'] as $key => $value) {
-                if (\substr($key, 0, 4) == 'dce_') {
-                    unset($element['settings'][$key]);
-                }
-            }
-        }
     }
     private function save($record, $settings = null, $ajax_handler = null)
     {
@@ -224,7 +213,7 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
                 if (!$obj_id || !$settings['dce_form_save_override']) {
                     // ADD NEW
                     $db_ins['post_status'] = $settings['dce_form_save_type_post_status'];
-                    $db_ins['post_type'] = $settings['dce_form_save_type_post_type'];
+                    $db_ins['post_type'] = Helper::validate_post_type($settings['dce_form_save_type_post_type']);
                     if ($settings['dce_form_save_parent']) {
                         $db_ins['post_parent'] = $fields['submitted_on_id'];
                     }
@@ -273,10 +262,6 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
                 }
                 break;
             case 'user':
-                if (!get_option('users_can_register')) {
-                    $ajax_handler->add_error_message(__('User registration is currently disabled, Please enable it in WordPress Settings - General - Membership.', 'dynamic-content-for-elementor'));
-                    return;
-                }
                 $settings['dce_form_save_type_user_username'] = sanitize_user(Helper::get_dynamic_value($settings['dce_form_save_type_user_username'], $fields));
                 if (!$settings['dce_form_save_type_user_username']) {
                     $settings['dce_form_save_type_user_username'] = 'user_' . \time();
@@ -308,6 +293,10 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
                 }
                 $error_msg = !empty($settings['dce_form_save_type_user_error']) ? $settings['dce_form_save_type_user_error'] : \ElementorPro\Modules\Forms\Classes\Ajax_Handler::get_default_message(\ElementorPro\Modules\Forms\Classes\Ajax_Handler::SUBSCRIBER_ALREADY_EXISTS, $settings);
                 if (!$obj_id || !$settings['dce_form_save_override']) {
+                    if (!get_option('users_can_register')) {
+                        $ajax_handler->add_error_message(__('User registration is currently disabled, Please enable it in WordPress Settings - General - Membership.', 'dynamic-content-for-elementor'));
+                        return;
+                    }
                     if ($user_email_exist || $user_login_exist) {
                         $ajax_handler->add_error_message($error_msg);
                         if ($settings['dce_form_save_type_user_error_stop']) {
@@ -316,9 +305,18 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
                         }
                         return \false;
                     }
-                    $db_ins['user_login'] = $settings['dce_form_save_type_user_username'];
-                    $db_ins['user_email'] = $settings['dce_form_save_type_user_email'];
-                    $db_ins['user_pass'] = $settings['dce_form_save_type_user_pass'];
+                    $db_ins['user_login'] = sanitize_text_field($settings['dce_form_save_type_user_username']);
+                    $email = sanitize_email($settings['dce_form_save_type_user_email']);
+                    if (!is_email($email)) {
+                        $ajax_handler->add_error_message('Email not valid');
+                        if ($settings['dce_form_save_type_user_error_stop']) {
+                            $ajax_handler->send();
+                            die;
+                        }
+                        return \false;
+                    }
+                    $db_ins['user_email'] = $email;
+                    $db_ins['user_pass'] = sanitize_text_field($settings['dce_form_save_type_user_pass']);
                     $db_ins['role'] = $settings['dce_form_save_type_user_role'];
                     $obj_id = wp_insert_user($db_ins);
                 } else {
@@ -466,10 +464,19 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
                         if ('term' == $settings['dce_form_save_type']) {
                             $obj_id = $obj_id['term_id'];
                         }
-                        $meta_upd = 'update_' . $settings['dce_form_save_type'] . '_meta';
                         /* allow users to use meta keys names different than field names: */
                         $akey = apply_filters('dynamicooo/form-save/meta-key', $akey, $settings['form_name']);
-                        \call_user_func($meta_upd, $obj_id, $akey, $adata);
+                        switch ($settings['dce_form_save_type']) {
+                            case 'post':
+                                update_post_meta($obj_id, $akey, $adata);
+                                break;
+                            case 'user':
+                                update_user_meta($obj_id, $akey, $adata);
+                                break;
+                            case 'term':
+                                update_term_meta($obj_id, $akey, $adata);
+                                break;
+                        }
                     }
                 }
             }
@@ -478,7 +485,15 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
         }
         if ($settings['dce_form_save_type'] == 'user' && !get_current_user_id() && 'yes' === $settings['dce_form_save_type_user_login']) {
             global $user;
-            $user = wp_signon(array('user_login' => $db_ins['user_email'], 'user_password' => $db_ins['user_pass']));
+            $credentials = ['user_login' => $db_ins['user_email'], 'user_password' => $db_ins['user_pass']];
+            $user = wp_signon($credentials, is_ssl());
+            if (is_wp_error($user)) {
+                $ajax_handler->add_error_message('Login fail');
+                if ($settings['dce_form_save_type_user_error_stop']) {
+                    $ajax_handler->send();
+                    die;
+                }
+            }
         }
         if ($settings['dce_form_save_type'] == 'post') {
             do_action('save_post', $obj_id, $obj, $is_update);
@@ -528,5 +543,9 @@ class Save extends \ElementorPro\Modules\Forms\Classes\Action_Base
             return \false;
         }
         return $obj_id;
+    }
+    public function on_export($element)
+    {
+        return $element;
     }
 }

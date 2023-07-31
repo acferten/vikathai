@@ -110,6 +110,7 @@ class Woocommerce_Addons {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_mini_cart_scripts' ) );
 		// Add Fragment Support when running ajax.
 		add_action( 'kadence_single_product_ajax_added_to_cart', array( $this, 'kadence_check_for_fragment_support' ) );
+		add_filter( 'option_woocommerce_enable_ajax_add_to_cart', array( $this, 'override_woocommerce_enable_ajax_add_to_cart' ), 10, 2 );
 	}
 	/**
 	 * Add mini cart notice.
@@ -126,7 +127,7 @@ class Woocommerce_Addons {
 	public function add_mini_cart_notice() {
 		if ( kadence()->option( 'cart_pop_show_free_shipping' ) ) {
 			$min_amount = kadence()->option( 'cart_pop_free_shipping_price' );
-			$current = WC()->cart->subtotal;
+			$current = WC()->cart->get_subtotal();
 			$output = '<div class="kadence-mini-cart-shipping">';
 			if ( $current && $current < $min_amount ) {
 				$message = kadence()->option( 'cart_pop_free_shipping_message' );
@@ -469,7 +470,7 @@ class Woocommerce_Addons {
 		if ( function_exists( 'is_product' ) && is_product() ) {
 			global $post;
 			$product = wc_get_product( $post->ID );
-			if ( ( $product->is_type( 'simple' ) || $product->is_type( 'external' ) || $product->is_type( 'subscription' ) || $product->is_type( 'variable' ) || $product->is_type( 'variable-subscription' ) ) && apply_filters( 'kadence_enable_single_ajax_add_to_cart', true, $product ) ) {
+			if ( ( $product->is_type( 'simple' ) || $product->is_type( 'subscription' ) || $product->is_type( 'variable' ) || $product->is_type( 'variable-subscription' ) ) && apply_filters( 'kadence_enable_single_ajax_add_to_cart', true, $product ) ) {
 				// Enqueue the ajax-add script.
 				wp_enqueue_script(
 					'kadence-single-ajax-add',
@@ -744,6 +745,7 @@ class Woocommerce_Addons {
 			add_filter( 'kadence_theme_google_fonts_array', array( $this, 'filter_in_fonts' ) );
 		}
 	}
+
 	/**
 	 * Filters in pro fronts for output with free.
 	 *
@@ -769,6 +771,19 @@ class Woocommerce_Addons {
 			}
 		}
 		return $font_array;
+	}
+
+	/**
+	 * Overrides woocommerce's ajax add to cart option for product single pages if our theme settings have indicated it should be active.
+	 *
+	 * @param string $value The existing option value.
+	 * @return string
+	 */
+	public function override_woocommerce_enable_ajax_add_to_cart( $value ) {
+		if ( is_singular( 'product' ) && kadence()->option( 'ajax_add_single_products' ) ) {
+			return 'yes';
+		}
+		return $value;
 	}
 }
 

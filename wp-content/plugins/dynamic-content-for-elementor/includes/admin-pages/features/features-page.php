@@ -64,12 +64,20 @@ class FeaturesPage {
 					return $extensions;
 				}
 			},
-			new class( 'dynamic-tags' ) extends ListTab {
+			new class( 'dynamic-tags' ) extends GroupedListTab {
 				public function get_label() {
 					return __( 'Dynamic Tags', 'dynamic-content-for-elementor' );
 				}
+				public function get_groups() {
+					return \DynamicContentForElementor\Features::get_dynamic_tags_groups();
+				}
+				public function get_groups_key() {
+					return 'category';
+				}
 				public function get_all_tab_features() {
 					$extensions = Plugin::instance()->features->filter( [ 'type' => 'extension' ] );
+					$bundled = Plugin::instance()->features->filter_bundled( [ 'type' => 'extension' ] );
+					$extensions += $bundled;
 					// We want all extension that are dynamic tag and not legacy
 					$extensions = array_filter( $extensions, function( $e ) {
 						return ( $e['extension_type'] ?? '' ) === 'dynamic-tag' && ! ( $e['legacy'] ?? false );

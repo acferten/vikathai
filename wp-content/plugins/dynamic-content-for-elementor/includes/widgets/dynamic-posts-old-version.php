@@ -27,6 +27,9 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
     }
     public function get_style_depends()
     {
+        if (\Elementor\Plugin::$instance->experiments->is_feature_active('e_swiper_latest')) {
+            return ['animatecss', 'dce-dynamicPosts_slick', 'dce-dynamicPosts_timeline', 'dce-dynamic-posts-old-version'];
+        }
         return ['animatecss', 'dce-dynamicPosts_slick', 'dce-dynamicPosts_swiper', 'dce-dynamicPosts_timeline', 'dce-dynamic-posts-old-version'];
     }
     /**
@@ -37,7 +40,7 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
     protected function safe_register_controls()
     {
         $taxonomies = Helper::get_taxonomies();
-        $types = Helper::get_post_types();
+        $types = Helper::get_public_post_types();
         $this->start_controls_section('section_cpt', ['label' => __('Post Type Query', 'dynamic-content-for-elementor')]);
         $this->add_control('deprecated', ['raw' => __('This widget is deprecated. You can continue to use it but we recommend that you use Dynamic Posts instead.', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::RAW_HTML, 'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning']);
         $this->add_control('query_type', ['label' => __('Query Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'toggle' => \false, 'options' => ['get_cpt' => ['title' => __('Custom Post Type', 'dynamic-content-for-elementor'), 'icon' => 'eicon-post-content'], 'dynamic_mode' => ['title' => __('Dynamic', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-cogs'], 'acf_relations' => ['title' => __('ACF Relations', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-american-sign-language-interpreting'], 'specific_posts' => ['title' => __('From Specific Post', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-list-ul']], 'default' => 'get_cpt']);
@@ -176,8 +179,8 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
         $this->add_responsive_control('carousel_dots_enable', ['label' => __('Dots', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
         $this->add_control('carousel_infinite_enable', ['label' => __('Loop', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
         $this->add_control('carousel_speed', ['label' => __('Animation Speed', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 500, 'frontend_available' => \true]);
-        $this->add_control('carousel_autoplay_enable', ['label' => __('Auto Play', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
-        $this->add_control('carousel_autoplayspeed', ['label' => __('Autoplay Speed', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 5000, 'frontend_available' => \true, 'condition' => ['carousel_autoplay_enable!' => '']]);
+        $this->add_control('carousel_autoplay_enable', ['label' => __('Autoplay', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
+        $this->add_control('carousel_autoplayspeed', ['label' => __('Autoplay Delay (ms)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 5000, 'frontend_available' => \true, 'condition' => ['carousel_autoplay_enable!' => '']]);
         $this->add_control('carousel_center_enable', ['label' => __('Center Mode', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
         $this->add_control('carousel_effect', ['label' => __('Effect', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'default' => 'slide', 'options' => ['slide' => __('Slide', 'dynamic-content-for-elementor'), 'fade' => __('Fade', 'dynamic-content-for-elementor')], 'condition' => ['slides_to_show' => '1'], 'frontend_available' => \true]);
         $this->end_controls_section();
@@ -189,7 +192,7 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
         $this->add_control('effects', ['label' => __('Effect of transition', 'dynamic-content-for-elementor'), 'description' => __('Transition effect between slides', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['slide' => __('Slide', 'dynamic-content-for-elementor'), 'fade' => __('Fade', 'dynamic-content-for-elementor'), 'cube' => __('Cube', 'dynamic-content-for-elementor'), 'coverflow' => __('Coverflow', 'dynamic-content-for-elementor'), 'flip' => __('Flip', 'dynamic-content-for-elementor')], 'default' => 'slide', 'frontend_available' => \true]);
         $this->add_control('centeredSlides', ['label' => __('Centered Slides', 'dynamic-content-for-elementor'), 'description' => __('If true, then active slide will be centered, not always on the left side.', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
         // -------------------------------- Progressione ------
-        $this->add_control('slideperview_options', ['label' => __('Slide per wiew', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
+        $this->add_control('slideperview_options', ['label' => __('Slide per view', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
         $this->add_responsive_control('spaceBetween', ['label' => __('Space Between', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 0, 'tablet_default' => '', 'mobile_default' => '', 'min' => 0, 'max' => 100, 'step' => 1, 'frontend_available' => \true]);
         $this->add_responsive_control('slidesPerView', ['label' => __('Slides Per View', 'dynamic-content-for-elementor'), 'description' => __('Number of slides per view (slides visible at the same time on sliders container). If you use it with "auto" value and along with loop: true then you need to specify loopedSlides parameter with amount of slides to loop (duplicate). SlidesPerView: "auto"\'" is currently not compatible with multirow mode, when slidesPerColumn greater than 1', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => '1', 'min' => 1, 'max' => 12, 'step' => 1, 'frontend_available' => \true]);
         $this->add_responsive_control('slidesColumn', ['label' => __('Slides Column', 'dynamic-content-for-elementor'), 'description' => __('Number of slides per column, for multirow layout.', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => '1', 'min' => 1, 'max' => 4, 'step' => 1, 'frontend_available' => \true]);
@@ -247,7 +250,7 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
         // -------------------------------- Autoplay ------
         $this->add_control('autoplay_options', ['label' => __('Autoplay options', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
         $this->add_control('useAutoplay', ['label' => __('Use Autoplay', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
-        $this->add_control('autoplay', ['label' => __('Auto Play', 'dynamic-content-for-elementor'), 'description' => __('Delay between transitions (in ms). If this parameter is not specified (by default), autoplay will be disabled', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => '', 'min' => 0, 'max' => 15000, 'step' => 100, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
+        $this->add_control('autoplay', ['label' => __('Autoplay Delay (ms)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => '', 'min' => 0, 'max' => 15000, 'step' => 100, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
         $this->add_control('autoplayStopOnHover', ['label' => __('Autoplay stop on hover', 'dynamic-content-for-elementor'), 'description' => __('Enable this parameter and autoplay will be stopped on hover', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
         $this->add_control('autoplayStopOnLast', ['label' => __('Autoplay stop on last slide', 'dynamic-content-for-elementor'), 'description' => __('Enable this parameter and autoplay will be stopped when it reaches the last slide (has no effect in loop mode)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
         $this->add_control('autoplayDisableOnInteraction', ['label' => __('Autoplay Disable on interaction', 'dynamic-content-for-elementor'), 'description' => __('Set to "false" and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes', 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
@@ -744,7 +747,7 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
             return;
         }
         $id_page = Helper::get_the_id();
-        $type_page = get_post_type();
+        $type_page = \DynamicContentForElementor\Helper::validate_post_type(get_post_type());
         $default_posts_per_page = get_option('posts_per_page');
         if ($settings['num_posts'] == 0 || $settings['num_posts'] == '') {
             $settings['num_posts'] = $default_posts_per_page;
@@ -839,7 +842,7 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
             }
         }
         if ($settings['query_type'] == 'specific_posts') {
-            $types = Helper::get_post_types();
+            $types = Helper::get_public_post_types();
             $specific_posts = [0];
             foreach ($types as $t => $tname) {
                 if (isset($settings['specific_pages' . $t])) {
@@ -963,7 +966,7 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
                 $args = ['post_type' => 'any', 'posts_per_page' => $settings['num_posts'], 'post__in' => $relations_ids, 'post_status' => 'publish', 'orderby' => $ordinamentoRelationship, 'order' => $settings['order']];
             }
         } elseif ($settings['query_type'] == 'get_cpt') {
-            $args = ['post_type' => $settings['post_type'], 'posts_per_page' => $settings['num_posts'], 'order' => $settings['order'], 'orderby' => $settings['orderby'], 'post_status' => 'publish'];
+            $args = ['post_type' => \DynamicContentForElementor\Helper::validate_post_type($settings['post_type']), 'posts_per_page' => $settings['num_posts'], 'order' => $settings['order'], 'orderby' => $settings['orderby'], 'post_status' => 'publish'];
             if ($taxquery) {
                 $args['tax_query'] = $taxquery;
             }
@@ -1239,7 +1242,8 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
         $classItemDate = '';
         $classItemReadMore = '';
         if ($settings['posts_style'] == 'swiper') {
-            $classContainer = 'swiper-container swiper-container-' . $settings['direction_slider'];
+            $swiper_class = \Elementor\Plugin::$instance->experiments->is_feature_active('e_swiper_latest') ? 'swiper' : 'swiper-container';
+            $classContainer = $swiper_class . ' swiper-container-' . $settings['direction_slider'];
             $classWrap = ' swiper-wrapper';
             $classItem = ' swiper-slide';
             echo '<div class="' . $classContainer . '">';
@@ -1254,12 +1258,10 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
             $classItemReadMore = ' cd-timeline__read-more';
             echo '<div class="' . $classContainer . '">';
         }
-        $sonoPronto = \false;
         // Output posts
         // ////////////////////////////////////////// Query POST ///////////////////////////////////////////
         if ($p_query->have_posts()) {
             $animation_class = !empty($settings['hover_animation']) ? 'elementor-animation-' . $settings['hover_animation'] : '';
-            $sonoPronto = \true;
             $postlength = $p_query->post_count;
             // DualSlider: Sopra al grid le immagini grandi
             ?>
@@ -1634,14 +1636,13 @@ class DynamicPostsOldVersion extends \DynamicContentForElementor\Widgets\WidgetP
 					<?php 
                 }
             }
-            // end infinitescroll eneble
             ?>
 
 			<?php 
             // End post check
         }
         // *********************************************************************** end Query POST
-        if ($settings['posts_style'] == 'swiper' && $sonoPronto) {
+        if ($settings['posts_style'] == 'swiper') {
             // in precedenza prima di aprire la wp_query ho creato il contenitore per lo swiper
             echo '</div> <!-- swiper-wrapper -->';
             // NOTA: la paginazione e la navigazione per lo swiper è fuori dal suo contenitore per poter spostare gli elementi a mio piacimento, visto che il contenitore è in overflow: hidden, e se fossero all'interno (come di default) si nasconderebbero fuori dall'area.

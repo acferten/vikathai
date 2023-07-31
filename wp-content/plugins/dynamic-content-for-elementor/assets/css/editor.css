@@ -250,7 +250,9 @@ body.rtl .dce-elementor-navigator__element__toggle {
   padding: 15px;
 }
 
-.elementor-panel .elementor-tab-control-dce_visibility a:before {
+/* Elementor uses span since version 3.13: */
+.elementor-panel .elementor-tab-control-dce_visibility a:before,
+.elementor-panel .elementor-tab-control-dce_visibility span:before {
   content: '\e8ac';
 }
 
@@ -584,7 +586,6 @@ body.rtl .dce-elementor-navigator__element__toggle {
 }
 
 /* Hide WYSYWYG Editor on FileBrowser - Medias setting */
-.elementor-control-medias .wp-editor-container, .elementor-control-medias .wp-editor-tabs { 
-  display: none; 
+.elementor-control-medias .wp-editor-container, .elementor-control-medias .wp-editor-tabs {
+  display: none;
 }
-

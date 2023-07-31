@@ -20,6 +20,13 @@ class Counter extends \ElementorPro\Modules\Forms\Fields\Field_Base
     {
         // low priority because we want to update the counter after payments have been processed:
         add_action('elementor_pro/forms/process', [$this, 'update_counters'], 1000, 2);
+        add_filter("elementor_pro/forms/render/item/{$this->get_type()}", function ($item, $item_index, $form) {
+            // this is done to hide the label without using JS:
+            if (($item['dce_counter_hide'] ?? 'no') === 'yes') {
+                $form->add_render_attribute('field-group' . $item_index, 'style', 'display: none;');
+            }
+            return $item;
+        }, 10, 3);
     }
     public function get_script_depends()
     {
@@ -63,12 +70,8 @@ class Counter extends \ElementorPro\Modules\Forms\Fields\Field_Base
         if ($value === \false || $value === '') {
             $value = $item['dce_counter_start'];
         }
-        if ($item['dce_counter_hide'] === 'yes') {
-            $form->add_render_attribute('input' . $item_index, 'type', 'hidden', \true);
-        } else {
-            $form->add_render_attribute('input' . $item_index, 'class', 'elementor-field-textual');
-            $form->add_render_attribute('input' . $item_index, 'readonly', \true);
-        }
+        $form->add_render_attribute('input' . $item_index, 'class', 'elementor-field-textual');
+        $form->add_render_attribute('input' . $item_index, 'readonly', \true);
         $form->add_render_attribute('input' . $item_index, 'value', $value, \true);
         echo '<input ' . $form->get_render_attribute_string('input' . $item_index) . '>';
     }

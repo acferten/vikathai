@@ -17,7 +17,7 @@ use function is_customize_preview;
  */
 function dark_mode_mobile_logo() {
 	if ( kadence()->option( 'dark_mode_enable' ) && kadence()->option( 'dark_mode_custom_logo' ) && apply_filters( 'kadence_dark_mode_enable', true ) ) {
-		if ( kadence()->option( 'dark_mode_custom_mobile_logo' ) ) {
+		if ( kadence()->option( 'dark_mode_mobile_custom_logo' ) ) {
 			render_custom_logo( 'dark_mode_mobile_logo', 'kadence-dark-mode-logo' );
 		} else {
 			render_custom_logo( 'dark_mode_logo', 'kadence-dark-mode-logo' );

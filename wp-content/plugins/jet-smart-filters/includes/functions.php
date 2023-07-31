@@ -5,8 +5,6 @@
 
 /**
  * Get min/max price for WooCommerce products
- *
- * @return array
  */
 function jet_smart_filters_woo_prices( $args = array() ) {
 
@@ -60,13 +58,13 @@ function jet_smart_filters_woo_prices( $args = array() ) {
 	}
 
 	return $price; // WPCS: unprepared SQL ok.
-
 }
 
 /**
  * Callback to get min/max value for meta key
  */
 function jet_smart_filters_meta_values( $args = array() ) {
+
 	$key = ! empty( $args['key'] ) ? $args['key'] : false;
 
 	if ( ! $key ) {
@@ -86,7 +84,7 @@ function jet_smart_filters_meta_values( $args = array() ) {
 	}
 
 	$tax_query     = new WP_Tax_Query( $tax_query );
-	$tax_query_sql = $tax_query->get_sql( $wpdb->postmeta, 'post_id' );
+	$tax_query_sql = $tax_query->get_sql( 'pm', 'post_id' );
 
 	$search_in_statuses = apply_filters( 'jet-smart-filters/dynamic-min-max/search-statuses', array( 'publish' ) );
 	$search_in_statuses = implode( ', ', array_map( function( $status ) {
@@ -107,29 +105,20 @@ function jet_smart_filters_meta_values( $args = array() ) {
 	} else {
 		return array();
 	}
-
 }
 
 /**
  * Returns current currency symbol
- *
- * @return string
  */
 function jet_smart_filters_woo_currency_symbol() {
 
 	$currency = apply_filters( 'jet-smart-filters/woocommerce/currency-symbol', get_woocommerce_currency_symbol() );
 
 	return $currency;
-
 }
 
 /**
  * Do macros inside string
- *
- * @param  [type] $string      [description]
- * @param  [type] $field_value [description]
- *
- * @return [type]              [description]
  */
 function jet_smart_filters_macros( $string, $field_value = null ) {
 
@@ -159,5 +148,4 @@ function jet_smart_filters_macros( $string, $field_value = null ) {
 
 		}, $string
 	);
-
 }

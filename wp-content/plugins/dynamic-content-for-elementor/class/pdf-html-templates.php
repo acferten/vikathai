@@ -298,6 +298,9 @@ EOF;
     public function generate_pdf_from_template_id($template_id, $bindings, $return_string)
     {
         $post_data = get_post_meta($template_id, self::TEMPLATE_META_KEY, \true);
+        if (!$post_data) {
+            throw new \Error(esc_html__('PDF HTML: Could not fetch HTML Template, was it deleted?', 'dynamic-content-for-elementor'));
+        }
         return $this->generate_pdf_from_html_template($post_data, $bindings, $return_string);
     }
     public function timber_expand($template, $var_bindings)
@@ -331,6 +334,7 @@ EOF;
                 throw new \Error(esc_html__('PDF HTML: Could not fetch Elementor Template', 'dynamic-content-for-elementor'));
             }
         }
+        $code = apply_filters('dynamicooo/html-pdf/html-template', $code);
         return $this->generate_pdf($code, $post_data[self::FIELD_FORMAT], $post_data[self::FIELD_ORIENTATION], $return_string);
     }
     private function generate_pdf_from_elementor_post($post_id, $format, $orientation, $return_string)

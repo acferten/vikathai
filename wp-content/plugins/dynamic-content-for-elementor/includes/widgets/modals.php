@@ -64,8 +64,10 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $this->add_control('scroll_hide', ['label' => __('Hide on scroll', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'description' => __('Hide the modal when the user scrolls the page', 'dynamic-content-for-elementor'), 'condition' => ['button_purpose!' => 'close']]);
         $this->add_control('close_delay', ['label' => __('Close Delay (ms)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 0, 'frontend_available' => \true, 'condition' => ['scroll_hide!' => ['', '0'], 'button_purpose!' => 'close']]);
         $this->add_control('esc_hide', ['label' => __('Hide on press ESC', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes', 'description' => __('Hide the modal when the user press ESC button', 'dynamic-content-for-elementor'), 'condition' => ['button_purpose!' => 'close']]);
-        $this->add_control('always_visible', ['label' => __('Show the modal on every page load', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'separator' => 'before', 'frontend_available' => \true, 'condition' => ['button_purpose!' => 'close', 'trigger!' => 'button']]);
-        $this->add_control('cookie_lifetime', ['label' => __('Cookie expiration', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 0, 'frontend_available' => \true, 'description' => __('Time in seconds. 86400 seconds is a day. 0 is still browser is open.', 'dynamic-content-for-elementor'), 'condition' => ['always_visible' => '', 'button_purpose!' => 'close', 'trigger!' => 'button']]);
+        $this->add_control('always_visible', ['label' => __('Don’t use cookies', 'dynamic-content-for-elementor'), 'description' => esc_html__('Yes will show the modal on every page load.', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'separator' => 'before', 'frontend_available' => \true, 'condition' => ['button_purpose!' => 'close', 'trigger!' => 'button']]);
+        $this->add_control('cookie_name', ['label' => __('Cookie name', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => 'modals_accepted', 'frontend_available' => \true, 'description' => __('<b>Should be unique</b>, or it will affect all modals on your site. Only letters, digits and underscores accepted.', 'dynamic-content-for-elementor'), 'condition' => ['always_visible' => '', 'button_purpose!' => 'close', 'trigger!' => 'button']]);
+        $this->add_control('cookie_set', ['label' => __('Set Cookie on Close', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes', 'frontend_available' => \true, 'description' => __('If Yes the cookie will be set when closing the modal. If No, the cookie will be checked but never set. Useful for those who set the cookie manually.', 'dynamic-content-for-elementor'), 'condition' => ['always_visible' => '', 'button_purpose!' => 'close', 'trigger!' => 'button']]);
+        $this->add_control('cookie_lifetime', ['label' => __('Cookie expiration', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 0, 'frontend_available' => \true, 'description' => __('Time in days. 0 means that is active only while the browser remains open.', 'dynamic-content-for-elementor'), 'condition' => ['always_visible' => '', 'button_purpose!' => 'close', 'trigger!' => 'button']]);
         $this->end_controls_section();
         $this->start_controls_section('section_popup_animations', ['label' => __('Animations', 'dynamic-content-for-elementor')]);
         $this->add_control('enabled_push', ['label' => __('Push', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true, 'separator' => 'before', 'description' => __('Move body wrapper', 'dynamic-content-for-elementor'), 'condition' => ['button_purpose!' => 'close']]);
@@ -105,36 +107,36 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $this->end_controls_section();
         $this->start_controls_section('section_style_button', ['label' => __('Button', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['trigger' => 'button']]);
         $this->add_control('button_icon_align', ['label' => __('Icon Position', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'default' => 'left', 'options' => ['left' => __('Before', 'dynamic-content-for-elementor'), 'right' => __('After', 'dynamic-content-for-elementor')], 'condition' => ['selected_button_icon[value]!' => '', 'button_image[id]' => '']]);
-        $this->add_responsive_control('button_icon_size', ['label' => __('Icon Size', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['min' => 6, 'max' => 300]], 'default' => ['size' => '', 'unit' => 'px'], 'selectors' => ['{{WRAPPER}} .dce-button-icon' => 'font-size: {{SIZE}}{{UNIT}};'], 'condition' => ['enable_close_button!' => '', 'selected_button_icon[value]!' => '', 'button_image[id]' => '']]);
-        $this->add_responsive_control('button_icon_indent', ['label' => __('Icon Spacing', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['max' => 50]], 'condition' => ['selected_button_icon[value]!' => '', 'button_image[id]' => ''], 'selectors' => ['{{WRAPPER}} .dce-button-popoup .dce-align-icon-right' => 'margin-left: {{SIZE}}{{UNIT}};', '{{WRAPPER}} .dce-button-popoup .dce-align-icon-left' => 'margin-right: {{SIZE}}{{UNIT}};']]);
+        $this->add_responsive_control('button_icon_size', ['label' => __('Icon Size', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['min' => 6, 'max' => 300]], 'default' => ['size' => '', 'unit' => 'px'], 'selectors' => ['{{WRAPPER}} .elementor-button-icon' => 'font-size: {{SIZE}}{{UNIT}};'], 'condition' => ['enable_close_button!' => '', 'selected_button_icon[value]!' => '', 'button_image[id]' => '']]);
+        $this->add_responsive_control('button_icon_indent', ['label' => __('Icon Spacing', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['max' => 50]], 'condition' => ['selected_button_icon[value]!' => '', 'button_image[id]' => ''], 'selectors' => ['{{WRAPPER}} .dce-button-popup .elementor-align-icon-right' => 'margin-left: {{SIZE}}{{UNIT}};', '{{WRAPPER}} .dce-button-popup .elementor-align-icon-left' => 'margin-right: {{SIZE}}{{UNIT}};']]);
         $this->add_control('button_image_size', ['label' => __('Image Size', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['%' => ['min' => 1, 'max' => 100], 'px' => ['min' => 6, 'max' => 300], 'em' => ['min' => 0, 'max' => 20]], 'size_units' => ['px', '%', 'em'], 'default' => ['size' => '', 'unit' => 'px'], 'selectors' => ['{{WRAPPER}} .dce-button-img' => 'max-width: {{SIZE}}{{UNIT}};'], 'condition' => ['button_image[id]!' => '', 'button_type' => 'image']]);
         $this->add_control('title_button_colors', ['label' => __('Colors', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'condition' => ['button_type!' => 'image']]);
         $this->start_controls_tabs('buttontext_colors');
         $this->start_controls_tab('buttontext_colors_normal', ['label' => __('Normal', 'dynamic-content-for-elementor'), 'condition' => ['button_type!' => 'image']]);
-        $this->add_control('button_text_color', ['label' => __('Text Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '', 'selectors' => ['{{WRAPPER}} .dce-button-popoup' => 'color: {{VALUE}};'], 'condition' => ['button_type' => 'text']]);
+        $this->add_control('button_text_color', ['label' => __('Text Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '', 'selectors' => ['{{WRAPPER}} .dce-button-popup' => 'fill: {{VALUE}}; color: {{VALUE}};'], 'condition' => ['button_type' => 'text']]);
         $this->add_control('bars_color', ['label' => __('Bars Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '', 'selectors' => ['{{WRAPPER}} .dce-button-hamburger .bar' => 'background-color: {{VALUE}};'], 'condition' => ['button_type' => 'hamburger']]);
-        $this->add_control('button_background_color', ['label' => __('Background Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-button-popoup' => 'background-color: {{VALUE}};'], 'condition' => ['button_type!' => ['image', 'x']]]);
+        $this->add_control('button_background_color', ['label' => __('Background Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-button-popup' => 'background-color: {{VALUE}};'], 'condition' => ['button_type!' => ['image', 'x']]]);
         $this->end_controls_tab();
         $this->start_controls_tab('buttontext_colors_hover', ['label' => __('Hover', 'dynamic-content-for-elementor'), 'condition' => ['button_type!' => 'image']]);
         $this->add_control('title_button_hover', ['label' => __('Hover', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING]);
-        $this->add_control('button_hover_color', ['label' => __('Text Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-button-popoup:hover' => 'color: {{VALUE}};'], 'condition' => ['button_type' => 'text']]);
+        $this->add_control('button_hover_color', ['label' => __('Text Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-button-popup:hover' => 'color: {{VALUE}};'], 'condition' => ['button_type' => 'text']]);
         $this->add_control('bars_hover_color', ['label' => __('Bars Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'default' => '', 'selectors' => ['{{WRAPPER}} .dce-button-hamburger .con:hover .bar, {{WRAPPER}} .special-con:hover .bar' => 'background-color: {{VALUE}};'], 'condition' => ['button_type' => 'hamburger']]);
-        $this->add_control('button_background_hover_color', ['label' => __('Background Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-button-popoup:hover' => 'background-color: {{VALUE}};']]);
-        $this->add_control('button_hover_border_color', ['label' => __('Border Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'condition' => ['button_border_border!' => ''], 'selectors' => ['{{WRAPPER}} .dce-button-popoup:hover' => 'border-color: {{VALUE}};']]);
+        $this->add_control('button_background_hover_color', ['label' => __('Background Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-button-popup:hover' => 'background-color: {{VALUE}};']]);
+        $this->add_control('button_hover_border_color', ['label' => __('Border Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'condition' => ['button_border_border!' => ''], 'selectors' => ['{{WRAPPER}} .dce-button-popup:hover' => 'border-color: {{VALUE}};']]);
         $this->add_control('button_hover_animation', ['label' => __('Animation', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HOVER_ANIMATION]);
         $this->end_controls_tab();
         $this->end_controls_tabs();
         $this->add_responsive_control('button_align', ['label' => __('Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right'], 'justify' => ['title' => __('Justified', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-justify']], 'separator' => 'before', 'prefix_class' => 'elementor-align-', 'selectors' => ['{{WRAPPER}} .dce-button-wrapper' => 'text-align: {{VALUE}};'], 'default' => '']);
-        $this->add_responsive_control('button_justify_align', ['label' => __('Justify Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right']], 'separator' => 'after', 'selectors' => ['{{WRAPPER}}.elementor-align-justify .dce-button-popoup' => 'text-align: {{VALUE}};'], 'condition' => ['button_align' => 'justify']]);
+        $this->add_responsive_control('button_justify_align', ['label' => __('Justify Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right']], 'separator' => 'after', 'selectors' => ['{{WRAPPER}}.elementor-align-justify .dce-button-popup' => 'text-align: {{VALUE}};'], 'condition' => ['button_align' => 'justify']]);
         $this->add_responsive_control('hamburger_size', ['label' => __('Hamburger Size', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'separator' => 'before', 'default' => ['size' => 50, 'unit' => 'px'], 'size_units' => ['px'], 'range' => ['px' => ['min' => 1, 'max' => 100, 'step' => 1]], 'condition' => ['button_type' => 'hamburger'], 'selectors' => ['{{WRAPPER}} .dce-button-hamburger .bar' => 'width: {{SIZE}}{{UNIT}}', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-top, {{WRAPPER}} .dce-button-hamburger .con:hover .arrow-bottom, {{WRAPPER}} .dce-button-hamburger .con:hover .arrow-top-r, {{WRAPPER}} .dce-button-hamburger .con:hover .arrow-bottom-r' => 'width: calc({{SIZE}}{{UNIT}} / 2)']]);
         $this->add_control('hamburger_weight', ['label' => __('Hamburger weight', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'default' => ['size' => 5, 'unit' => 'px'], 'size_units' => ['px'], 'range' => ['px' => ['min' => 1, 'max' => 20, 'step' => 1]], 'condition' => ['button_type' => 'hamburger'], 'selectors' => ['{{WRAPPER}} .dce-button-hamburger .bar' => 'height: {{SIZE}}{{UNIT}};', '{{WRAPPER}} .dce-button-hamburger .con:hover .top' => 'top: 0; transform: translate(0px, calc(50% + {{SIZE}}{{UNIT}})) rotate(45deg);', '{{WRAPPER}} .dce-button-hamburger .con:hover .middle' => 'top: 0; width: 0;', '{{WRAPPER}} .dce-button-hamburger .con:hover .bottom' => 'top: 0; transform: translate(0px, calc(50% - {{SIZE}}{{UNIT}})) rotate(-45deg);', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-top' => 'top: calc({{SIZE}}{{UNIT}} / 4); transform: translate(0%,{{SIZE}}{{UNIT}}) rotateZ(45deg);', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-middle' => 'top: 0; transform: translate(-50%, 0)', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-bottom' => 'top: calc(-{{SIZE}}{{UNIT}} / 4); transform: translate(0%,-{{SIZE}}{{UNIT}}) rotateZ(-45deg);', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-top-r' => 'top: calc({{SIZE}}{{UNIT}} / 4); transform: translate(100%,{{SIZE}}{{UNIT}}) rotateZ(-45deg);', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-middle-r' => 'top: 0; transform: translate(50%, 0)', '{{WRAPPER}} .dce-button-hamburger .con:hover .arrow-bottom-r' => 'top: calc(-{{SIZE}}{{UNIT}} / 4); transform: translate(100%,-{{SIZE}}{{UNIT}}) rotateZ(45deg);', '{{WRAPPER}} .dce-button-hamburger .special-con:hover .arrow-top-fall' => 'top: 0;', '{{WRAPPER}} .dce-button-hamburger .special-con:hover .arrow-middle-fall' => 'top: 0;', '{{WRAPPER}} .dce-button-hamburger .special-con:hover .arrow-bottom-fall' => 'top: 0']]);
         $this->add_control('hamburger_space', ['label' => __('Hamburger space', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'default' => ['size' => 10, 'unit' => 'px'], 'size_units' => ['px'], 'range' => ['%' => ['min' => 1, 'max' => 50, 'step' => 1]], 'condition' => ['button_type' => 'hamburger'], 'selectors' => ['{{WRAPPER}} .dce-button-hamburger .con .top, {{WRAPPER}} .dce-button-hamburger .con .arrow-top, {{WRAPPER}} .dce-button-hamburger .con .arrow-top-r, {{WRAPPER}} .dce-button-hamburger .special-con .arrow-top-fall' => 'top: -{{SIZE}}{{UNIT}};', '{{WRAPPER}} .dce-button-hamburger .con .bottom, {{WRAPPER}} .dce-button-hamburger .con .arrow-bottom, {{WRAPPER}} .dce-button-hamburger .con .arrow-bottom-r, {{WRAPPER}} .dce-button-hamburger .special-con .arrow-bottom-fall' => 'top: {{SIZE}}{{UNIT}};', '{{WRAPPER}} .dce-button-hamburger .con' => 'top: calc({{SIZE}}{{UNIT}} * 2);']]);
-        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'button_typography', 'label' => __('Typography', 'dynamic-content-for-elementor'), 'selector' => '{{WRAPPER}} .dce-button-popoup', 'separator' => 'after', 'condition' => ['button_image[id]' => '', 'button_type' => 'text']]);
-        $this->add_control('button_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .dce-button-popoup' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'], 'condition' => ['button_type!' => 'image']]);
+        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'button_typography', 'label' => __('Typography', 'dynamic-content-for-elementor'), 'selector' => '{{WRAPPER}} .dce-button-popup', 'separator' => 'after', 'condition' => ['button_image[id]' => '', 'button_type' => 'text']]);
+        $this->add_control('button_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .dce-button-popup' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'], 'condition' => ['button_type!' => 'image']]);
         $this->add_control('title_button_border', ['label' => __('Border', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING]);
-        $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'button_border', 'label' => __('Border', 'dynamic-content-for-elementor'), 'placeholder' => '1px', 'default' => '1px', 'selector' => '{{WRAPPER}} .dce-button-popoup']);
-        $this->add_control('button_border_radius', ['label' => __('Border Radius', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', '%'], 'selectors' => ['{{WRAPPER}} .dce-button-popoup' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
-        $this->add_group_control(Group_Control_Box_Shadow::get_type(), ['name' => 'button_box_shadow', 'selector' => '{{WRAPPER}} .dce-button-popoup', 'condition' => ['button_type!' => 'image']]);
+        $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'button_border', 'label' => __('Border', 'dynamic-content-for-elementor'), 'placeholder' => '1px', 'default' => '1px', 'selector' => '{{WRAPPER}} .dce-button-popup']);
+        $this->add_control('button_border_radius', ['label' => __('Border Radius', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', '%'], 'selectors' => ['{{WRAPPER}} .dce-button-popup' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
+        $this->add_group_control(Group_Control_Box_Shadow::get_type(), ['name' => 'button_box_shadow', 'selector' => '{{WRAPPER}} .dce-button-popup', 'condition' => ['button_type!' => 'image']]);
         $this->end_controls_section();
         $this->start_controls_section('section_style_close', ['label' => __('Close Button', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['button_purpose!' => 'close']]);
         $this->add_control('enable_close_button', ['label' => __('Close Button', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes']);
@@ -190,7 +192,9 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
      */
     protected function set_unique_id()
     {
-        $this->unique_id = wp_unique_id();
+        $uuid = wp_generate_uuid4();
+        // modals.js expects the id without `-`s
+        $this->unique_id = \str_replace('-', '', $uuid);
     }
     protected function safe_render()
     {
@@ -208,7 +212,7 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
             if ($settings['button_type'] == 'image') {
                 if (!empty($settings['button_image']['url'])) {
                     ?>
-						<img class="button-img dce-button-popoup dce-button-img dce-button-<?php 
+						<img class="button-img dce-button-popup dce-button-img dce-button-<?php 
                     echo $settings['button_purpose'];
                     ?>-modal dce-animation-<?php 
                     echo $settings['button_hover_animation'];
@@ -232,7 +236,7 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 ?>
 					<button class="dce-button-<?php 
                 echo $settings['button_purpose'];
-                ?>-modal dce-button-popoup dce-animation-<?php 
+                ?>-modal dce-button-popup dce-animation-<?php 
                 echo $settings['button_hover_animation'];
                 ?>"
 						   <?php 
@@ -246,9 +250,9 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 ?>
 							>
 					<?php 
-                if ($has_button_icon && $settings['button_icon_align'] == 'left') {
+                if ($has_button_icon) {
                     ?>
-							<span class="dce-button-icon dce-align-icon-<?php 
+							<span class="elementor-button-icon elementor-align-icon-<?php 
                     echo $settings['button_icon_align'];
                     ?>">
 								<?php 
@@ -261,19 +265,6 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
 						<span class="dce-button-text"><?php 
                 echo $settings['button_text'];
                 ?></span>
-					<?php 
-                if ($has_button_icon && $settings['button_icon_align'] == 'right') {
-                    ?>
-							<span class="dce-button-icon dce-align-icon-<?php 
-                    echo $settings['button_icon_align'];
-                    ?>">
-								<?php 
-                    echo $button_icon;
-                    ?>
-							</span>
-					<?php 
-                }
-                ?>
 					</button>
 			<?php 
             }
@@ -286,7 +277,7 @@ class Modals extends \DynamicContentForElementor\Widgets\WidgetPrototype
 			<div class="dce-button-wrapper">
 				<div class="dce-button-<?php 
             echo $settings['button_purpose'];
-            ?>-modal dce-button-hamburger dce-button-popoup dce-animation-<?php 
+            ?>-modal dce-button-hamburger dce-button-popup dce-animation-<?php 
             echo $settings['button_hover_animation'];
             ?>"
 						 <?php 

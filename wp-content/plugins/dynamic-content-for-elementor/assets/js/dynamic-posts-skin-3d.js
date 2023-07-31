@@ -512,4 +512,5 @@ jQuery(window).on('elementor/frontend/init', function () {
 	elementorFrontend.hooks.addAction('frontend/element_ready/dce-sticky-posts.3d', Widget_DCE_Dynamicposts_3d_Handler);
 	elementorFrontend.hooks.addAction('frontend/element_ready/dce-search-results.3d', Widget_DCE_Dynamicposts_3d_Handler);
 	elementorFrontend.hooks.addAction('frontend/element_ready/dce-metabox-relationship.3d', Widget_DCE_Dynamicposts_3d_Handler);
+	elementorFrontend.hooks.addAction('frontend/element_ready/dce-acf-relationship.3d', Widget_DCE_Dynamicposts_3d_Handler);
 });

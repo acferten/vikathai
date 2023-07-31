@@ -168,7 +168,7 @@ class FiltersParser
 class Tokens
 {
     const OPTIONS_WHITELIST = ['siteurl' => \true, 'home' => \true, 'blogname' => \true, 'blogdescription' => \true, 'start_of_week' => \true, 'posts_per_page' => \true, 'date_format' => \true, 'time_format' => \true, 'timezone_string' => \true, 'sticky_posts' => \true, 'elementor_version' => \true, 'www_user_roles' => \true, 'thumbnail_size_h' => \true, 'thumbnail_size_w' => \true, 'users_can_register' => \true, 'avatar_default' => \true];
-    const DEFAULT_FILTERS_WHITELIST = ['var_dump' => \true, 'absint' => \true, 'array_keys' => \true, 'ceil' => \true, 'count' => \true, 'current_time' => \true, 'date' => \true, 'date_i18n' => \true, 'do_shortcode' => \true, 'empty' => \true, 'end' => \true, 'esc_attr' => \true, 'esc_html' => \true, 'esc_js' => \true, 'esc_textarea' => \true, 'esc_url' => \true, 'esc_url_raw' => \true, 'explode' => \true, 'filter_var' => \true, 'floatval' => \true, 'floor' => \true, 'get_cat_ID' => \true, 'get_cat_name' => \true, 'get_categories' => \true, 'get_category' => \true, 'get_category_by_path' => \true, 'get_category_by_slug' => \true, 'get_date_from_gmt' => \true, 'get_permalink' => \true, 'get_post' => \true, 'get_post_field' => \true, 'get_post_format' => \true, 'get_post_meta' => \true, 'get_post_status' => \true, 'get_post_type' => \true, 'get_tag' => \true, 'get_tags' => \true, 'get_taxonomies' => \true, 'get_taxonomy' => \true, 'get_term' => \true, 'get_term_by' => \true, 'get_the_author' => \true, 'get_the_category' => \true, 'get_the_category_by_ID' => \true, 'get_the_content' => \true, 'get_the_date' => \true, 'get_the_excerpt' => \true, 'get_the_ID' => \true, 'get_the_post_thumbnail' => \true, 'get_the_time' => \true, 'get_the_title' => \true, 'htmlentities2' => \true, 'implode' => \true, 'intval' => \true, 'json_decode' => \true, 'json_encode' => \true, 'max' => \true, 'md5' => \true, 'microtime' => \true, 'min' => \true, 'nl2br' => \true, 'rand' => \true, 'reset' => \true, 'round' => \true, 'rtrim' => \true, 'strsub' => \true, 'sanitize_email' => \true, 'sanitize_file_name' => \true, 'sanitize_html_class' => \true, 'sanitize_key' => \true, 'sanitize_mime_type' => \true, 'sanitize_option' => \true, 'sanitize_text_field' => \true, 'sanitize_title' => \true, 'sanitize_user' => \true, 'single_cat_title' => \true, 'single_tag_title' => \true, 'size_format' => \true, 'str_replace' => \true, 'str_shuffle' => \true, 'stripslashes' => \true, 'strlen' => \true, 'strpost' => \true, 'strrev' => \true, 'strtolower' => \true, 'strtotime' => \true, 'strtoupper' => \true, 'strtr' => \true, 'substr' => \true, 'the_category' => \true, 'the_ID' => \true, 'the_permalink' => \true, 'time' => \true, 'trim' => \true, 'ucwords' => \true, 'uniqid' => \true, 'urlencode' => \true, 'wordwrap' => \true, 'wp_count_posts' => \true, 'wp_filter_kses' => \true, 'wp_filter_nohtml_kses' => \true, 'wp_filter_post_kses' => \true, 'wp_get_attachment_image' => \true, 'wp_get_attachment_image_src' => \true, 'wp_get_attachment_link' => \true, 'wp_get_attachment_metadata' => \true, 'wp_get_attachment_thumb_file' => \true, 'wp_get_attachment_thumb_url' => \true, 'wp_get_attachment_url' => \true, 'wp_get_current_user' => \true, 'wp_kses' => \true, 'wp_kses_attr' => \true, 'wp_kses_post' => \true, 'wp_kses_post_deep' => \true, 'wp_list_pluck' => \true, 'wp_logout_url' => \true, 'wp_trim_words' => \true, 'wpautop' => \true];
+    const DEFAULT_FILTERS_WHITELIST = ['var_dump' => \true, 'absint' => \true, 'array_keys' => \true, 'ceil' => \true, 'count' => \true, 'current_time' => \true, 'date' => \true, 'date_i18n' => \true, 'do_shortcode' => \true, 'empty' => \true, 'end' => \true, 'esc_attr' => \true, 'esc_html' => \true, 'esc_js' => \true, 'esc_textarea' => \true, 'esc_url' => \true, 'esc_url_raw' => \true, 'explode' => \true, 'filter_var' => \true, 'floatval' => \true, 'floor' => \true, 'get_avatar' => \true, 'get_avatar_url' => \true, 'get_cat_ID' => \true, 'get_cat_name' => \true, 'get_categories' => \true, 'get_category' => \true, 'get_category_by_path' => \true, 'get_category_by_slug' => \true, 'get_date_from_gmt' => \true, 'get_permalink' => \true, 'get_post_field' => \true, 'get_post_format' => \true, 'get_post_status' => \true, 'get_post_type' => \true, 'get_tag' => \true, 'get_tags' => \true, 'get_taxonomies' => \true, 'get_taxonomy' => \true, 'get_term' => \true, 'get_term_by' => \true, 'get_the_author' => \true, 'get_the_category' => \true, 'get_the_category_by_ID' => \true, 'get_the_content' => \true, 'get_the_date' => \true, 'get_the_excerpt' => \true, 'get_the_ID' => \true, 'get_the_post_thumbnail' => \true, 'get_the_time' => \true, 'get_the_title' => \true, 'htmlentities2' => \true, 'implode' => \true, 'intval' => \true, 'json_decode' => \true, 'json_encode' => \true, 'max' => \true, 'md5' => \true, 'microtime' => \true, 'min' => \true, 'nl2br' => \true, 'rand' => \true, 'reset' => \true, 'round' => \true, 'rtrim' => \true, 'strsub' => \true, 'sanitize_email' => \true, 'sanitize_file_name' => \true, 'sanitize_html_class' => \true, 'sanitize_key' => \true, 'sanitize_mime_type' => \true, 'sanitize_option' => \true, 'sanitize_text_field' => \true, 'sanitize_title' => \true, 'sanitize_user' => \true, 'single_cat_title' => \true, 'single_tag_title' => \true, 'size_format' => \true, 'str_replace' => \true, 'str_shuffle' => \true, 'stripslashes' => \true, 'strlen' => \true, 'strpost' => \true, 'strrev' => \true, 'strtolower' => \true, 'strtotime' => \true, 'strtoupper' => \true, 'strtr' => \true, 'substr' => \true, 'the_category' => \true, 'the_ID' => \true, 'the_permalink' => \true, 'time' => \true, 'trim' => \true, 'ucwords' => \true, 'uniqid' => \true, 'urlencode' => \true, 'wordwrap' => \true, 'wp_count_posts' => \true, 'wp_filter_kses' => \true, 'wp_filter_nohtml_kses' => \true, 'wp_filter_post_kses' => \true, 'wp_get_attachment_image' => \true, 'wp_get_attachment_image_src' => \true, 'wp_get_attachment_link' => \true, 'wp_get_attachment_metadata' => \true, 'wp_get_attachment_thumb_file' => \true, 'wp_get_attachment_thumb_url' => \true, 'wp_get_attachment_url' => \true, 'wp_kses' => \true, 'wp_kses_attr' => \true, 'wp_kses_post' => \true, 'wp_kses_post_deep' => \true, 'wp_list_pluck' => \true, 'wp_logout_url' => \true, 'wp_trim_words' => \true, 'wpautop' => \true];
     /**
      * @var ?array<string, boolean>
      */
@@ -200,6 +200,11 @@ class Tokens
         }
         $tokens = self::get_tokens_list();
         $active_tokens = get_option('dce_active_tokens', \array_keys($tokens));
+        if (!\is_array($active_tokens)) {
+            // not clear how can this end up not being an array at this point,
+            // but it has happended.
+            $active_tokens = \array_keys($tokens);
+        }
         foreach ($tokens as $key => $token) {
             if (!\in_array($key, $active_tokens, \true)) {
                 continue;
@@ -735,7 +740,7 @@ class Tokens
         $pezzi = \explode('[query:', $text);
         if (\count($pezzi) > 1) {
             global $wpdb;
-            $cpt = \DynamicContentForElementor\Helper::get_post_types();
+            $cpt = \DynamicContentForElementor\Helper::get_public_post_types();
             $cpt['attachment'] = 'Media';
             $taxonomies = \DynamicContentForElementor\Helper::get_taxonomies();
             $roles = \DynamicContentForElementor\Helper::get_roles();
@@ -1248,11 +1253,7 @@ class Tokens
                     } elseif (\array_key_exists($value, $val) || isset($val[$value])) {
                         $val = $val[$value];
                     } else {
-                        if (\Elementor\Plugin::$instance->editor->is_edit_mode() && current_user_can('administrator')) {
-                            return '<pre>' . \var_export($val, \true) . '</pre>';
-                        } else {
-                            return \false;
-                        }
+                        return \false;
                     }
                 } elseif (\is_object($val)) {
                     $val_class = \get_class($val);
@@ -1285,11 +1286,7 @@ class Tokens
                             }
                         }
                     } else {
-                        if (\Elementor\Plugin::$instance->editor->is_edit_mode() && current_user_can('administrator')) {
-                            return '<pre>' . \var_export($val, \true) . '</pre>';
-                        } else {
-                            return \false;
-                        }
+                        return \false;
                     }
                 }
             }
@@ -1312,6 +1309,13 @@ class Tokens
         }
         return $parameters;
     }
+    public static function fix_filters_whitelist()
+    {
+        $option = get_option('dce_tokens_filters_whitelist');
+        $option = \implode("\n", \array_keys($option));
+        update_option('dce_tokens_filters_whitelist', $option);
+        return $option;
+    }
     /**
      * @return array<string, bool>
      */
@@ -1320,7 +1324,10 @@ class Tokens
         if (self::$filters_whitelist === null) {
             $option = get_option('dce_tokens_filters_whitelist');
             $wl = [];
-            if ($option) {
+            if (\is_array($option)) {
+                $option = self::fix_filters_whitelist();
+            }
+            if (\is_string($option)) {
                 $list = \explode("\n", $option);
                 foreach ($list as $f) {
                     $wl[\trim($f)] = \true;
@@ -1451,7 +1458,7 @@ class Tokens
                     $replaceValue = gallery_shortcode($args);
                     continue;
                 }
-                if (get_option('dce_tokens_filters_whitelist_status') === 'disable') {
+                if (apply_filters('dce_tokens_filters_whitelist_force_disable', \false)) {
                     if (isset(self::$filters_blacklist[$afilter])) {
                         continue;
                     }

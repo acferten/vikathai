@@ -15,6 +15,24 @@ if (!\defined('ABSPATH')) {
 // Exit if accessed directly
 class AddToFavorites extends \DynamicContentForElementor\Widgets\WidgetPrototype
 {
+    /**
+     * @return void
+     */
+    public function run_once()
+    {
+        add_shortcode('dce-favorites', function ($atts = [], $content = null) {
+            $key = $atts['key'] ?? 'my_favorites';
+            $get = $atts['get'] ?? '';
+            if ($get === 'count') {
+                $favs = get_user_meta(get_current_user_id(), $key, \true);
+                if (\is_array($favs)) {
+                    return \count($favs);
+                }
+                return '';
+            }
+            return '';
+        });
+    }
     public function get_style_depends()
     {
         return ['dce-add-to-favorites'];
@@ -642,7 +660,7 @@ class AddToFavorites extends \DynamicContentForElementor\Widgets\WidgetPrototype
     public static function get_user_counter($list_key = '')
     {
         global $wpdb;
-        $sql = 'SELECT COUNT(user_id) as ucount FROM ' . $wpdb->prefix . "usermeta um WHERE meta_key LIKE '" . esc_sql($list_key) . "' AND meta_value LIKE '%i:" . esc_sql(get_the_ID()) . ";%'";
+        $sql = $wpdb->prepare('SELECT COUNT(user_id) as ucount FROM ' . $wpdb->prefix . 'usermeta um WHERE meta_key LIKE %s AND meta_value LIKE %s', esc_sql($list_key), '%i:' . esc_sql(get_the_ID()) . ';%');
         $results = $wpdb->get_results($sql);
         if (!empty($results)) {
             return \reset($results)->ucount;

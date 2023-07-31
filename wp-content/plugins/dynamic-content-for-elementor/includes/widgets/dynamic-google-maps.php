@@ -22,6 +22,17 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
     {
         return ['dce-google-maps'];
     }
+    /**
+     * Run Once
+     *
+     * @return void
+     */
+    public function run_once()
+    {
+        parent::run_once();
+        $save_guard = \DynamicContentForElementor\Plugin::instance()->save_guard;
+        $save_guard->register_unsafe_control($this->get_type(), 'infoWindow_query_html');
+    }
     protected $positions = [];
     /**
      * Register controls after check if this feature is only for admin
@@ -36,7 +47,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
             $this->add_control('api_notice', ['type' => Controls_Manager::RAW_HTML, 'raw' => __('In order to use this feature you should set Google Maps API, with Geocoding API enabled, on Integrations section', 'dynamic-content-for-elementor'), 'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning']);
         }
         $this->add_control('map_data_type', ['label' => __('Data Type', 'dynamic-content-for-elementor'), 'type' => 'images_selector', 'toggle' => \false, 'type_selector' => 'icon', 'columns_grid' => 5, 'default' => 'address', 'options' => ['address' => ['title' => __('Address', 'dynamic-content-for-elementor'), 'return_val' => 'val', 'icon' => 'fa fa-map-marker-alt'], 'latlng' => ['title' => __('Latitude and longitude', 'dynamic-content-for-elementor'), 'return_val' => 'val', 'icon' => 'fa fa-globe-europe'], 'acfmap' => ['title' => __('ACF Google Map Field', 'dynamic-content-for-elementor'), 'return_val' => 'val', 'icon' => 'fa fa-map'], 'metabox_google_maps' => ['title' => __('Meta Box Google Map Field', 'dynamic-content-for-elementor'), 'return_val' => 'val', 'icon' => 'icon-dce-metabox-google-maps']], 'frontend_available' => \true]);
-        $this->add_control('address', ['label' => __('Address', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => __('Venice', 'dynamic-content-for-elementor'), 'label_block' => \true, 'condition' => ['map_data_type' => 'address']]);
+        $this->add_control('address', ['label' => __('Address', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => 'Venice, Italy', 'label_block' => \true, 'condition' => ['map_data_type' => 'address']]);
         $this->add_control('latitudine', ['label' => __('Latitude', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => '45.4371908', 'condition' => ['map_data_type' => 'latlng']]);
         $this->add_control('longitudine', ['label' => __('Longitude', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => '12.3345898', 'condition' => ['map_data_type' => 'latlng']]);
         if (Helper::is_acf_active()) {
@@ -67,7 +78,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
         } else {
             $this->add_control('search_filter_notice', ['type' => Controls_Manager::RAW_HTML, 'raw' => __('Combine the power of Search & Filter Pro front end filters with Dynamic Google Maps! Note: In order to use this feature you need install Search & Filter Pro. Search & Filter Pro is a premium product - you can <a href="https://searchandfilter.com">get it here</a>.', 'dynamic-content-for-elementor'), 'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning', 'condition' => ['query_type' => 'search_filter', 'map_data_type' => ['acfmap', 'metabox_google_maps']]]);
         }
-        $this->add_control('post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => Helper::get_post_types(), 'multiple' => \true, 'label_block' => \true, 'default' => 'post', 'condition' => ['use_query' => 'yes', 'map_data_type' => ['acfmap', 'metabox_google_maps'], 'query_type' => ['get_cpt']]]);
+        $this->add_control('post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => Helper::get_public_post_types(), 'multiple' => \true, 'label_block' => \true, 'default' => 'post', 'condition' => ['use_query' => 'yes', 'map_data_type' => ['acfmap', 'metabox_google_maps'], 'query_type' => ['get_cpt']]]);
         $this->add_control('taxonomy', ['label' => __('Taxonomy', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['' => __('None', 'dynamic-content-for-elementor')] + get_taxonomies(['public' => \true]), 'condition' => ['use_query' => 'yes', 'map_data_type' => ['acfmap', 'metabox_google_maps'], 'query_type' => ['get_cpt']]]);
         $this->add_control('category', ['label' => __('Terms ID', 'dynamic-content-for-elementor'), 'description' => __('Category IDs separate by comma', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HIDDEN, 'condition' => ['use_query' => 'yes', 'map_data_type' => ['acfmap', 'metabox_google_maps'], 'query_type' => ['get_cpt']]]);
         $this->add_control('terms_current_post', ['label' => __('Dynamic Current Post Terms', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'description' => __('Filter results by taxonomy terms associated to the current post', 'dynamic-content-for-elementor'), 'condition' => ['taxonomy!' => '', 'query_type' => ['get_cpt', 'dynamic_mode'], 'use_query' => 'yes', 'map_data_type' => ['acfmap', 'metabox_google_maps']]]);
@@ -204,6 +215,14 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
         if (empty($settings)) {
             return;
         }
+        if ('acfmap' === $settings['map_data_type'] && empty($settings['acf_mapfield'])) {
+            Helper::notice('', __('Select an ACF Google Map Field', 'dynamic-content-for-elementor'));
+            return;
+        }
+        if ('metabox_google_maps' === $settings['map_data_type'] && empty($settings['metabox_google_maps_field'])) {
+            Helper::notice('', __('Select a Meta Box Google Maps Field', 'dynamic-content-for-elementor'));
+            return;
+        }
         // Don't render if ACF is selected but ACF is not active
         if ('acfmap' === $settings['map_data_type'] && !(Helper::is_acf_active() || Helper::is_acfpro_active())) {
             return;
@@ -261,7 +280,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
                 $infoWindow_str = '<div class="dce-iw-textzone">' . Helper::get_dynamic_value($settings['infoWindow_query_html']) . '</div>';
                 $infoWindow_str = \preg_replace("/\r|\n/", '', $infoWindow_str);
             } elseif ('template' === $settings['custom_infoWindow_render']) {
-                $infoWindow_str = '<div class="dce-iw-textzone">' . \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($settings['infoWindow_template'], \true) . '</div>';
+                $infoWindow_str = '<div class="dce-iw-textzone">' . \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($settings['infoWindow_template'], \false) . '</div>';
             } elseif (!empty($settings['custom_infoWindow_wysiwig'])) {
                 $infoWindow_str = '<div class="dce-iw-textzone">' . $settings['custom_infoWindow_wysiwig'] . '</div>';
             }
@@ -418,7 +437,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
                 if ($settings['taxonomy'] != '') {
                     $taxquery = array(array('taxonomy' => $settings['taxonomy'], 'field' => 'id', 'terms' => $terms_query));
                 }
-                $args = array('post_type' => $settings['post_type'], 'posts_per_page' => -1, 'post_status' => 'publish', 'tax_query' => $taxquery);
+                $args = array('post_type' => \DynamicContentForElementor\Helper::validate_post_type($settings['post_type']), 'posts_per_page' => -1, 'post_status' => 'publish', 'tax_query' => $taxquery);
             }
             if ('acf_repeater' === $settings['query_type']) {
                 foreach ($repeaters_ids as $row_id => $row_fields) {
@@ -436,7 +455,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
                         $postInfowindow = '<div class="dce-iw-textzone">' . Helper::get_dynamic_value($settings['infoWindow_query_html']) . '</div>';
                         $postInfowindow = \preg_replace("/\r|\n/", '', $postInfowindow);
                     } elseif ('template' === $settings['custom_infoWindow_render']) {
-                        $postInfowindow = '<div class="dce-iw-textzone">' . \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($settings['infoWindow_template'], \true) . '</div>';
+                        $postInfowindow = '<div class="dce-iw-textzone">' . \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($settings['infoWindow_template'], \false) . '</div>';
                     } else {
                         $postTitle = $row_fields['iwtitle'];
                         $postImage = '';
@@ -506,6 +525,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
                                 }
                                 // link to post
                                 $postlink = get_the_permalink($id_page);
+                                $postlink = apply_filters('dynamicooo/google-maps/post-link', $postlink, $id_page);
                                 // infowindow
                                 $postInfowindow = '';
                                 if ($settings['enable_infoWindow']) {
@@ -513,7 +533,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
                                         $postInfowindow = '<div class="dce-iw-textzone">' . Helper::get_dynamic_value($settings['infoWindow_query_html']) . '</div>';
                                         $postInfowindow = \preg_replace("/\r|\n/", '', $postInfowindow);
                                     } elseif ('template' === $settings['custom_infoWindow_render']) {
-                                        $postInfowindow = '<div class="dce-iw-textzone">' . \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($settings['infoWindow_template'], \true) . '</div>';
+                                        $postInfowindow = '<div class="dce-iw-textzone">' . \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($settings['infoWindow_template'], \false) . '</div>';
                                     } else {
                                         $postTitle = wp_kses_post(get_the_title($id_page));
                                         $postImage = '';
@@ -675,8 +695,7 @@ class DynamicGoogleMaps extends \DynamicContentForElementor\Widgets\WidgetProtot
         } else {
             $fallback_content = '<p>' . $fallback_text . '</p>';
         }
-        $fallback_content = Helper::get_dynamic_value($fallback_content);
-        echo $fallback_content;
+        echo do_shortcode($fallback_content);
         ?>
 		</div>
 

@@ -32,9 +32,6 @@ $current = $this->get_current_filter_value( $args );
 		}
 
 		$classes[] = 'depth-' . $args['depth'];
-
-		$filter_label = $args['filter_label'];
-		include jet_smart_filters()->get_template( 'common/filter-label.php' );
 	}
 
 	?>

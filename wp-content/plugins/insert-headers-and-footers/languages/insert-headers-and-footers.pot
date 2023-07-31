@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPCode Lite 2.0.13\n"
+"Project-Id-Version: WPCode Lite 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/insert-headers-and-footers\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-06-27T08:01:34+00:00\n"
+"POT-Creation-Date: 2023-07-25T10:47:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: insert-headers-and-footers\n"
@@ -77,7 +77,7 @@ msgid "Please wait."
 msgstr ""
 
 #: includes/admin/admin-scripts.php:45
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:300
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:332
 msgid "OK"
 msgstr ""
 
@@ -85,12 +85,14 @@ msgstr ""
 #: includes/admin/class-wpcode-admin-page-loader.php:132
 #: includes/admin/class-wpcode-admin-page-loader.php:189
 #: includes/admin/pages/class-wpcode-admin-page-code-snippets.php:32
+#: includes/class-wpcode-admin-bar-info.php:196
 msgid "Code Snippets"
 msgstr ""
 
 #: includes/admin/class-wpcode-admin-page-loader.php:197
 #: includes/admin/pages/class-wpcode-admin-page-settings.php:38
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:180
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:203
+#: includes/class-wpcode-admin-bar-info.php:373
 msgid "Settings"
 msgstr ""
 
@@ -107,31 +109,31 @@ msgstr ""
 msgid "View All %s Docs"
 msgstr ""
 
-#: includes/admin/class-wpcode-metabox-snippets.php:48
+#: includes/admin/class-wpcode-metabox-snippets.php:55
 msgid "WPCode Page Scripts"
 msgstr ""
 
-#: includes/admin/class-wpcode-metabox-snippets.php:50
+#: includes/admin/class-wpcode-metabox-snippets.php:57
 #: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:156
 #: includes/generator/class-wpcode-generator-script.php:193
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:22
 msgid "Header"
 msgstr ""
 
-#: includes/admin/class-wpcode-metabox-snippets.php:51
+#: includes/admin/class-wpcode-metabox-snippets.php:58
 #: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:160
 #: includes/generator/class-wpcode-generator-script.php:192
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:35
 msgid "Footer"
 msgstr ""
 
-#: includes/admin/class-wpcode-metabox-snippets.php:57
+#: includes/admin/class-wpcode-metabox-snippets.php:64
 #: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:158
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:48
 msgid "Body"
 msgstr ""
 
-#: includes/admin/class-wpcode-metabox-snippets.php:60
+#: includes/admin/class-wpcode-metabox-snippets.php:67
 msgid "Custom Code Snippet"
 msgstr ""
 
@@ -579,7 +581,7 @@ msgid "Order snippets by"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-code-snippets.php:396
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:517
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:518
 #: includes/generator/class-wpcode-generator-post-status.php:128
 #: includes/generator/class-wpcode-generator-post-type.php:136
 #: includes/generator/class-wpcode-generator-sidebar.php:130
@@ -587,12 +589,12 @@ msgid "Name"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-code-snippets.php:397
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:520
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:521
 msgid "Created"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-code-snippets.php:398
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:521
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:522
 msgid "Last Updated"
 msgstr ""
 
@@ -689,27 +691,27 @@ msgstr ""
 msgid "These scripts will be printed above the closing %s tag."
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:205
+#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:206
 msgid "Global Header and Footer"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:210
+#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:211
 #: includes/admin/pages/class-wpcode-admin-page-pixel.php:169
 #: includes/admin/pages/class-wpcode-admin-page-pixel.php:246
 #: includes/admin/pages/class-wpcode-admin-page-pixel.php:310
 #: includes/admin/pages/class-wpcode-admin-page-pixel.php:360
 #: includes/admin/pages/class-wpcode-admin-page-pixel.php:420
 #: includes/admin/pages/class-wpcode-admin-page-pixel.php:826
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:184
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:207
 msgid "Save Changes"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:228
+#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:229
 msgid "Simple mode"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:282
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:224
+#: includes/admin/pages/class-wpcode-admin-page-headers-footers.php:283
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:60
 msgid "Settings Saved."
 msgstr ""
 
@@ -1197,99 +1199,107 @@ msgstr ""
 msgid "Add New Click Event"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:74
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:86
 msgid "This allows you to disable all Code Snippets functionality and have a single \"Headers & Footers\" item under the settings menu."
 msgstr ""
 
 #. Translators: Placeholders make the text bold.
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:79
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:91
 msgid "%1$sNOTE:%2$s Please use this setting with caution. It will disable all custom snippets that you add using the new snippet management interface."
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:85
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:97
 msgid "License Key"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:90
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:102
 msgid "Headers & Footers mode"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:102
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:114
 msgid "Allow Usage Tracking"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:106
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:118
 msgid "By allowing us to track usage data, we can better help you, as we will know which WordPress configurations, themes, and plugins we should test."
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:121
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:133
 msgid "WPCode Library Connection"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:126
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:138
 msgid "Editor Height"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:132
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:144
 msgid "Error Logging"
 msgstr ""
 
 #. Translators: %1$s: opening anchor tag, %2$s: closing anchor tag.
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:138
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:150
 msgid "Log errors thrown by snippets? %1$sView Logs%2$s"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:157
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:160
+msgid "Admin Bar Info"
+msgstr ""
+
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:164
+msgid "Enable the admin bar menu that shows info about which snippets & scripts are loaded on the current page."
+msgstr ""
+
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:180
 msgid "Connect to the WPCode Library"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:160
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:183
 msgid "Disconnect from the WPCode Library"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:246
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:278
 msgid "Auto height"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:249
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:281
 msgid "Set the editor height in pixels or enable auto-grow so the code editor automatically grows in height with the code."
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:264
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:296
 msgid "You're using WPCode Lite - no license needed. Enjoy!"
 msgstr ""
 
 #. Translators: %1$s - Opening anchor tag, do not translate. %2$s - Closing anchor tag, do not translate.
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:271
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:303
 msgid "To unlock more features consider %1$supgrading to PRO%2$s."
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:278
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:310
 msgid "Already purchased? Simply enter your license key below to enable WPCode PRO!"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:280
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:312
 msgid "Paste license key here"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:282
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:314
 msgid "Verify Key"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:299
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:331
 msgid "Oops!"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:301
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:333
 msgid "Almost Done"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:302
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:334
 #: includes/admin/pages/class-wpcode-code-snippets-table.php:354
 msgid "Activate"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-admin-page-settings.php:303
+#: includes/admin/pages/class-wpcode-admin-page-settings.php:335
 msgid "Unfortunately there was a server connection error."
 msgstr ""
 
@@ -1384,12 +1394,13 @@ msgid "Insert Method"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-snippet-manager.php:413
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:519
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:520
 msgid "Location"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-snippet-manager.php:417
 #: includes/admin/pages/class-wpcode-admin-page-snippet-manager.php:472
+#: includes/class-wpcode-admin-bar-info.php:253
 msgid "Shortcode"
 msgstr ""
 
@@ -1480,13 +1491,13 @@ msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-snippet-manager.php:934
 #: includes/admin/pages/class-wpcode-admin-page-tools.php:362
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:833
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:834
 msgid "Active"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-snippet-manager.php:937
 #: includes/admin/pages/class-wpcode-admin-page-tools.php:363
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:836
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:837
 msgid "Inactive"
 msgstr ""
 
@@ -1579,6 +1590,7 @@ msgid "For better results using conditional logic with PHP snippets we automatic
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-snippet-manager.php:1470
+#: includes/class-wpcode-admin-bar-info.php:256
 msgid "Custom Shortcode"
 msgstr ""
 
@@ -1760,7 +1772,7 @@ msgid "Export Code Snippets"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-tools.php:205
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:525
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:526
 #: includes/generator/class-wpcode-generator-post-status.php:111
 msgid "Status"
 msgstr ""
@@ -1770,7 +1782,7 @@ msgid "Code type"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-tools.php:215
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:522
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:523
 msgid "Tags"
 msgstr ""
 
@@ -1831,7 +1843,7 @@ msgid "Congrats, the import process has finished! We have successfully imported 
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-tools.php:361
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:830
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:831
 msgid "All"
 msgstr ""
 
@@ -1856,6 +1868,7 @@ msgid "Importer"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page-tools.php:488
+#: includes/class-wpcode-admin-bar-info.php:387
 msgid "Logs"
 msgstr ""
 
@@ -1919,7 +1932,7 @@ msgid "Search docs"
 msgstr ""
 
 #: includes/admin/pages/class-wpcode-admin-page.php:243
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:736
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:737
 msgid "Clear"
 msgstr ""
 
@@ -2072,7 +2085,7 @@ msgstr ""
 
 #: includes/admin/pages/class-wpcode-code-snippets-table.php:331
 #: includes/admin/pages/class-wpcode-code-snippets-table.php:353
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:839
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:840
 msgid "Trash"
 msgstr ""
 
@@ -2080,39 +2093,39 @@ msgstr ""
 msgid "Deactivate"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:518
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:519
 #: includes/generator/class-wpcode-generator-post-type.php:378
 #: includes/generator/class-wpcode-generator-query.php:225
 #: includes/generator/class-wpcode-generator-query.php:299
 msgid "Author"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:716
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:717
 msgid "0 items"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:732
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:733
 #: includes/generator/class-wpcode-generator-hooks.php:1337
 msgid "Filter"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:766
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:767
 msgid "Filter by code type"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:768
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:769
 msgid "All types"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:808
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:809
 msgid "Filter by location"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:810
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:811
 msgid "All locations"
 msgstr ""
 
-#: includes/admin/pages/class-wpcode-code-snippets-table.php:842
+#: includes/admin/pages/class-wpcode-code-snippets-table.php:843
 msgid "Automatically Deactivated"
 msgstr ""
 
@@ -2268,6 +2281,39 @@ msgstr ""
 
 #: includes/auto-insert/class-wpcode-auto-insert-site-wide.php:38
 msgid "Insert the snippet in the footer just before the closing body tag."
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:145
+msgid "Loaded on this page"
+msgstr ""
+
+#. translators: %d is the total number of global scripts.
+#: includes/class-wpcode-admin-bar-info.php:166
+msgid "Global Scripts (%d)"
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:313
+msgid "Global Header"
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:318
+msgid "Global Body"
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:322
+msgid "Global Footer"
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:325
+msgid "Disabled via Page Scripts"
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:361
+msgid "+ Add Snippet"
+msgstr ""
+
+#: includes/class-wpcode-admin-bar-info.php:407
+msgid "Help Docs"
 msgstr ""
 
 #: includes/class-wpcode-auto-insert.php:53
@@ -4862,6 +4908,7 @@ msgstr ""
 
 #: includes/lite/admin/class-wpcode-admin-page-loader-lite.php:35
 #: includes/lite/admin/class-wpcode-admin-page-loader-lite.php:36
+#: includes/lite/class-wpcode-admin-bar-info-lite.php:73
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -4881,40 +4928,43 @@ msgstr ""
 msgid "WPCode Pro is installed but not activated."
 msgstr ""
 
-#: includes/lite/admin/class-wpcode-connect.php:142
+#: includes/lite/admin/class-wpcode-connect.php:143
 msgid "There was an error while installing an upgrade. Please download the plugin from wpcode.com and install it manually."
 msgstr ""
 
-#: includes/lite/admin/class-wpcode-connect.php:175
-#: includes/lite/admin/class-wpcode-connect.php:188
-#: includes/lite/admin/class-wpcode-connect.php:249
+#: includes/lite/admin/class-wpcode-connect.php:176
+#: includes/lite/admin/class-wpcode-connect.php:189
+#: includes/lite/admin/class-wpcode-connect.php:250
 msgid "Plugin installed & activated."
 msgstr ""
 
-#: includes/lite/admin/class-wpcode-connect.php:196
+#: includes/lite/admin/class-wpcode-connect.php:197
 msgid "There was an error while installing an upgrade. Please check file system permissions and try again. Also, you can download the plugin from wpcode.com and install it manually."
 msgstr ""
 
-#: includes/lite/admin/class-wpcode-connect.php:223
+#: includes/lite/admin/class-wpcode-connect.php:224
 msgid "No key provided."
 msgstr ""
 
-#: includes/lite/admin/class-wpcode-connect.php:253
+#: includes/lite/admin/class-wpcode-connect.php:254
 msgid "Pro version installed but needs to be activated on the Plugins page inside your WordPress admin."
 msgstr ""
 
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:139
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:282
+#: includes/lite/class-wpcode-admin-bar-info-lite.php:93
 msgid "Page Scripts is a Pro Feature"
 msgstr ""
 
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:142
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:285
+#: includes/lite/class-wpcode-admin-bar-info-lite.php:94
 msgid "While you can always use global snippets, in the PRO version you can easily add page-specific scripts and snippets directly from the post edit screen."
 msgstr ""
 
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:145
 #: includes/lite/admin/class-wpcode-metabox-snippets-lite.php:288
+#: includes/lite/class-wpcode-admin-bar-info-lite.php:95
 msgid "Upgrade to Pro and Unlock Page Scripts"
 msgstr ""
 
@@ -5289,6 +5339,10 @@ msgstr ""
 
 #: includes/lite/auto-insert/class-wpcode-auto-insert-woocommerce.php:95
 msgid "WooCommerce Locations are a PRO feature"
+msgstr ""
+
+#: includes/lite/class-wpcode-admin-bar-info-lite.php:29
+msgid "Page Scripts"
 msgstr ""
 
 #: includes/lite/class-wpcode-smart-tags-lite.php:20

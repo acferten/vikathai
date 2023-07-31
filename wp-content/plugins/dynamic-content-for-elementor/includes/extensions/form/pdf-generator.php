@@ -231,24 +231,6 @@ class PdfGenerator extends \ElementorPro\Modules\Forms\Classes\Action_Base
             $ajax_handler->add_admin_error_message($e->getMessage());
         }
     }
-    /**
-     * On Export
-     *
-     * Clears form settings on export
-     * @access Public
-     * @param array $element
-     */
-    public function on_export($element)
-    {
-        $tmp = array();
-        if (!empty($element)) {
-            foreach ($element['settings'] as $key => $value) {
-                if (\substr($key, 0, 4) == 'dce_') {
-                    unset($element['settings'][$key]);
-                }
-            }
-        }
-    }
     /** Get width, height and unit from svg root node. */
     private static function svg_get_dimensions(string $svg)
     {
@@ -275,8 +257,8 @@ class PdfGenerator extends \ElementorPro\Modules\Forms\Classes\Action_Base
         // This is to match what Illustrator considers as pixel, which is
         // not the same as tcpdf.
         if ('px' === $unit) {
-            $width = $width / 2.834762;
-            $height = $height / 2.834762;
+            $width = \intval($width) / 2.834762;
+            $height = \intval($height) / 2.834762;
             $unit = 'mm';
         }
         return ['unit' => $unit, 'width' => $width, 'height' => $height];
@@ -543,5 +525,9 @@ class PdfGenerator extends \ElementorPro\Modules\Forms\Classes\Action_Base
                 $ajax_handler->add_error_message(__('Error saving PDF as Media', 'dynamic-content-for-elementor'));
             }
         }
+    }
+    public function on_export($element)
+    {
+        return $element;
     }
 }

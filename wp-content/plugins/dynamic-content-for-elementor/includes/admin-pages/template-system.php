@@ -12,193 +12,121 @@ class TemplateSystem
     {
         $this->options = get_option(DCE_TEMPLATE_SYSTEM_OPTION);
     }
-    private function _dce_settings_select_template($dce_key, $templates)
+    /**
+     * Outputs the template selection dropdown for a specific key.
+     *
+     * @param string $dce_key    The unique key for the selection dropdown.
+     * @param array<int|string,string>  $templates  An associative array of templates where the key is the template ID and the value is the template name.
+     *
+     * @return void
+     */
+    private function select_template($dce_key, $templates)
     {
-        ?>
-	<span class="dce-template-select-wrapper">
-		<a class="dce-template-quick-remove<?php 
-        if (!isset($this->options[$dce_key]) || !$this->options[$dce_key]) {
-            ?> hidden<?php 
+        // Check if the option for the key is set
+        $option_set = isset($this->options[$dce_key]);
+        // Get the template ID, or an empty string if not set
+        $template_id = $option_set ? $this->options[$dce_key] : '';
+        if (!empty($template_id)) {
+            $translated_id = Helper::wpml_translate_object_id($template_id);
+            $template_id = \is_numeric($translated_id) ? (string) $translated_id : '';
         }
+        // Prepare the URL for the quick edit link
+        $dce_quick_edit = admin_url('post.php?action=elementor&post=') . $template_id;
+        // Decide whether to add the 'hidden' class based on whether the option is set
+        $hidden_class = $option_set ? '' : ' hidden';
+        ?>
+		<span class="dce-template-select-wrapper">
+			<!-- The quick remove link -->
+			<a class="dce-template-quick-remove<?php 
+        echo esc_attr($hidden_class);
         ?>" target="_blank" href="#<?php 
-        echo $dce_key;
-        ?>"><span class="dashicons dashicons-no-alt"></span></a>
-		<select class="dce-select-template dce-select js-dce-select" id="<?php 
-        echo $dce_key;
+        echo esc_attr($dce_key);
+        ?>">
+				<span class="dashicons dashicons-no-alt"></span>
+			</a>
+			<!-- The template selection dropdown -->
+			<select class="dce-select-template dce-select js-dce-select" id="<?php 
+        echo esc_attr((string) $dce_key);
         ?>" name="<?php 
-        echo DCE_TEMPLATE_SYSTEM_OPTION;
+        echo esc_attr(DCE_TEMPLATE_SYSTEM_OPTION);
         ?>[<?php 
-        echo $dce_key;
+        echo esc_attr((string) $dce_key);
         ?>]">
-					<?php 
+				<?php 
         foreach ($templates as $key => $value) {
             ?>
-				<option value="<?php 
-            echo $key;
+					<option value="<?php 
+            echo esc_attr((string) $key);
             ?>"  <?php 
-            echo isset($this->options[$dce_key]) ? selected($this->options[$dce_key], $key, \false) : '';
+            echo $option_set ? selected($template_id, $key, \false) : '';
             ?>>
 						<?php 
-            echo $value;
+            echo esc_html($value);
             ?>
-				</option>
-			<?php 
-        }
-        ?>
-		</select>
-			<?php 
-        $dce_quick_edit = admin_url('post.php?action=elementor&post=');
-        ?>
-		<a class="dce-template-quick-edit<?php 
-        if (!isset($this->options[$dce_key]) || !$this->options[$dce_key]) {
-            ?> hidden<?php 
-        }
-        ?>" target="_blank" data-href="<?php 
-        echo $dce_quick_edit;
-        ?>" href="<?php 
-        echo $dce_quick_edit;
-        echo isset($this->options[$dce_key]) ? $this->options[$dce_key] : '';
-        ?>"><span class="dashicons dashicons-edit"></span></a>
-	</span>
-		<?php 
-    }
-    private function _dce_settings_select_template_blank($dce_key)
-    {
-        $dce_key_template = $dce_key . '_blank';
-        $dce_template = isset($this->options[$dce_key_template]) ? $this->options[$dce_key_template] : \false;
-        ?>
-		<div class="dce-optionals">
-			<input class="dce-checkbox" type="checkbox" <?php 
-        if ($dce_template) {
-            ?>checked="" <?php 
-        }
-        ?>name="<?php 
-        echo DCE_TEMPLATE_SYSTEM_OPTION;
-        ?>[<?php 
-        echo $dce_key_template;
-        ?>]" id="<?php 
-        echo $dce_key_template;
-        ?>" value="1" onClick="jQuery(this).closest('.dce-template-main-content').find('.dce-template-page-content').toggleClass('dce-template-page-content-original').toggleClass('dce-template-page-content-full');">
-			<label class="dce-template-single-full" for="<?php 
-        echo $dce_key_template;
-        ?>">
+					</option>
 				<?php 
-        esc_html_e('Force Full Width Template', 'dynamic-content-for-elementor');
-        ?> <a target="_blank" href="https://docs.elementor.com/article/316-using-elementor-s-full-width-page-template"><span class="dashicons dashicons-info"></span></a>
-			</label>
-		</div>
-		<?php 
-    }
-    private function _dce_settings_select_template_layout($dce_key)
-    {
-        $dce_key_template = $dce_key . '_template';
-        $dce_template = isset($this->options[$dce_key_template]) ? $this->options[$dce_key_template] : \false;
+        }
         ?>
-		<div class="dce-options">
-			<label for="<?php 
-        echo $dce_key_template;
-        ?>"><?php 
-        esc_html_e('Select template', 'dynamic-content-for-elementor');
-        ?></label>
-			<select id="<?php 
-        echo $dce_key_template;
-        ?>" name="<?php 
-        echo DCE_TEMPLATE_SYSTEM_OPTION;
-        ?>[<?php 
-        echo $dce_key_template;
-        ?>]" class="dce-select js-dce-select">
-				<option value=""<?php 
-        if (!$dce_template) {
-            ?> selected="selected"<?php 
-        }
-        ?>><?php 
-        esc_html_e('Theme default (NO Before Archive)', 'dynamic-content-for-elementor');
-        ?></option>
-				<option value="blank"<?php 
-        if ($dce_template == 'blank') {
-            ?> selected="selected"<?php 
-        }
-        ?>><?php 
-        esc_html_e('Blank FullWidth template', 'dynamic-content-for-elementor');
-        ?></option>
-				<option value="boxed"<?php 
-        if ($dce_template == 'boxed') {
-            ?> selected="selected"<?php 
-        }
-        ?>><?php 
-        esc_html_e('Blank Boxed template', 'dynamic-content-for-elementor');
-        ?></option>
-				<option value="canvas"<?php 
-        if ($dce_template == 'canvas') {
-            ?> selected="selected"<?php 
-        }
-        ?>><?php 
-        esc_html_e('Elementor Canvas', 'dynamic-content-for-elementor');
-        ?></option>
 			</select>
-		</div>
+			<!-- The quick edit link -->
+			<a class="dce-template-quick-edit<?php 
+        echo esc_attr($hidden_class);
+        ?>" target="_blank" data-href="<?php 
+        echo esc_url($dce_quick_edit);
+        ?>" href="<?php 
+        echo esc_url($dce_quick_edit);
+        ?>">
+				<span class="dashicons dashicons-edit"></span>
+			</a>
+		</span>
 		<?php 
     }
-    private function _dce_settings_archive($dce_key)
+    /**
+     * Outputs the archive settings for a specific key.
+     *
+     * @param string $dce_key The unique key for the archive settings.
+     *
+     * @return void
+     */
+    private function archive_settings($dce_key)
     {
-        $dce_col_md = $dce_key . '_col_md';
-        $dce_col_sm = $dce_key . '_col_sm';
-        $dce_col_xs = $dce_key . '_col_xs';
+        // Define the column settings keys
+        $columns = array('md' => __('Desktop', 'dynamic-content-for-elementor'), 'sm' => __('Tablet', 'dynamic-content-for-elementor'), 'xs' => __('Mobile', 'dynamic-content-for-elementor'));
+        // Default values for the column settings
+        $default_values = array('md' => 4, 'sm' => 3, 'xs' => 2);
         ?>
 		<div class="dce-optional">
+			<?php 
+        // Label for the columns settings
+        ?>
 			<label for="<?php 
-        echo $dce_col_md;
+        echo esc_attr($dce_key);
         ?>"><?php 
         _e('Columns', 'dynamic-content-for-elementor');
         ?></label>
+
 			<div id="<?php 
-        echo $dce_key;
+        echo esc_attr($dce_key);
         ?>-switchers" class="dce-switchers">
 				<div class="elementor-control-responsive-switchers dce-elementor-control-responsive-switchers">
-					<?php 
-        $dce_col_md_val = isset($this->options[$dce_col_md]) ? $this->options[$dce_col_md] : 4;
-        $dce_col_sm_val = isset($this->options[$dce_col_sm]) ? $this->options[$dce_col_sm] : 3;
-        $dce_col_xs_val = isset($this->options[$dce_col_xs]) ? $this->options[$dce_col_xs] : 2;
-        ?>
 					<div class="field-group">
-						<input class="dce-input dce-input-md" type="number" min="1" name="<?php 
-        echo DCE_TEMPLATE_SYSTEM_OPTION;
-        ?>[<?php 
-        echo $dce_col_md;
-        ?>]" id="<?php 
-        echo $dce_col_md;
-        ?>" value="<?php 
-        echo $dce_col_md_val;
-        ?>">
-						<input class="dce-input dce-input-sm" type="number" min="1" name="<?php 
-        echo DCE_TEMPLATE_SYSTEM_OPTION;
-        ?>[<?php 
-        echo $dce_col_sm;
-        ?>]" id="<?php 
-        echo $dce_col_sm;
-        ?>" value="<?php 
-        echo $dce_col_sm_val;
-        ?>">
-						<input class="dce-input dce-input-xs" type="number" min="1" name="<?php 
-        echo DCE_TEMPLATE_SYSTEM_OPTION;
-        ?>[<?php 
-        echo $dce_col_xs;
-        ?>]" id="<?php 
-        echo $dce_col_xs;
-        ?>" value="<?php 
-        echo $dce_col_xs_val;
-        ?>">
+						<?php 
+        foreach ($columns as $col => $label) {
+            $dce_col_key = $dce_key . '_col_' . $col;
+            $dce_col_val = isset($this->options[$dce_col_key]) ? $this->options[$dce_col_key] : $default_values[$col];
+            \printf('<input class="dce-input dce-input-%s" type="number" min="1" name="%s[%s]" id="%s" value="%s">', esc_attr($col), esc_attr(DCE_TEMPLATE_SYSTEM_OPTION), esc_attr($dce_col_key), esc_attr($dce_col_key), esc_attr($dce_col_val));
+        }
+        ?>
 					</div>
+
 					<div class="switchers-group">
-						<a onclick="jQuery('body').removeClass('elementor-device-mobile').removeClass('elementor-device-tablet').addClass('elementor-device-desktop');" class="elementor-responsive-switcher elementor-responsive-switcher-desktop" data-device="desktop">
-							<i class="eicon-device-desktop"></i>
-						</a>
-						<a onclick="jQuery('body').removeClass('elementor-device-mobile').removeClass('elementor-device-desktop').addClass('elementor-device-tablet');" class="elementor-responsive-switcher elementor-responsive-switcher-tablet" data-device="tablet">
-							<i class="eicon-device-tablet"></i>
-						</a>
-						<a onclick="jQuery('body').removeClass('elementor-device-tablet').removeClass('elementor-device-desktop').addClass('elementor-device-mobile');" class="elementor-responsive-switcher elementor-responsive-switcher-mobile" data-device="mobile">
-							<i class="eicon-device-mobile"></i>
-						</a>
+						<?php 
+        foreach ($columns as $col => $label) {
+            \printf('<a onclick="jQuery(\'body\').removeClass(\'elementor-device-%s\').addClass(\'elementor-device-%s\');" class="elementor-responsive-switcher elementor-responsive-switcher-%s" data-device="%s">
+									<i class="eicon-device-%s"></i>
+								</a>', esc_attr(\join(' elementor-device-', \array_keys($columns))), esc_attr($col), esc_attr($col), esc_attr($col), esc_attr($col));
+        }
+        ?>
 					</div>
 				</div>
 			</div>
@@ -591,7 +519,7 @@ class TemplateSystem
                         _e('Before', 'dynamic-content-for-elementor');
                         ?></h4>
 																	<?php 
-                        $this->_dce_settings_select_template($dce_key, $templates);
+                        $this->select_template($dce_key, $templates);
                         ?>
 																</div>
 																<?php 
@@ -649,7 +577,7 @@ class TemplateSystem
                         _e('Page Template', 'dynamic-content-for-elementor');
                         ?></h4>
 																		<?php 
-                        $this->_dce_settings_select_template($dce_key, $templates);
+                        $this->select_template($dce_key, $templates);
                         ?>
 																		<br><br>
 																		<?php 
@@ -715,7 +643,7 @@ class TemplateSystem
                         _e('Template', 'dynamic-content-for-elementor');
                         ?></h4>
 																		<?php 
-                        $this->_dce_settings_select_template($dce_key, $templates);
+                        $this->select_template($dce_key, $templates);
                         ?>
 																		<br>
 
@@ -782,7 +710,7 @@ class TemplateSystem
                         }
                         ?>">
 																				<?php 
-                        $this->_dce_settings_archive($dce_key);
+                        $this->archive_settings($dce_key);
                         ?>
 																			</div>
 																		</div>
@@ -808,7 +736,7 @@ class TemplateSystem
                         _e('After', 'dynamic-content-for-elementor');
                         ?></h4>
 																		<?php 
-                        $this->_dce_settings_select_template($dce_key, $templates);
+                        $this->select_template($dce_key, $templates);
                         ?>
 																</div>
 																<?php 

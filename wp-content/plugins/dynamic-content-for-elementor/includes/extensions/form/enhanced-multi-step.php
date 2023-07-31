@@ -223,6 +223,17 @@ class EnhancedMultiStep extends \DynamicContentForElementor\Extensions\Extension
                     $content = \str_replace('class="elementor-form"', 'class="elementor-form elementor-form-steps"', $content);
                 }
                 $jkey = 'dce_' . $widget->get_type() . '_form_' . $widget->get_id() . '_steps';
+                $filtered_fields = \array_map(function ($field) {
+                    $allowed = ["field_label", "custom_id", "field_type"];
+                    $filtered = [];
+                    foreach ($field as $key => $value) {
+                        if (\in_array($key, $allowed, \true)) {
+                            $field[$key] = $value;
+                        }
+                    }
+                    return $field;
+                }, $settings['form_fields']);
+                $filtered_settings = ['dce_step_scroll' => $settings['dce_step_scroll'], 'form_fields' => $filtered_fields];
                 // add custom js
                 \ob_start();
                 ?>
@@ -246,9 +257,10 @@ class EnhancedMultiStep extends \DynamicContentForElementor\Extensions\Extension
 								var form_id = '<?php 
                 echo $widget->get_id();
                 ?>';
-								var settings = <?php 
-                echo wp_json_encode($settings);
-                ?>;
+								var settings = "<?php 
+                echo \addslashes(wp_json_encode($filtered_settings) ?: '');
+                ?>";
+								settings = JSON.parse(settings);
 								var step_last = false;
 								window.$form = $('.elementor-element-' + form_id);
 								if ( settings['dce_step_scroll'] === 'yes' ) {

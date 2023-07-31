@@ -63,7 +63,7 @@ class DynamicUsers extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $repeater->add_control('text_before', ['label' => __('Text before', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => '']);
         $repeater->add_control('text_button', ['label' => __('Text before', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => __('Read more', 'dynamic-content-for-elementor'), 'condition' => ['meta' => 'button']]);
         $repeater->add_control('meta_key', ['label' => __('All Meta', 'dynamic-content-for-elementor'), 'type' => 'ooo_query', 'placeholder' => __('Field key or Name', 'dynamic-content-for-elementor'), 'label_block' => \true, 'query_type' => 'fields', 'object_type' => 'user', 'default' => 'nickname', 'condition' => ['meta' => 'custommeta']]);
-        $repeater->add_control('article_post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => Helper::get_post_types(), 'multiple' => \true, 'label_block' => \true, 'default' => 'post', 'condition' => ['meta' => 'articles']]);
+        $repeater->add_control('article_post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => Helper::get_public_post_types(), 'multiple' => \true, 'label_block' => \true, 'default' => 'post', 'condition' => ['meta' => 'articles']]);
         $repeater->add_control('attachment_url', ['label' => __('Add Link to Attachment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['meta' => 'attachments']]);
         $repeater->add_control('articles_url', ['label' => __('Add Link to Post', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['meta' => 'articles']]);
         $repeater->add_control('link_to_page', ['label' => __('Link to page', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['meta!' => ['attachments', 'articles']]]);
@@ -453,14 +453,13 @@ class DynamicUsers extends \DynamicContentForElementor\Widgets\WidgetPrototype
         }
         echo '</div>';
         if ($settings['pagination_enable'] && $settings['results_per_page'] != '-1') {
-            Helper::numeric_query_pagination(\ceil($number_of_users / $settings['results_per_page']), $settings);
+            Helper::numeric_query_pagination(\intval(\ceil($number_of_users / $settings['results_per_page'])), $settings);
         }
     }
     protected function get_attachments($tx_before, $users, $size_attach, $is_attachment_url)
     {
         $acfList = [];
-        $tipo = 'attachment';
-        $get_attachments = get_posts(array('author__in' => $users, 'post_type' => $tipo, 'numberposts' => -1, 'post_status' => 'any', 'orderby' => 'title'));
+        $get_attachments = get_posts(array('author__in' => $users, 'post_type' => 'attachment', 'numberposts' => -1, 'post_status' => 'any', 'orderby' => 'title'));
         echo '<div class="grid-attach">';
         if (!empty($get_attachments)) {
             echo $tx_before;
@@ -486,8 +485,7 @@ class DynamicUsers extends \DynamicContentForElementor\Widgets\WidgetPrototype
     protected function get_articles($tx_before, $users, $size_art, $type_art, $is_article_url)
     {
         $acfList = [];
-        $tipo = $type_art;
-        $get_articles = get_posts(array('author__in' => $users, 'post_type' => $tipo, 'numberposts' => -1, 'post_status' => 'publish', 'public' => \true, 'orderby' => 'title'));
+        $get_articles = get_posts(array('author__in' => $users, 'post_type' => \DynamicContentForElementor\Helper::validate_post_type($type_art), 'numberposts' => -1, 'post_status' => 'publish', 'public' => \true, 'orderby' => 'title'));
         echo '<div class="grid-articles">';
         if (!empty($get_articles)) {
             echo $tx_before;

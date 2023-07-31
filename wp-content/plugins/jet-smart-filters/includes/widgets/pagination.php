@@ -4,25 +4,30 @@ namespace Elementor;
 
 use Elementor\Group_Control_Border;
 
+// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-} // Exit if accessed directly
+}
 
 class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 
 	public function get_name() {
+
 		return 'jet-smart-filters-pagination';
 	}
 
 	public function get_title() {
+
 		return __( 'Pagination', 'jet-smart-filters' );
 	}
 
 	public function get_icon() {
+
 		return 'jet-smart-filters-icon-pagination';
 	}
 
 	public function get_help_url() {
+
 		return jet_smart_filters()->widgets->prepare_help_url(
 			'https://crocoblock.com/knowledge-base/articles/jetsmartfilters-how-to-use-ajax-pagination/',
 			$this->get_name()
@@ -30,6 +35,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 	}
 
 	public function get_categories() {
+
 		return array( jet_smart_filters()->widgets->get_category() );
 	}
 
@@ -185,7 +191,6 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 		$this->end_controls_section();
 
 		$this->controls_section_pagination( $css_scheme );
-
 	}
 
 	protected function controls_section_pagination( $css_scheme ) {
@@ -198,6 +203,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				'show_label' => false,
 			)
 		);
+
 		$this->add_control(
 			'pagination_background_color',
 			array(
@@ -208,6 +214,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_group_control(
 			Group_Control_Border::get_type(),
 			array(
@@ -218,6 +225,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				'selector'    => '{{WRAPPER}} ' . $css_scheme['pagination'],
 			)
 		);
+
 		$this->add_control(
 			'pagination_border_radius',
 			array(
@@ -229,6 +237,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			array(
@@ -236,6 +245,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				'selector' => '{{WRAPPER}} ' . $css_scheme['pagination'],
 			)
 		);
+
 		$this->add_responsive_control(
 			'pagination_padding',
 			array(
@@ -247,6 +257,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_responsive_control(
 			'pagination_margin',
 			array(
@@ -258,7 +269,9 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'pagination_items_style',
 			array(
@@ -267,6 +280,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				'show_label' => false,
 			)
 		);
+
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
@@ -274,13 +288,16 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				'selector' => '{{WRAPPER}} ' . $css_scheme['pagination-link'] . ', {{WRAPPER}} ' . $css_scheme['pagination-dots'],
 			)
 		);
+
 		$this->start_controls_tabs( 'tabs_pagination_items_style' );
+
 		$this->start_controls_tab(
 			'pagination_items_normal',
 			array(
 				'label' => esc_html__( 'Normal', 'jet-smart-filters' ),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_bg_color',
 			array(
@@ -292,6 +309,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_color',
 			array(
@@ -303,13 +321,16 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->end_controls_tab();
+
 		$this->start_controls_tab(
 			'pagination_items_hover',
 			array(
 				'label' => esc_html__( 'Hover', 'jet-smart-filters' ),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_bg_color_hover',
 			array(
@@ -320,6 +341,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_color_hover',
 			array(
@@ -330,6 +352,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_hover_border_color',
 			array(
@@ -343,13 +366,16 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->end_controls_tab();
+
 		$this->start_controls_tab(
 			'pagination_items_active',
 			array(
 				'label' => esc_html__( 'Current', 'jet-smart-filters' ),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_bg_color_active',
 			array(
@@ -360,6 +386,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_color_active',
 			array(
@@ -370,6 +397,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_active_border_color',
 			array(
@@ -383,13 +411,16 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->end_controls_tab();
+
 		$this->start_controls_tab(
 			'pagination_items_dots',
 			array(
 				'label' => esc_html__( 'Dots', 'jet-smart-filters' ),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_bg_color_dots',
 			array(
@@ -400,6 +431,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_color_dots',
 			array(
@@ -410,6 +442,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_dots_border_color',
 			array(
@@ -423,8 +456,11 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->end_controls_tab();
+
 		$this->end_controls_tabs();
+
 		$this->add_responsive_control(
 			'pagination_items_padding',
 			array(
@@ -444,6 +480,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_responsive_control(
 			'pagination_items_horizontal_gap',
 			array(
@@ -491,6 +528,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_group_control(
 			Group_Control_Border::get_type(),
 			array(
@@ -500,6 +538,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				'selector'    => '{{WRAPPER}} ' . $css_scheme['pagination-link'] . ', {{WRAPPER}} ' . $css_scheme['pagination-dots'],
 			)
 		);
+
 		$this->add_responsive_control(
 			'pagination_items_border_radius',
 			array(
@@ -512,6 +551,7 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 				),
 			)
 		);
+
 		$this->add_control(
 			'pagination_items_alignment',
 			array(
@@ -539,17 +579,13 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 		);
 
 		$this->end_controls_section();
-
 	}
 
 	/**
 	 * Returns CSS selector for nested element
-	 *
-	 * @param  [type] $el [description]
-	 *
-	 * @return [type]     [description]
 	 */
 	public function css_selector( $el = null ) {
+
 		return sprintf( '{{WRAPPER}} .%1$s%2$s', $this->get_name(), $el );
 	}
 
@@ -602,7 +638,5 @@ class Jet_Smart_Filters_Pagination_Widget extends Widget_Base {
 		}
 
 		echo '</div>';
-
 	}
-
 }

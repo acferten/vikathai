@@ -108,6 +108,7 @@ class Skin_Table extends \DynamicContentForElementor\Includes\Skins\Skin_Base
         $settings = $this->get_parent()->get_settings_for_display();
         $p_query = $this->get_parent()->get_query();
         $this->get_parent()->add_render_attribute('container', ['class' => ['dce-posts-container', 'dce-posts']]);
+        $this->add_direction();
         $this->render_pagination_top();
         ?>
 

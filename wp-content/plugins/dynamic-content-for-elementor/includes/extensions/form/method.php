@@ -104,11 +104,12 @@ class Method extends \DynamicContentForElementor\Extensions\ExtensionPrototype
 								}
 								let $submit = $scope.find('button[type="submit"]');
 								$submit.on('click', (event) => {
-										event.preventDefault();
 										event.stopImmediatePropagation();
 										$form = $scope.find('form').first();
 										$form.off();
-										$form.submit();
+										if ($form[0].checkValidity()) {
+											$form.submit();
+										}
 								})
 							};
 							$(window).on("elementor/frontend/init", function () {

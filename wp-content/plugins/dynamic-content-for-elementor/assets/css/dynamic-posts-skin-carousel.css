@@ -1,3 +1,8 @@
+/* fix bug of carousel getting bigger and bigger in some cases */
+.dce-posts-container.swiper-container, .dce-posts-container.swiper {
+    max-width: 100%;
+}
+
 .dce-dynamic-posts-collection:after {
   display: none;
 }
@@ -397,36 +402,36 @@ li.dce-term-item {
   animation-iteration-count: 1;
 }
 
-.dce-carousel-controls .swiper-button-prev,
-.dce-carousel-controls .swiper-button-next {
+.dce-carousel-controls .swiper-button-left,
+.dce-carousel-controls .swiper-button-right {
   position: absolute;
   top: 50%;
   z-index: 9;
   cursor: pointer;
   outline: none;
 }
-.dce-carousel-controls .swiper-button-prev.swiper-button-disabled,
-.dce-carousel-controls .swiper-button-next.swiper-button-disabled {
+.dce-carousel-controls .swiper-button-left.swiper-button-disabled,
+.dce-carousel-controls .swiper-button-right.swiper-button-disabled {
   opacity: 0;
   cursor: auto;
   pointer-events: none;
 }
-.dce-carousel-controls .swiper-button-prev svg line,
-.dce-carousel-controls .swiper-button-prev svg polyline,
-.dce-carousel-controls .swiper-button-next svg line,
-.dce-carousel-controls .swiper-button-next svg polyline{
+.dce-carousel-controls .swiper-button-left svg line,
+.dce-carousel-controls .swiper-button-left svg polyline,
+.dce-carousel-controls .swiper-button-right svg line,
+.dce-carousel-controls .swiper-button-right svg polyline{
   transition: stroke 0.8s linear;
   -webkit-transition: stroke 0.8s linear;
   -moz-transition: stroke 0.8s linear;
   -o-transition: stroke 0.8s linear;
   -ms-transition: stroke 0.8s linear;
 }
-.dce-carousel-controls.hoveranim-yes .swiper-button-prev:hover svg,
-.dce-carousel-controls.hoveranim-yes .swiper-button-next:hover svg{
+.dce-dynamic-posts-collection.hover-animation-yes .dce-carousel-controls .swiper-button-left:hover svg,
+.dce-dynamic-posts-collection.hover-animation-yes .dce-carousel-controls .swiper-button-right:hover svg{
   transform: scale(1.2);
 }
-.dce-carousel-controls .swiper-button-prev svg,
-.dce-carousel-controls .swiper-button-next svg{
+.dce-carousel-controls .swiper-button-left svg,
+.dce-carousel-controls .swiper-button-right svg{
   overflow: visible;
   -webkit-transform: scale(1);
   -ms-transform: scale(1);
@@ -438,42 +443,42 @@ li.dce-term-item {
   -o-transition: transform .6s cubic-bezier(.46,.03,.14,.93);
   -ms-transition: transform .6s cubic-bezier(.46,.03,.14,.93);
 }
-.dce-carousel-controls .swiper-button-prev.swiper-button-disabled svg,
-.dce-carousel-controls .swiper-button-next.swiper-button-disabled svg{
+.dce-carousel-controls .swiper-button-left.swiper-button-disabled svg,
+.dce-carousel-controls .swiper-button-right.swiper-button-disabled svg{
   -webkit-transform: scale(0.1);
   -ms-transform: scale(0.1);
   -o-transform: scale(0.1);
   transform: scale(0.1);
 }
 
-.dce-carousel-controls .swiper-button-next:focus,
-.dce-carousel-controls .swiper-button-prev:focus{
+.dce-carousel-controls .swiper-button-right:focus,
+.dce-carousel-controls .swiper-button-left:focus{
   outline: none;
 }
-.dce-carousel-controls .swiper-button-prev,
-.dce-carousel-controls .swiper-container-rtl .swiper-button-next,
-.dce-carousel-controls .swiper-button-next,
-.dce-carousel-controls .swiper-container-rtl .swiper-button-prev{
+.dce-carousel-controls .swiper-button-left,
+.dce-carousel-controls .swiper-container-rtl .swiper-button-right,
+.dce-carousel-controls .swiper-button-right,
+.dce-carousel-controls .swiper-container-rtl .swiper-button-left{
   background-image: none;
 }
-.dce-carousel-controls .swiper-button-prev,
-.dce-carousel-controls .swiper-container-rtl .swiper-button-prev {
+.dce-carousel-controls .swiper-button-left,
+.dce-carousel-controls .swiper-container-rtl .swiper-button-left {
   left: 10px;
   right: auto;
   background-image: none;
 }
-.dce-carousel-controls .swiper-button-next,
-.dce-carousel-controls .swiper-container-rtl .swiper-button-next {
+.dce-carousel-controls .swiper-button-right,
+.dce-carousel-controls .swiper-container-rtl .swiper-button-right {
   right: 10px;
   left: auto;
   background-image: none;
 }
-.dce-carousel-controls .swiper-button-prev:after,
-.dce-carousel-controls .swiper-container-rtl .swiper-button-next:after {
+.dce-carousel-controls .swiper-button-left:after,
+.dce-carousel-controls .swiper-container-rtl .swiper-button-right:after {
  content: none;
 }
-.dce-carousel-controls .swiper-button-next:after,
-.dce-carousel-controls .swiper-container-rtl .swiper-button-prev:after {
+.dce-carousel-controls .swiper-button-right:after,
+.dce-carousel-controls .swiper-container-rtl .swiper-button-left:after {
  content: none;
 }
 
@@ -494,6 +499,7 @@ li.dce-term-item {
 }
 .dce-dynamic-posts-collection.no-masking-yes,
 .dce-dynamic-posts-collection.no-masking-yes .swiper-container,
+.dce-dynamic-posts-collection.no-masking-yes .swiper,
 .dce-dynamic-posts-collection.no-masking-yes .swiper-slide
 {
   overflow: visible;

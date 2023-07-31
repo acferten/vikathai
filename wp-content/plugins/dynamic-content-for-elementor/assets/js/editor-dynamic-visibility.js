@@ -41,6 +41,7 @@ jQuery(window).on('elementor:init', function() {
 	elementor.hooks.addFilter( 'elements/widget/contextMenuGroups', function ( groups, element ) {
 		return dce_add_toggle_visibility( groups, element );
 	});
+
 	elementor.hooks.addFilter( 'elements/section/contextMenuGroups', function ( groups, element ) {
 		return dce_add_toggle_visibility( groups, element );
 	});
@@ -95,7 +96,7 @@ function dce_add_toggle_visibility( groups, element ) {
 		}
 	);
 	return groups;
-} 
+}
 
 function temporary_disable_visibility(cid) {
     var iFrameDOM = jQuery("iframe#elementor-preview-iframe").contents();

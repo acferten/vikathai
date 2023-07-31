@@ -72,33 +72,48 @@
 		const pdfHeight = doc.internal.pageSize.getHeight();
 		const pdfElWidth = pdfWidth - jsconv.marginLeft - jsconv.marginRight;
 		const pdfElHeight = pdfHeight - jsconv.marginTop - jsconv.marginBottom;
-		html2canvas(selectedElement, { windowWidth: 1024, windowHeight: 768 }).then(canvas => {
-			const imgData = canvas.toDataURL('image/png');
-			// The following is necesary for the case where canvas is so long that
+		html2canvas(selectedElement, { windowWidth: 1024, windowHeight: 768 }).then(sourceCanvas => {
+			const imgData = sourceCanvas.toDataURL('image/png');
+			// The following is necesary for the case where sourceCanvas is so long that
 			// it doesn't fit in one page.
 			// https://stackoverflow.com/questions/24069124/how-to-save-a-image-in-multiple-pages-of-pdf-using-jspdf
-			// Get canvas height that can be filled in a page, in pixels.
-			const pageHeight = pdfElHeight * canvas.width / pdfElWidth;
-			for (let hposition = 0; hposition < canvas.height; hposition+=pageHeight) {
+			// Get sourceCanvas height that can be filled in a page, in pixels.
+			const pageHeight = pdfElHeight * sourceCanvas.width / pdfElWidth;
+			// ( currSourceVpos + 2 ): If you are missing less than two pixels don't
+			// create an additional page, just discard the rest. It can cause an
+			// error when trying to create a canvas that is too small.
+			for (
+				let currSourceVpos = 0;
+				(currSourceVpos + 2) < sourceCanvas.height;
+				currSourceVpos += pageHeight
+			) {
 				// The final slice height could be less than the pageHeight.
-				const sliceHeight = Math.min(canvas.height - hposition, pageHeight);
+				const sliceHeight = Math.min(sourceCanvas.height - currSourceVpos, pageHeight);
 				const slicePdfHeight = (sliceHeight * pdfElHeight) / pageHeight;
 				// In order to get the image slice we have to do the drawing on another canvas.
 				const onePageCanvas = document.createElement("canvas");
-				onePageCanvas.setAttribute('width', canvas.width);
+				onePageCanvas.setAttribute('width', sourceCanvas.width);
 				onePageCanvas.setAttribute('height', sliceHeight);
 				const ctx = onePageCanvas.getContext('2d');
-				ctx.drawImage(canvas, 0, hposition, canvas.width, sliceHeight, 0, 0,
-							  canvas.width, sliceHeight);
+				ctx.drawImage(sourceCanvas, 0, currSourceVpos, sourceCanvas.width, sliceHeight, 0, 0,
+							  sourceCanvas.width, sliceHeight);
 				const sliceData = onePageCanvas.toDataURL("image/png");
 				// At the beginning of the loop we already have a page.
-				if (hposition != 0) {
+				if (currSourceVpos != 0) {
 					doc.addPage();
 				}
 				doc.addImage( sliceData, '', jsconv.marginLeft,
 							  jsconv.marginTop, pdfElWidth, slicePdfHeight);
 			}
-			doc.save(jsconv.title);
+			if (jsconv.preview === 'yes') {
+				let link = document.createElement('a');
+				let blob = doc.output('bloburl');
+				link.href = blob;
+				link.click();
+			} else {
+				doc.save(jsconv.title);
+			}
+
 		});
 	}
 	jQuery(window).trigger('dce/jsconvpdf/before');

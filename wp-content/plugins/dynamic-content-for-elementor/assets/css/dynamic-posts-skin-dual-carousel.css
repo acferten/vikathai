@@ -397,9 +397,6 @@
 	animation-iteration-count: 1;
   }
  
-.dce-dualcarousel-posts{
-	position: relative;
-}
 .dce-dualcarousel-thumbnails .dce-dualcarousel-wrap{
 	transition: opacity 0.4s;
 }

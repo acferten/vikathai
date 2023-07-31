@@ -2,6 +2,27 @@
 
 # ChangeLog
 
+## 3.0.0
+Admin interface changes. Redesigned into single page application.
+
+* FIX: prevent php notices after installation template by wizard
+* FIX: prevent php notices on calendar request
+* FIX: allow to correctly extend Jet_Smart_Filters_Hierarchy class
+* FIX: woocommerce-archive hide out of stock items from the catalog on page reload
+* FIX: date period editor block error (air-datepicker script)
+
+## 2.3.14
+* ADD: Query ID setting for blocks
+* ADD: 'jet-smart-filters/query/request' to filter request before parsing query arguments
+* FIX: Compatibility with Elementor 3.7
+* FIX: Blocks editor and Listing Grid 'is_archive_template' option compatibility
+* FIX: Merge default with current query args on ajax indexing
+* FIX: Correctly pull dynamic min/max from meta values for range filter on terms archive pages
+* FIX: Select filter. Don't add select_disabled_color control if the indexer is disabled
+* FIX: JetEngine Calendar compatibility
+* UPD: For indexer SQL query removed space between parenthesis and value. This causes an error for some clients
+* UPD: Unchecked group items for intersection relational operator
+
 ## 2.3.13
 * ADD: JetWooBuilder 2.0.0 version compatibility
 * FIX: Blocks styles

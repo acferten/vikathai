@@ -5,7 +5,7 @@
 			// no posts where found, nothing to do.
 			return;
 		}
-		var smsc = null;
+
 		var elementSettings = dceGetElementSettings($scope);
 		var id_scope = $scope.attr('data-id');
 		var id_post = $scope.attr('data-post-id');
@@ -19,7 +19,10 @@
 
 		if( elementSettings.carousel_match_height ) {
 			if( elementSettings.style_items === 'template' ) {
-				if( $scope.find( '.dce-post-block .elementor-inner-section' ).length ) {
+				if ( $scope.find('.e-con') ) {
+					// select all top level containers:
+					$scope.find('.e-con').not($scope.find('.e-con .e-con')).matchHeight();
+				} else if( $scope.find( '.dce-post-block .elementor-inner-section' ).length ) {
 					$scope.find('.dce-post-block').first().find('.elementor-inner-section').each((i) => {
 						let $els = $scope.find('.dce-post-block').map((_,$e) => {
 							return jQuery($e).find('.elementor-inner-section')[i]
@@ -36,18 +39,28 @@
 			}
 		}
 
+		let nextElement = id_post ? '.elementor-element-' + id_scope + '[data-post-id="' + id_post + '"] .right-' + id_scope : '.right-' + id_scope;
+		let prevElement = id_post ? '.elementor-element-' + id_scope + '[data-post-id="' + id_post + '"] .left-' + id_scope : '.left-' + id_scope;
+
+
+		if ( Boolean( elementSettings[ 'rtl' ] ) ) {
+			let temp = nextElement;
+			nextElement = prevElement;
+			prevElement = temp;
+		}
+
 		var mainSwiperOptions = {
 			observer: true,
 			observeParents: true,
 			direction: String(elementSettings[dceDynamicPostsSkinPrefix+'direction_slider']) || 'horizontal', //vertical
 			initialSlide: slideInitNum,
-			reverseDirection: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'reverseDirection'] ),
+			reverseDirection: Boolean( elementSettings[ 'rtl' ] ),
 			speed: Number(elementSettings[dceDynamicPostsSkinPrefix+'speed_slider']) || 300,
 			autoHeight: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'autoHeight'] ), // Set to true and slider wrapper will adopt its height to the height of the currently active slide
 			effect: elementSettings[dceDynamicPostsSkinPrefix+'effects'] || 'slide',
 			cubeEffect: {
-        		shadow: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'cube_shadow'] ),
-        		slideShadows: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'slideShadows'] ),
+				shadow: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'cube_shadow'] ),
+				slideShadows: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'slideShadows'] ),
 				shadowOffset: 20,
 				shadowScale: 0.94,
 			},
@@ -64,7 +77,7 @@
 				limitRotation: true,
 			},
 			fadeEffect: {
-				crossFade: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'crossFade'] )
+				crossFade: true,
 			},
 			initialSlide: Number(elementSettings[dceDynamicPostsSkinPrefix+'initialSlide']) || 0,
 			slidesPerView: slidesPerView || 'auto',
@@ -88,8 +101,8 @@
 			freeModeSticky: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'freeModeSticky'] ),
 			loop: infiniteLoop,
 			navigation: {
-				nextEl: id_post ? '.elementor-element-' + id_scope + '[data-post-id="' + id_post + '"] .next-' + id_scope : '.next-' + id_scope,
-				prevEl: id_post ? '.elementor-element-' + id_scope + '[data-post-id="' + id_post + '"] .prev-' + id_scope : '.prev-' + id_scope,
+				nextEl: nextElement,
+				prevEl: prevElement,
 			},
 			pagination: {
 				el: id_post ? '.elementor-element-' + id_scope + '[data-post-id="' + id_post + '"] .pagination-' + id_scope : '.pagination-' + id_scope,
@@ -97,54 +110,46 @@
 				type: String(elementSettings[dceDynamicPostsSkinPrefix+'pagination_type']) || 'bullets',
 				dynamicBullets: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'dynamicBullets'] ),
 				renderBullet: function (index, className) {
-            		var indexLabel = !Boolean( elementSettings[dceDynamicPostsSkinPrefix+'dynamicBullets']) && Boolean( elementSettings[dceDynamicPostsSkinPrefix+'bullets_numbers']) ? '<span class="swiper-pagination-bullet-title">'+(index+1)+'</span>' : '';
-             		return '<span class="' + className + '">'+indexLabel+'</span>';
+					var indexLabel = !Boolean( elementSettings[dceDynamicPostsSkinPrefix+'dynamicBullets']) && Boolean( elementSettings[dceDynamicPostsSkinPrefix+'bullets_numbers']) ? '<span class="swiper-pagination-bullet-title">'+(index+1)+'</span>' : '';
+					return '<span class="' + className + '">'+indexLabel+'</span>';
 				},
 				renderFraction: function (currentClass, totalClass) {
-					return '<span class="' + currentClass + '"></span>' +
+					if ( ! Boolean( elementSettings[ 'rtl' ] ) ) {
+						return '<span class="' + currentClass + '"></span>' +
+							'<span class="separator">' + String(elementSettings[dceDynamicPostsSkinPrefix+'fraction_separator']) + '</span>' +
+							'<span class="' + totalClass + '"></span>';
+					}
+					return '<span class="' + totalClass + '"></span>' +
 						'<span class="separator">' + String(elementSettings[dceDynamicPostsSkinPrefix+'fraction_separator']) + '</span>' +
-						'<span class="' + totalClass + '"></span>';
+						'<span class="' + currentClass + '"></span>';
 				},
 				renderProgressbar: function (progressbarFillClass) {
-            		return '<span class="' + progressbarFillClass + '"></span>';
+					return '<span class="' + progressbarFillClass + '"></span>';
 				},
-				renderCustom: function (swiper, current, total) {
-				}
 			},
 			scrollbar: {
-				el: '.swiper-scrollbar', // String with CSS selector or HTML element of the container with scrollbar.
+				el: $scope.find('.swiper-scrollbar')[0],
 				hide: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'scrollbar_hide'] ), // Hide scrollbar automatically after user interaction
 				draggable: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'scrollbar_draggable'] ), // Set to true to enable make scrollbar draggable that allows you to control slider position
 				snapOnRelease: true, // Set to true to snap slider position to slides when you release scrollbar
 			},
 			mousewheel: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'mousewheelControl'] ),
-       		keyboard: {
-            	enabled: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'keyboardControl'] ),
+			keyboard: {
+				enabled: Boolean( elementSettings[dceDynamicPostsSkinPrefix+'keyboardControl'] ),
 			},
-			on: {
-				init: function () {
-            		isCarouselEnabled = true;
-              		$('body').attr('data-carousel-'+id_scope, this.realIndex);
-
-				},
-				slideChange: function (e) {
-              		$('body').attr('data-carousel-'+id_scope, this.realIndex);
-				},
-			}
 		};
 
 		if (elementSettings[dceDynamicPostsSkinPrefix+'useAutoplay']) {
-			mainSwiperOptions = $.extend( mainSwiperOptions, { autoplay: true } );
-
-			mainSwiperOptions = $.extend( mainSwiperOptions,
-										  {
-											  autoplay: {
-												  delay: Number( elementSettings[dceDynamicPostsSkinPrefix+'autoplay'] ) || 3000,
-												  disableOnInteraction: Boolean( elementSettings[ dceDynamicPostsSkinPrefix+'autoplayDisableOnInteraction' ] ),
-												  stopOnLastSlide: Boolean( elementSettings[ dceDynamicPostsSkinPrefix+'autoplayStopOnLast' ] )
-											  }
-										  }
-										);
+			mainSwiperOptions = $.extend(
+				mainSwiperOptions,
+				{
+					autoplay: {
+						delay: Number( elementSettings[dceDynamicPostsSkinPrefix+'autoplay'] ) || 3000,
+						disableOnInteraction: Boolean( elementSettings[ dceDynamicPostsSkinPrefix+'autoplayDisableOnInteraction' ] ),
+						stopOnLastSlide: Boolean( elementSettings[ dceDynamicPostsSkinPrefix+'autoplayStopOnLast' ] )
+					}
+				}
+			);
 		}
 
 		mainSwiperOptions.breakpoints = dynamicooo.makeSwiperBreakpoints({
@@ -174,7 +179,7 @@
 			}
 		}, elementSettings, dceDynamicPostsSkinPrefix);
 
-		if( 'dualcarousel' === dceDynamicPostsSkin ) {
+		if ( 'dualcarousel' === dceDynamicPostsSkin ) {
 			let dualCarouselSlidesPerView = Number(elementSettings[dceDynamicPostsSkinPrefix+'thumbnails_slidesPerView']);
 
 			let dualCarouselSwiperOptions = {
@@ -202,52 +207,30 @@
 		}
 
 		function initSwiperThumbs( dualCarouselSwiperOptions ) {
-			let thumbs = $scope.find('.dce-dualcarousel-gallery-thumbs');
+			let thumbsContainer = $scope.find('.dce-dualcarousel-gallery-thumbs');
 			let swiperThumbs;
-			let mainSlideChange = mainSwiperOptions.on.slideChange;
+			mainSwiperOptions.on = mainSwiperOptions.on || {};
 			mainSwiperOptions.on.slideChange = function(e) {
 				swiperThumbs.slideToLoop(this.realIndex)
-				mainSlideChange.call(this, e);
 			}
-			if ( 'undefined' === typeof Swiper ) {
-				const asyncSwiper = elementorFrontend.utils.swiper;
+			const asyncSwiper = elementorFrontend.utils.swiper;
 
-				new asyncSwiper( jQuery( thumbs[0] ), dualCarouselSwiperOptions ).then( ( newSwiperInstance ) => {
-					swiperThumbs = newSwiperInstance;
-					mainSwiperOptions.thumbs = {
-						swiper: swiperThumbs,
-					};
-
-					initSwiperCarousel();
-				} );
-			} else {
-				swiperThumbs = new Swiper( jQuery( thumbs[0] ), dualCarouselSwiperOptions );
+			new asyncSwiper( thumbsContainer, dualCarouselSwiperOptions ).then( ( newSwiperInstance ) => {
+				swiperThumbs = newSwiperInstance;
 				mainSwiperOptions.thumbs = {
 					swiper: swiperThumbs,
 				};
 				initSwiperCarousel();
-			}
+			} ).catch( error => console.log(error) );
 		}
 
 		function initSwiperCarousel() {
-			if(smsc) {
-				smsc.remove();
-			}
-			if(mainSwiper) {
-          		mainSwiper.destroy();
-			}
-
-			if ( 'undefined' === typeof Swiper ) {
-				const asyncSwiper = elementorFrontend.utils.swiper;
-
-				new asyncSwiper( jQuery( elementSwiper[0] ), mainSwiperOptions ).then( ( newSwiperInstance ) => {
-					mainSwiper = newSwiperInstance;
-				} );
-			} else {
-          		mainSwiper = new Swiper( jQuery( elementSwiper[0] ), mainSwiperOptions );
-			}
-
+			const asyncSwiper = elementorFrontend.utils.swiper;
+			new asyncSwiper( elementSwiper, mainSwiperOptions ).then( ( newSwiperInstance ) => {
+				mainSwiper = newSwiperInstance;
+			} ).catch( error => console.log(error) );
 		}
+
 		if ( elementSwiper.length && 'dualcarousel' !== dceDynamicPostsSkin ){
 			initSwiperCarousel();
 		}
@@ -287,6 +270,8 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/dce-search-results.dualcarousel', widgetHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/dce-metabox-relationship.carousel', widgetHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/dce-metabox-relationship.dualcarousel', widgetHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/dce-acf-relationship.carousel', widgetHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/dce-acf-relationship.dualcarousel', widgetHandler);
 	}
 	if (typeof elementorFrontend === 'object' && elementorFrontend.hasOwnProperty('hooks')) {
 		addActions();

@@ -15,6 +15,11 @@ if (!\defined('ABSPATH')) {
 }
 class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototype
 {
+    private static $counter = 1;
+    private static function uniq_id()
+    {
+        return self::$counter++;
+    }
     public function get_script_depends()
     {
         return ['dce-clipboard-js'];
@@ -120,6 +125,7 @@ class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototyp
     }
     protected function safe_render()
     {
+        $uniqid = self::uniq_id();
         $settings = $this->get_settings_for_display();
         $this->add_render_attribute('wrapper', 'class', 'dce-clipboard-wrapper');
         $this->add_render_attribute('wrapper', 'class', 'dce-clipboard-wrapper-' . $settings['dce_clipboard_type']);
@@ -155,11 +161,11 @@ class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototyp
             $this->add_render_attribute('button', 'class', 'elementor-animation-' . $settings['hover_animation']);
         }
         $this->add_render_attribute('input', 'class', 'dce-clipboard-value');
-        $this->add_render_attribute('input', 'id', 'dce-clipboard-value-' . $this->get_id() . '-' . get_the_id());
         $this->add_render_attribute('input', 'class', 'elementor-field-textual');
         $this->add_render_attribute('button', 'type', 'button');
-        $this->add_render_attribute('button', 'id', 'dce-clipboard-btn-' . $this->get_id() . '-' . get_the_id());
-        $this->add_render_attribute('button', 'data-clipboard-target', '#dce-clipboard-value-' . $this->get_id() . '-' . get_the_id());
+        $this->add_render_attribute('input', 'id', 'dce-clipboard-value-' . $uniqid);
+        $this->add_render_attribute('button', 'id', 'dce-clipboard-btn-' . $uniqid);
+        $this->add_render_attribute('button', 'data-clipboard-target', '#dce-clipboard-value-' . $uniqid);
         if (!$settings['dce_clipboard_visible'] || $settings['dce_clipboard_type'] == 'code') {
             $this->add_render_attribute('input', 'aria-hidden', 'true');
             $this->add_render_attribute('input', 'class', 'dce-offscreen');
@@ -243,13 +249,9 @@ class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototyp
 						}
 					);
 					var editor_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?> = wp.codeEditor.initialize( jQuery('#dce-clipboard-value-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>'), editorSettings );
 				}
 			});
@@ -261,37 +263,25 @@ class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototyp
             ?>
 			jQuery(function () {
 				var clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?> = new ClipboardJS('#dce-clipboard-btn-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>');
 				clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>.on('success', function (e) {
 					jQuery('#dce-clipboard-btn-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>').addClass('animated').addClass('tada');
 					setTimeout(function(){
 						jQuery('#dce-clipboard-btn-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>').removeClass('animated').removeClass('tada');
 					}, 3000);
 					return false;
 				});
 				clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>.on('error', function (e) {
 					console.log(e);
 				});
@@ -301,32 +291,22 @@ class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototyp
             ?>
 			jQuery(function () {
 				var clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?> = new ClipboardJS('#dce-clipboard-btn-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>');
 				clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>.on('success', function (e) {
 					jQuery('#dce-clipboard-btn-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>').html('<?php 
             echo $settings['change_text'];
             ?>');
 					return false;
 				});
 				clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>.on('error', function (e) {
 					console.log(e);
 				});
@@ -336,18 +316,12 @@ class CopyToClipboard extends \DynamicContentForElementor\Widgets\WidgetPrototyp
             ?>
 			jQuery(function () {
 				var clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?> = new ClipboardJS('#dce-clipboard-btn-<?php 
-            echo $this->get_id();
-            ?>-<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>');
 				clipboard_<?php 
-            echo $this->get_id();
-            ?>_<?php 
-            echo get_the_id();
+            echo $uniqid;
             ?>.on('error', function (e) {
 					console.log(e);
 				});

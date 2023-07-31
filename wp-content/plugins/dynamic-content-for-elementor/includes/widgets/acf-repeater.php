@@ -38,11 +38,22 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
     }
     public function get_script_depends()
     {
-        return ['imagesloaded', 'swiper', 'jquery-masonry', 'dce-wow', 'dce-acf-repeater', 'dce-datatables'];
+        return ['imagesloaded', 'swiper', 'jquery-masonry', 'dce-wow', 'dce-acf-repeater', 'dce-datatables', 'dce-accordionjs'];
     }
     public function get_style_depends()
     {
-        return ['dce-acf-repeater', 'datatables'];
+        return ['dce-acf-repeater', 'datatables', 'dce-accordionjs'];
+    }
+    /**
+     * Run Once
+     *
+     * @return void
+     */
+    public function run_once()
+    {
+        parent::run_once();
+        $save_guard = \DynamicContentForElementor\Plugin::instance()->save_guard;
+        $save_guard->register_unsafe_control($this->get_type(), 'dce_acf_repeater_thead_custom_html');
     }
     /**
      * Register controls after check if this feature is only for admin
@@ -67,7 +78,7 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $repeater_subfields->add_responsive_control('dce_acf_repeater_field_no_tag', ['type' => Controls_Manager::RAW_HTML, 'raw' => __('Please select an HTML Tag to choose the style.', 'dynamic-content-for-elementor'), 'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning', 'condition' => ['dce_acf_repeater_field_tag' => '']]);
         $repeater_subfields->add_responsive_control('dce_acf_repeater_field_space', ['label' => __('Space', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['max' => 100, 'min' => 0, 'step' => 1]], 'selectors' => ['{{WRAPPER}} {{CURRENT_ITEM}}' => 'margin-bottom: {{SIZE}}{{UNIT}};'], 'condition' => ['dce_acf_repeater_field_tag!' => '']]);
         $repeater_subfields->add_control('dce_acf_repeater_field_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', '%'], 'selectors' => ['{{WRAPPER}} {{CURRENT_ITEM}}' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'], 'separator' => 'after', 'condition' => ['dce_acf_repeater_field_tag!' => '']]);
-        $repeater_subfields->add_control('dce_acf_repeater_h_texts', ['label' => __('Text', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'condition' => ['dce_acf_repeater_field_type' => ['text', 'textarea', 'wysiwyg', 'date_picker', 'date_time', 'date_time_picker', 'number', 'select'], 'dce_acf_repeater_field_tag!' => '']]);
+        $repeater_subfields->add_control('dce_acf_repeater_h_texts', ['label' => __('Text', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before', 'condition' => ['dce_acf_repeater_field_type' => ['text', 'textarea', 'wysiwyg', 'date_picker', 'date_time', 'date_time_picker', 'number', 'select'], 'dce_acf_repeater_field_tag!' => '']]);
         $repeater_subfields->add_control('dce_acf_repeater_field_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} {{CURRENT_ITEM}}' => 'color: {{VALUE}};', '{{WRAPPER}} {{CURRENT_ITEM}} a' => 'color: {{VALUE}};'], 'condition' => ['dce_acf_repeater_field_type' => ['text', 'textarea', 'wysiwyg', 'date_picker', 'date_time', 'date_time_picker', 'number', 'select'], 'dce_acf_repeater_field_tag!' => '']]);
         $repeater_subfields->add_control('dce_acf_repeater_field_hover_color', ['label' => __('Hover Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} {{CURRENT_ITEM}} a:hover' => 'color: {{VALUE}};'], 'condition' => ['dce_acf_repeater_field_type' => ['text', 'textarea', 'wysiwyg', 'date_picker', 'date_time', 'date_time_picker', 'number', 'select'], 'dce_acf_repeater_enable_link!' => '', 'dce_acf_repeater_field_tag!' => '']]);
         $repeater_subfields->add_group_control(Group_Control_Typography::get_type(), ['name' => 'dce_acf_repeater_field_typography', 'selector' => '{{WRAPPER}} {{CURRENT_ITEM}}', 'pop_hover' => \true, 'condition' => ['dce_acf_repeater_field_type' => ['text', 'textarea', 'wysiwyg', 'date_picker', 'date_time', 'date_time_picker', 'number', 'select'], 'dce_acf_repeater_field_tag!' => '']]);
@@ -95,12 +106,14 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $this->start_controls_section('dce_acf_repeater_h_render', ['label' => __('Skin', 'dynamic-content-for-elementor')]);
         $this->add_control('dce_acf_repeater_format', ['label' => __('Skin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'frontend_available' => \true, 'options' => ['' => __('Text', 'dynamic-content-for-elementor'), 'grid' => __('Grid', 'dynamic-content-for-elementor'), 'masonry' => __('Masonry', 'dynamic-content-for-elementor'), 'slider_carousel' => __('Carousel', 'dynamic-content-for-elementor'), 'table' => __('Table', 'dynamic-content-for-elementor'), 'list' => __('List', 'dynamic-content-for-elementor'), 'accordion' => __('Accordion', 'dynamic-content-for-elementor')], 'default' => 'grid']);
         $this->add_control('dce_acf_repeater_separator', ['label' => __('Separator', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => ', ', 'condition' => ['dce_acf_repeater_format' => '']]);
-        $this->add_control('dce_acf_repeater_accordion_heading', ['label' => __('Heading text', 'dynamic-content-for-elementor'), 'default' => '[ROW:id]', 'placeholder' => '[ROW:id]', 'description' => __('Write the [ROW:sub_field_name] here, this text will be used as Accordion Heading', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
+        $this->add_control('dce_acf_repeater_accordion_heading', ['label' => __('Heading Text', 'dynamic-content-for-elementor'), 'default' => '[ROW:id]', 'placeholder' => '[ROW:id]', 'description' => __('Write the [ROW:sub_field_name] here, this text will be used as Accordion Heading', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
         $this->add_control('selected_icon', ['label' => __('Icon', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::ICONS, 'separator' => 'before', 'default' => ['value' => 'fas fa-plus', 'library' => 'fa-solid'], 'skin' => 'inline', 'label_block' => \false, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
         $this->add_control('selected_active_icon', ['label' => __('Active Icon', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::ICONS, 'default' => ['value' => 'fas fa-minus', 'library' => 'fa-solid'], 'skin' => 'inline', 'label_block' => \false, 'condition' => ['dce_acf_repeater_format' => 'accordion', 'selected_icon[value]!' => '']]);
         $this->add_control('dce_acf_repeater_accordion_heading_size', ['label' => __('Heading HTML Tag', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => Helper::get_html_tags(), 'default' => 'h4', 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_control('dce_acf_repeater_accordion_start', ['label' => __('Initially open', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['none' => ['title' => __('None', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-ban'], 'first' => ['title' => __('First', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-angle-right'], 'all' => ['title' => __('All', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-angle-double-right']], 'inline' => \true, 'toggle' => \false, 'default' => 'none', 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
+        $this->add_control('dce_acf_repeater_accordion_start', ['label' => __('Initially open', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['none' => __('None', 'dynamic-content-for-elementor'), 'first' => __('First', 'dynamic-content-for-elementor'), 'custom' => __('Custom Index', 'dynamic-content-for-elementor'), 'all' => __('All', 'dynamic-content-for-elementor')], 'inline' => \true, 'default' => 'none', 'frontend_available' => \true, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
+        $this->add_control('accordion_start_custom', ['label' => __('Active Index', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'frontend_available' => \true, 'default' => 1, 'condition' => ['dce_acf_repeater_accordion_start' => 'custom', 'dce_acf_repeater_format' => 'accordion']]);
         $this->add_control('dce_acf_repeater_accordion_close', ['label' => __('Automatically close other tabs', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true, 'condition' => ['dce_acf_repeater_format' => 'accordion', 'dce_acf_repeater_accordion_start' => ['none', 'first']]]);
+        $this->add_control('accordion_speed', ['label' => __('Speed (ms)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'default' => ['size' => 300, 'unit' => 'ms'], 'size_units' => ['ms'], 'range' => ['ms' => ['min' => 0, 'max' => 500, 'step' => 50]], 'render_type' => 'template', 'frontend_available' => \true, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
         $this->add_control('dce_acf_repeater_list', ['label' => __('List type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['ul' => ['title' => __('Unordered List', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-list-ul'], 'ol' => ['title' => __('Ordered List', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-list-ol']], 'toggle' => \false, 'default' => 'ul', 'condition' => ['dce_acf_repeater_format' => 'list']]);
         $this->add_control('selected_icon_ul', ['label' => __('Icon', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::ICONS, 'separator' => 'before', 'skin' => 'inline', 'label_block' => \false, 'condition' => ['dce_acf_repeater_format' => 'list', 'dce_acf_repeater_list' => 'ul'], 'selectors' => ['{{WRAPPER}} ul > li > .elementor-icon' => 'float: left; clear: both; font-size: inherit;']]);
         $this->add_control('dce_acf_repeater_list_flex', ['label' => __('Flex list', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['dce_acf_repeater_format' => 'list', 'dce_acf_repeater_list' => 'ul', 'selected_icon_ul[value]!' => ''], 'selectors' => ['{{WRAPPER}} ul > li' => 'display: flex;']]);
@@ -214,7 +227,7 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
         // -------------------------------- Autoplay ------
         $this->add_control('autoplay_options', ['label' => __('Autoplay options', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
         $this->add_control('useAutoplay', ['label' => __('Use Autoplay', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true]);
-        $this->add_control('autoplay', ['label' => __('Auto Play', 'dynamic-content-for-elementor'), 'description' => __('Delay between transitions (in ms). If this parameter is not specified (by default), autoplay will be disabled', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 3000, 'min' => 0, 'max' => 7000, 'step' => 100, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
+        $this->add_control('autoplay', ['label' => __('Autoplay Delay (ms)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 3000, 'min' => 0, 'max' => 7000, 'step' => 100, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
         $this->add_control('autoplayStopOnHover', ['label' => __('Autoplay stop on hover', 'dynamic-content-for-elementor'), 'description' => __('Enable this parameter and autoplay will be stopped on hover', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true, 'condition' => ['useAutoplay' => 'yes']]);
         $this->add_control('autoplayStopOnLast', ['label' => __('Autoplay stop on last slide', 'dynamic-content-for-elementor'), 'description' => __('Enable this parameter and autoplay will be stopped when it reaches the last slide (has no effect in loop mode)', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'frontend_available' => \true, 'condition' => ['autoplay!' => '']]);
         $this->add_control('autoplayDisableOnInteraction', ['label' => __('Autoplay Disable on interaction', 'dynamic-content-for-elementor'), 'description' => __('Set to "false" and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes', 'frontend_available' => \true, 'condition' => ['autoplay!' => '']]);
@@ -242,30 +255,29 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $this->add_responsive_control('dce_acf_repeater_field_row', ['label' => __('Row space', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'default' => ['size' => ''], 'tablet_default' => ['size' => ''], 'mobile_default' => ['size' => ''], 'range' => ['px' => ['max' => 50, 'min' => 0, 'step' => 1.0]], 'selectors' => ['{{WRAPPER}} .dce-acf-repeater-item' => 'padding-bottom: {{SIZE}}{{UNIT}};']]);
         $this->end_controls_section();
         $this->start_controls_section('section_title_style', ['label' => __('Accordion', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'border_width', 'label' => __('Border Width', 'dynamic-content-for-elementor'), 'selector' => '{{WRAPPER}} .elementor-accordion .elementor-accordion-item, {{WRAPPER}} .elementor-accordion .elementor-accordion-item .elementor-tab-content, {{WRAPPER}} .elementor-accordion .elementor-accordion-item .elementor-tab-title.elementor-active']);
-        $this->end_controls_section();
-        $this->start_controls_section('section_toggle_style_title', ['label' => __('Title', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_control('title_background', ['label' => __('Background', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-title' => 'background-color: {{VALUE}};']]);
-        $this->add_control('title_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-accordion-icon, {{WRAPPER}} .elementor-accordion-title' => 'color: {{VALUE}};']]);
-        $this->add_control('tab_active_color', ['label' => __('Active Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-active .elementor-accordion-icon, {{WRAPPER}} .elementor-active .elementor-accordion-title' => 'color: {{VALUE}};']]);
-        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'title_typography', 'selector' => '{{WRAPPER}} .elementor-accordion .elementor-accordion-title']);
-        $this->add_responsive_control('title_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
-        $this->end_controls_section();
-        $this->start_controls_section('section_toggle_style_icon', ['label' => __('Icon', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['dce_acf_repeater_format' => ['accordion', 'list']]]);
-        $this->add_control('icon_align', ['label' => __('Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['left' => ['title' => __('Start', 'dynamic-content-for-elementor'), 'icon' => 'eicon-h-align-left'], 'right' => ['title' => __('End', 'dynamic-content-for-elementor'), 'icon' => 'eicon-h-align-right']], 'default' => is_rtl() ? 'right' : 'left', 'toggle' => \false, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_control('icon_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-icon i:before' => 'color: {{VALUE}};', '{{WRAPPER}} .elementor-icon svg' => 'fill: {{VALUE}};', '{{WRAPPER}} .elementor-accordion .elementor-tab-title .elementor-accordion-icon i:before' => 'color: {{VALUE}};', '{{WRAPPER}} .elementor-accordion .elementor-tab-title .elementor-accordion-icon svg' => 'fill: {{VALUE}};']]);
-        $this->add_control('icon_active_color', ['label' => __('Active Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-title.elementor-active .elementor-accordion-icon i:before' => 'color: {{VALUE}};', '{{WRAPPER}} .elementor-accordion .elementor-tab-title.elementor-active .elementor-accordion-icon svg' => 'fill: {{VALUE}};'], 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_responsive_control('icon_margin', ['label' => __('Margin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', '%', 'em'], 'selectors' => ['{{WRAPPER}} .elementor-icon' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'], 'condition' => ['dce_acf_repeater_format' => 'list']]);
-        $this->add_responsive_control('icon_space', ['label' => __('Spacing', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['min' => 0, 'max' => 100]], 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-accordion-icon.elementor-accordion-icon-left' => 'margin-right: {{SIZE}}{{UNIT}};', '{{WRAPPER}} .elementor-accordion .elementor-accordion-icon.elementor-accordion-icon-right' => 'margin-left: {{SIZE}}{{UNIT}};'], 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'icon_typography', 'selector' => '{{WRAPPER}} .elementor-accordion .elementor-accordion-icon, {{WRAPPER}} .elementor-icon i']);
-        $this->end_controls_section();
-        $this->start_controls_section('section_toggle_style_content', ['label' => __('Content', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['dce_acf_repeater_format' => 'accordion']]);
-        $this->add_control('content_background_color', ['label' => __('Background', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-content' => 'background-color: {{VALUE}};']]);
-        $this->add_control('content_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-content' => 'color: {{VALUE}};']]);
-        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'content_typography', 'selector' => '{{WRAPPER}} .elementor-accordion .elementor-tab-content']);
-        $this->add_responsive_control('content_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
-        $this->add_responsive_control('content_margin', ['label' => __('Margin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .elementor-accordion .elementor-tab-content' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
-        $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'content_border', 'label' => __('Border', 'dynamic-content-for-elementor'), 'selector' => '{{WRAPPER}} .elementor-accordion .elementor-tab-content']);
+        $this->add_control('section_toggle_style_title', ['label' => __('Heading', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
+        $this->add_control('title_background', ['label' => __('Background', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_head' => 'background-color: {{VALUE}};']]);
+        $this->add_control('title_active_background', ['label' => __('Active Background', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_active .acc_head' => 'background-color: {{VALUE}};']]);
+        $this->add_control('title_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_head *' => 'color: {{VALUE}};']]);
+        $this->add_control('tab_active_color', ['label' => __('Active Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_active .acc_head *' => 'color: {{VALUE}};']]);
+        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'title_typography', 'selector' => '{{WRAPPER}} .acc_head']);
+        $this->add_responsive_control('title_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .acc_head' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
+        $this->add_control('tab_heading', ['label' => __('Tab', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
+        $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'border_width', 'label' => __('Border Width', 'dynamic-content-for-elementor'), 'selector' => '{{WRAPPER}} .acc_section']);
+        $this->add_responsive_control('tab_space', ['label' => __('Spacing', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['min' => 0, 'max' => 100]], 'default' => ['unit' => 'px', 'size' => 0], 'selectors' => ['{{WRAPPER}} .acc_section:not(:last-child)' => 'margin-bottom: {{SIZE}}{{UNIT}};']]);
+        $this->add_control('section_toggle_style_icon', ['label' => __('Icons', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
+        $this->add_control('icon_align', ['label' => __('Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['left' => ['title' => __('Start', 'dynamic-content-for-elementor'), 'icon' => 'eicon-h-align-left'], 'right' => ['title' => __('End', 'dynamic-content-for-elementor'), 'icon' => 'eicon-h-align-right']], 'default' => is_rtl() ? 'right' : 'left', 'toggle' => \false]);
+        $this->add_control('icon_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_head i:before' => 'color: {{VALUE}};', '{{WRAPPER}} .acc_head svg' => 'fill: {{VALUE}};']]);
+        $this->add_control('icon_active_color', ['label' => __('Active Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_active .acc_head i:before' => 'color: {{VALUE}};', '{{WRAPPER}} .acc_active .acc_head svg' => 'fill: {{VALUE}};']]);
+        $this->add_responsive_control('icon_margin', ['label' => __('Margin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', '%', 'em'], 'selectors' => ['{{WRAPPER}} .acc_head .icon' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};', '{{WRAPPER}} .acc_head .icon-active' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
+        $this->add_responsive_control('icon_space', ['label' => __('Spacing', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'range' => ['px' => ['min' => 0, 'max' => 100]], 'selectors' => ['{{WRAPPER}} .acc_head .icon' => 'margin-right: {{SIZE}}{{UNIT}}; margin-left: {{SIZE}}{{UNIT}};', '{{WRAPPER}} .acc_head .icon-active' => 'margin-right: {{SIZE}}{{UNIT}}; margin-left: {{SIZE}}{{UNIT}};']]);
+        $this->add_control('section_toggle_style_content', ['label' => __('Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before']);
+        $this->add_control('content_background_color', ['label' => __('Background', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_content' => 'background-color: {{VALUE}};']]);
+        $this->add_control('content_color', ['label' => __('Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .acc_content' => 'color: {{VALUE}};']]);
+        $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'content_typography', 'selector' => '{{WRAPPER}} .acc_content']);
+        $this->add_responsive_control('content_padding', ['label' => __('Padding', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .acc_content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
+        $this->add_responsive_control('content_margin', ['label' => __('Margin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::DIMENSIONS, 'size_units' => ['px', 'em', '%'], 'selectors' => ['{{WRAPPER}} .acc_content' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};']]);
+        $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'content_border', 'label' => __('Border', 'dynamic-content-for-elementor'), 'selector' => '{{WRAPPER}} .acc_content']);
         $this->end_controls_section();
     }
     /**
@@ -310,6 +322,9 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 case 'options_page':
                     $id_page = 'options';
                     break;
+                default:
+                    $id_page = null;
+                    break;
             }
             // Sub-fields
             $sub_fields = Helper::get_acf_repeater_fields($settings['dce_acf_repeater']);
@@ -321,7 +336,8 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
             }
             $this->add_render_attribute('wrapper', 'class', 'dce-acf-repeater-' . $settings['dce_acf_repeater_format']);
             if ($settings['dce_acf_repeater_format'] == 'slider_carousel') {
-                $this->add_render_attribute('wrapper', 'class', 'swiper-container');
+                $swiper_class = \Elementor\Plugin::$instance->experiments->is_feature_active('e_swiper_latest') ? 'swiper' : 'swiper-container';
+                $this->add_render_attribute('wrapper', 'class', $swiper_class);
                 $this->add_render_attribute('wrapper', 'class', 'swiper-container-' . $settings['direction_slider']);
                 $this->add_render_attribute('wrapper', 'counter-id', $repeater_counter);
             }
@@ -370,10 +386,16 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
                     }
                     break;
                 case 'accordion':
-                    echo '<div class="elementor-widget-accordion"><div class="elementor-accordion" role="tablist">';
+                    ?>
+					<ul class="accordion">
+					<?php 
                     break;
             }
             $my_fields = get_field_object($settings['dce_acf_repeater'], $id_page);
+            // If my_fields is empty probably we are on a nested repeater, so get the object from the subfield
+            if (empty($my_fields)) {
+                $my_fields = get_sub_field_object($settings['dce_acf_repeater'], $id_page);
+            }
             $repeater_count = 0;
             if (isset($my_fields['value']) && (\is_array($my_fields['value']) || \is_object($my_fields['value']))) {
                 $repeater_count = \count($my_fields['value']);
@@ -383,7 +405,8 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
             while (have_rows($settings['dce_acf_repeater'], $id_page)) {
                 the_row();
                 // Filter
-                if (!empty($settings['filter']) && !$this->is_filter_satisfied($my_fields['value'][get_row_index() - 1])) {
+                $sub_fields_to_filter = $my_fields['value'][get_row_index() - 1] ?? '';
+                if (!empty($settings['filter']) && \is_array($sub_fields_to_filter) && !$this->is_filter_satisfied($sub_fields_to_filter)) {
                     continue;
                 }
                 // Render a single sub-field
@@ -408,31 +431,13 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
                             echo '<tr>';
                             break;
                         case 'accordion':
-                            $element_active = '';
-                            switch ($settings['dce_acf_repeater_accordion_start']) {
-                                case 'first':
-                                    if (get_row_index() == 1) {
-                                        $element_active = ' elementor-active';
-                                    }
-                                    break;
-                                case 'all':
-                                    $element_active = ' elementor-active';
-                                    break;
-                            }
-                            echo '<div class="dce-acf-repeater-item elementor-accordion-item"><' . $settings['dce_acf_repeater_accordion_heading_size'] . ' class="elementor-tab-title' . $element_active . '" data-tab="' . $this->get_id() . '-' . get_row_index() . '" role="tab" aria-controls="elementor-tab-content-' . $this->get_id() . '-' . get_row_index() . '"><span class="elementor-accordion-icon elementor-accordion-icon-' . esc_attr($settings['icon_align']) . '" aria-hidden="true"><span class="elementor-accordion-icon-closed">' . Helper::get_icon($settings['selected_icon']) . '</span><span class="elementor-accordion-icon-opened">' . Helper::get_icon($settings['selected_active_icon']) . '</span></span><a class="elementor-accordion-title" href="#" onclick="return false;"> ';
-                            foreach ($sub_fields_tokens as $key => $value) {
-                                $text = $settings['dce_acf_repeater_html'];
-                                $value = get_sub_field($key);
-                                $sub_fields_tokens_row[get_row_index()][$key] = $value;
-                            }
-                            if ($settings['dce_acf_repeater_accordion_heading'] == '[ROW:id]') {
-                                echo get_row_index();
-                            } else {
-                                echo Tokens::replace_var_tokens($settings['dce_acf_repeater_accordion_heading'], 'ROW', $sub_fields_tokens_row[get_row_index()]);
-                            }
-                            echo '</a></' . $settings['dce_acf_repeater_accordion_heading_size'] . '>';
-                            echo '<div id="elementor-tab-content-' . $this->get_id() . '-' . get_row_index() . '" class="elementor-tab-content elementor-clearfix' . $element_active . '" data-tab="' . $this->get_id() . '-' . get_row_index() . '" role="tabpanel" aria-labelledby="elementor-tab-title-' . $this->get_id() . '-' . get_row_index() . '"' . ($element_active ? ' style="display:block;"' : '') . '>';
-                            break;
+                            ?>
+							<li class="item">
+								<div class="heading"><?php 
+                            $this->render_accordion_heading();
+                            ?></div>
+								<div>
+							<?php 
                     }
                     // HTML & Tokens
                     if ($settings['dce_acf_repeater_mode'] == 'html') {
@@ -466,8 +471,11 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
                                     $sub_field_link = \get_field($value['dce_acf_repeater_acfield_link']);
                                 }
                             }
-                            if (!empty($sub_field)) {
-                                $field_type = $sub_field_settings['type'];
+                            if (!empty($sub_field) || $sub_field === '0' || $sub_field === 0) {
+                                $field_type = '';
+                                if (\is_array($sub_field_settings)) {
+                                    $field_type = $sub_field_settings['type'];
+                                }
                                 switch ($field_type) {
                                     case 'wysiwyg':
                                         $subfield_value = wpautop($sub_field);
@@ -536,7 +544,7 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
                             echo '</div>';
                             break;
                         case 'accordion':
-                            echo '</div></div>';
+                            echo '</div></li>';
                             break;
                         case 'table':
                             echo '</tr>';
@@ -552,6 +560,8 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
                     echo '</div>';
                     break;
                 case 'accordion':
+                    echo '</ul>';
+                    break;
                 case 'slider_carousel':
                     echo '</div></div>';
                     break;
@@ -737,6 +747,63 @@ class AcfRepeater extends \DynamicContentForElementor\Widgets\WidgetPrototype
             }
         }
         return $ret;
+    }
+    /**
+     * Render Accordion Heading
+     *
+     * @return void
+     */
+    protected function render_accordion_heading()
+    {
+        $settings = $this->get_settings_for_display();
+        $sub_fields_tokens = Helper::get_acf_repeater_fields($settings['dce_acf_repeater']);
+        foreach ($sub_fields_tokens as $key => $value) {
+            $text = $settings['dce_acf_repeater_html'];
+            $value = get_sub_field($key);
+            $sub_fields_tokens_row[get_row_index()][$key] = $value;
+        }
+        if ('[ROW:id]' === $settings['dce_acf_repeater_accordion_heading']) {
+            $title = get_row_index();
+        } else {
+            $title = Tokens::replace_var_tokens($settings['dce_acf_repeater_accordion_heading'], 'ROW', $sub_fields_tokens_row[get_row_index()]);
+        }
+        $html_tag = !empty($settings['dce_acf_repeater_accordion_heading_size']) ? Helper::validate_html_tag($settings['dce_acf_repeater_accordion_heading_size']) : 'h4';
+        echo \sprintf('<%1$s>', $html_tag);
+        $this->render_heading_icon();
+        $this->add_render_attribute('accordion_title', ['class' => 'accordion-title']);
+        ?>
+
+		<span <?php 
+        echo $this->get_render_attribute_string('accordion_title');
+        ?>>
+			<?php 
+        echo $title;
+        ?>
+		</span>
+		<?php 
+        echo \sprintf('</%s>', $html_tag);
+    }
+    /**
+     * Render Heading Icon
+     *
+     * @return void
+     */
+    protected function render_heading_icon()
+    {
+        $settings = $this->get_settings_for_display();
+        $icon = $settings['selected_icon'];
+        $icon_active = $settings['selected_active_icon'];
+        $icon_align = $settings['icon_align'] ?? 'left';
+        if (!empty($icon)) {
+            echo "<span class='icon dce-accordion-icon accordion-icon-{$icon_align}'>";
+            Icons_Manager::render_icon($icon, ['aria-hidden' => 'true']);
+            echo '</span>';
+        }
+        if (!empty($icon_active)) {
+            echo "<span class='icon-active dce-accordion-icon accordion-icon-{$icon_align}'>";
+            Icons_Manager::render_icon($icon_active, ['aria-hidden' => 'true']);
+            echo '</span>';
+        }
     }
     /**
      * Is Filter Satisfied

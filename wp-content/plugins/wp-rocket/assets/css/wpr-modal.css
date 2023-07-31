@@ -68,3 +68,7 @@
 .wpr-modal-confirm:hover {
 	box-shadow: none;
 }
+
+.wpr-modal .wpr-sub-list {
+	padding-left: 25px;
+}

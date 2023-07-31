@@ -97,24 +97,6 @@ class Export extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $settings = Helper::get_dynamic_value($settings, $fields);
         $this->export($fields, $settings, $ajax_handler);
     }
-    /**
-     * On Export
-     *
-     * Clears form settings on export
-     * @access Public
-     * @param array $element
-     */
-    public function on_export($element)
-    {
-        $tmp = [];
-        if (!empty($element)) {
-            foreach ($element['settings'] as $key => $value) {
-                if (\substr($key, 0, 4) == 'dce_') {
-                    unset($element['settings'][$key]);
-                }
-            }
-        }
-    }
     protected function export($fields, $settings = null, $ajax_handler = null)
     {
         $export_data = [];
@@ -170,13 +152,27 @@ class Export extends \ElementorPro\Modules\Forms\Classes\Action_Base
                     add_filter('https_ssl_verify', '__return_false');
                 }
                 $args['follow_redirects'] = \true;
-                // Send the request
                 $req = 'wp_remote_' . $settings['dce_form_export_method'];
-                $ret = \call_user_func($req, $exp_url, $args);
-                $ret_code = wp_remote_retrieve_response_code($ret);
-                if ($ret_code == 200) {
+                // Send the request
+                switch ($settings['dce_form_export_method']) {
+                    case 'get':
+                        $ret = wp_remote_get($exp_url, $args);
+                        break;
+                    case 'post':
+                        $ret = wp_remote_post($exp_url, $args);
+                        break;
+                    case 'head':
+                        $ret = wp_remote_head($exp_url, $args);
+                        break;
+                    default:
+                        // this should never happen:
+                        $ajax_handler->add_admin_error_message('DCE Error: AHPH6P');
+                        return;
+                }
+                if (!is_wp_error($ret)) {
                     $log = 'Form Export: OK';
                 } else {
+                    $ret_code = wp_remote_retrieve_response_code($ret);
                     $log = 'Form Export: ERROR ' . $ret_code;
                     if ($settings['dce_form_pdf_error']) {
                         $ajax_handler->add_admin_error_message($ret->get_error_message());
@@ -202,5 +198,9 @@ class Export extends \ElementorPro\Modules\Forms\Classes\Action_Base
                 }
             }
         }
+    }
+    public function on_export($element)
+    {
+        return $element;
     }
 }

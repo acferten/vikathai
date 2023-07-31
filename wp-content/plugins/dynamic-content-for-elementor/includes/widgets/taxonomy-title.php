@@ -53,7 +53,7 @@ class TaxonomyTitle extends \DynamicContentForElementor\Widgets\WidgetPrototype
             $queried_object = get_queried_object();
             $tax = get_taxonomy($queried_object->taxonomy);
             $tax_labels = get_taxonomy_labels($tax);
-            $titolo = $tax_labels->singular_name;
+            $titolo = $tax_labels->singular_name ?? '';
         } else {
             // All other Taxonomies
             $titolo = wp_kses_post(get_the_title());

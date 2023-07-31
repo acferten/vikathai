@@ -28,7 +28,7 @@ class UserFields extends \DynamicContentForElementor\Widgets\WidgetPrototype
     protected function safe_register_controls()
     {
         $this->start_controls_section('section_content', ['label' => $this->get_title()]);
-        $this->add_control('dce_user_user', ['label' => __('User', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['logged' => ['title' => __('Current User', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-key'], 'author' => ['title' => __('Author', 'dynamic-content-for-elementor'), 'icon' => 'eicon-pencil'], 'static' => ['title' => __('Select User', 'dynamic-content-for-elementor'), 'icon' => 'eicon-user-circle-o']], 'default' => 'logged', 'toggle' => \false]);
+        $this->add_control('dce_user_user', ['label' => __('User', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['logged' => __('Current User', 'dynamic-content-for-elementor'), 'author' => __('Author', 'dynamic-content-for-elementor'), 'static' => __('Select User', 'dynamic-content-for-elementor')], 'default' => 'logged', 'toggle' => \false]);
         $this->add_control('dce_user_user_id', ['label' => __('User ID', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'min' => 1, 'condition' => ['dce_user_user' => 'static']]);
         $this->add_control('dce_user_key', ['label' => __('Field Key', 'dynamic-content-for-elementor'), 'type' => 'ooo_query', 'placeholder' => __('Field key or Name', 'dynamic-content-for-elementor'), 'label_block' => \true, 'query_type' => 'fields', 'object_type' => 'user', 'default' => 'display_name']);
         $this->add_control('icon', ['label' => __('Icon', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::ICONS]);
@@ -118,8 +118,8 @@ class UserFields extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $this->add_control('dce_user_button_css_id', ['label' => __('Button ID', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'dynamic' => ['active' => \true], 'default' => '', 'title' => __('Add your custom id WITHOUT the Pound key. e.g: my-id', 'dynamic-content-for-elementor'), 'label_block' => \false, 'description' => __('Please make sure the ID is unique and not used elsewhere on the page where this form is displayed. This field allows <code>A-z 0-9</code> & underscore chars without spaces.', 'dynamic-content-for-elementor'), 'separator' => 'before']);
         $this->end_controls_section();
         //* FALLBACK for NO RESULTS *//
-        $this->start_controls_section('dce_user_section_fallback', ['label' => __('Fallback for the Empty Field', 'dynamic-content-for-elementor')]);
-        $this->add_control('dce_user_fallback', ['label' => __('Fallback Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'description' => __('Show something when field is empty null, void, false or 0', 'dynamic-content-for-elementor')]);
+        $this->start_controls_section('dce_user_section_fallback', ['label' => __('Fallback', 'dynamic-content-for-elementor')]);
+        $this->add_control('dce_user_fallback', ['label' => __('Fallback Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'description' => __('Show something when the field is empty null, void, false or 0', 'dynamic-content-for-elementor')]);
         $this->add_control('dce_user_fallback_zero', ['label' => __('Consider 0 as empty', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['dce_user_fallback!' => '']]);
         $this->add_control('dce_user_fallback_type', ['label' => __('Content type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['text' => ['title' => __('Text', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'template' => ['title' => __('Template', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-th-large']], 'toggle' => \false, 'default' => 'text', 'condition' => ['dce_user_fallback!' => '']]);
         $this->add_control('dce_user_fallback_template', ['label' => __('Render Template', 'dynamic-content-for-elementor'), 'type' => 'ooo_query', 'placeholder' => __('Template Name', 'dynamic-content-for-elementor'), 'label_block' => \true, 'query_type' => 'posts', 'object_type' => 'elementor_library', 'description' => __('Use an Elementor Template as content, useful for complex structure', 'dynamic-content-for-elementor'), 'condition' => ['dce_user_fallback!' => '', 'dce_user_fallback_type' => 'template']]);
@@ -127,7 +127,7 @@ class UserFields extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $this->add_control('dce_user_fallback_autop', ['label' => __('Remove auto paragraph', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['dce_user_fallback!' => '', 'dce_user_fallback_type' => 'text']]);
         $this->end_controls_section();
         $this->start_controls_section('dce_user_array_section', ['label' => __('Multiple Usermeta', 'dynamic-content-for-elementor'), 'condition' => ['dce_user_array!' => '']]);
-        $this->add_control('dce_user_array_fallback', ['label' => __('Fallback Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'description' => __('Show something when this post meta is not found', 'dynamic-content-for-elementor')]);
+        $this->add_control('dce_user_array_fallback', ['label' => __('Fallback Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'description' => __('Show something when this user meta is not found', 'dynamic-content-for-elementor')]);
         $this->add_control('dce_user_array_fallback_type', ['label' => __('Content type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['text' => ['title' => __('Text', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'template' => ['title' => __('Template', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-th-large']], 'toggle' => \false, 'default' => 'text', 'condition' => ['dce_user_array_fallback!' => '']]);
         $this->add_control('dce_user_array_fallback_template', ['label' => __('Render Template', 'dynamic-content-for-elementor'), 'type' => 'ooo_query', 'placeholder' => __('Template Name', 'dynamic-content-for-elementor'), 'label_block' => \true, 'query_type' => 'posts', 'object_type' => 'elementor_library', 'condition' => ['dce_user_array_fallback!' => '', 'dce_user_array_fallback_type' => 'template']]);
         $this->add_control('dce_user_array_fallback_text', ['label' => __('Text Fallback', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::WYSIWYG, 'default' => __('This field is empty.', 'dynamic-content-for-elementor'), 'description' => __('Type here your content, you can use HTML and Tokens', 'dynamic-content-for-elementor'), 'condition' => ['dce_user_array_fallback!' => '', 'dce_user_array_fallback_type' => 'text']]);
@@ -224,12 +224,20 @@ class UserFields extends \DynamicContentForElementor\Widgets\WidgetPrototype
     protected function safe_render()
     {
         $settings = $this->get_settings_for_display();
-        if (empty($settings) || !$settings['dce_user_key']) {
+        if (empty($settings)) {
+            return;
+        }
+        if (empty($settings['dce_user_key'])) {
+            Helper::notice('', __('Type a user field in the corresponding field', 'dynamic-content-for-elementor'));
             return;
         }
         switch ($settings['dce_user_user']) {
             case 'static':
                 $user_id = $settings['dce_user_user_id'];
+                if (empty($user_id)) {
+                    Helper::notice('', __('Type a user ID in the corresponding field', 'dynamic-content-for-elementor'));
+                    return;
+                }
                 break;
             case 'author':
                 $user_id = \false;

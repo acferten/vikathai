@@ -2,7 +2,6 @@
 namespace WP_Rocket\ThirdParty;
 
 use WP_Rocket\Dependencies\League\Container\ServiceProvider\AbstractServiceProvider;
-use WP_Rocket\Subscriber\Third_Party\Plugins\Ecommerce\BigCommerce_Subscriber;
 use WP_Rocket\Subscriber\Third_Party\Plugins\Images\Webp\EWWW_Subscriber;
 use WP_Rocket\Subscriber\Third_Party\Plugins\Images\Webp\Imagify_Subscriber;
 use WP_Rocket\Subscriber\Third_Party\Plugins\Images\Webp\Optimus_Subscriber;
@@ -12,7 +11,9 @@ use WP_Rocket\Subscriber\Third_Party\Plugins\NGG_Subscriber;
 use WP_Rocket\Subscriber\Third_Party\Plugins\SyntaxHighlighter_Subscriber;
 use WP_Rocket\ThirdParty\Plugins\Ads\Adthrive;
 use WP_Rocket\ThirdParty\Plugins\ConvertPlug;
+use WP_Rocket\ThirdParty\Plugins\Ecommerce\BigCommerce;
 use WP_Rocket\ThirdParty\Plugins\Ecommerce\WooCommerceSubscriber;
+use WP_Rocket\ThirdParty\Plugins\I18n\TranslatePress;
 use WP_Rocket\ThirdParty\Plugins\I18n\WPML;
 use WP_Rocket\ThirdParty\Plugins\InlineRelatedPosts;
 use WP_Rocket\ThirdParty\Plugins\ModPagespeed;
@@ -29,12 +30,19 @@ use WP_Rocket\ThirdParty\Plugins\Security\WordFenceCompatibility;
 use WP_Rocket\ThirdParty\Plugins\SEO\Yoast;
 use WP_Rocket\ThirdParty\Plugins\SimpleCustomCss;
 use WP_Rocket\ThirdParty\Plugins\Smush;
+use WP_Rocket\ThirdParty\Plugins\TheEventsCalendar;
 use WP_Rocket\ThirdParty\Plugins\ThirstyAffiliates;
 use WP_Rocket\ThirdParty\Plugins\UnlimitedElements;
-use WP_Rocket\ThirdParty\Themes\Avada;
-use WP_Rocket\ThirdParty\Themes\Bridge;
-use WP_Rocket\ThirdParty\Themes\Divi;
-use WP_Rocket\ThirdParty\Themes\Flatsome;
+use WP_Rocket\ThirdParty\Plugins\CDN\{Cloudflare,CloudflareFacade};
+use WP_Rocket\ThirdParty\Plugins\Jetpack;
+use WP_Rocket\ThirdParty\Plugins\WPGeotargeting;
+use WP_Rocket\ThirdParty\Plugins\SEO\RankMathSEO;
+use WP_Rocket\ThirdParty\Plugins\SEO\AllInOneSEOPack;
+use WP_Rocket\ThirdParty\Plugins\SEO\SEOPress;
+use WP_Rocket\ThirdParty\Plugins\SEO\TheSEOFramework;
+use WP_Rocket\ThirdParty\Plugins\Optimization\RocketLazyLoad;
+use WP_Rocket\ThirdParty\Plugins\Optimization\Perfmatters;
+use WP_Rocket\ThirdParty\Plugins\Optimization\RapidLoad;
 
 /**
  * Service provider for WP Rocket third party compatibility
@@ -57,8 +65,6 @@ class ServiceProvider extends AbstractServiceProvider {
 		'woocommerce_subscriber',
 		'syntaxhighlighter_subscriber',
 		'elementor_subscriber',
-		'bridge_subscriber',
-		'avada_subscriber',
 		'ngg_subscriber',
 		'smush_subscriber',
 		'imagify_webp_subscriber',
@@ -70,7 +76,6 @@ class ServiceProvider extends AbstractServiceProvider {
 		'amp_subscriber',
 		'simple_custom_css',
 		'pdfembedder',
-		'divi',
 		'mod_pagespeed',
 		'adthrive',
 		'autoptimize',
@@ -79,11 +84,23 @@ class ServiceProvider extends AbstractServiceProvider {
 		'wordfence_subscriber',
 		'ezoic',
 		'pwa',
-		'flatsome',
 		'convertplug',
 		'unlimited_elements',
 		'inline_related_posts',
+		'jetpack',
+		'rank_math_seo',
+		'all_in_one_seo_pack',
+		'seopress',
+		'the_seo_framework',
 		'wpml',
+		'cloudflare_plugin_facade',
+		'cloudflare_plugin_subscriber',
+		'rocket_lazy_load',
+		'the_events_calendar',
+		'perfmatters',
+		'rapidload',
+		'translatepress',
+		'wpgeotargeting',
 	];
 
 	/**
@@ -113,20 +130,6 @@ class ServiceProvider extends AbstractServiceProvider {
 			->share( 'syntaxhighlighter_subscriber', SyntaxHighlighter_Subscriber::class )
 			->addTag( 'common_subscriber' );
 		$this->getContainer()
-			->share( 'bridge_subscriber', Bridge::class )
-			->addArgument( $options )
-			->addTag( 'common_subscriber' );
-		$this->getContainer()
-			->share( 'divi', Divi::class )
-			->addArgument( $this->getContainer()->get( 'options_api' ) )
-			->addArgument( $options )
-			->addArgument( $this->getContainer()->get( 'delay_js_html' ) )
-			->addTag( 'common_subscriber' );
-		$this->getContainer()
-			->share( 'avada_subscriber', Avada::class )
-			->addArgument( $options )
-			->addTag( 'common_subscriber' );
-		$this->getContainer()
 			->share( 'ngg_subscriber', NGG_Subscriber::class )
 			->addTag( 'common_subscriber' );
 		$this->getContainer()
@@ -150,7 +153,7 @@ class ServiceProvider extends AbstractServiceProvider {
 			->share( 'optimus_webp_subscriber', Optimus_Subscriber::class )
 			->addTag( 'common_subscriber' );
 		$this->getContainer()
-			->share( 'bigcommerce_subscriber', BigCommerce_Subscriber::class )
+			->share( 'bigcommerce_subscriber', BigCommerce::class )
 			->addTag( 'common_subscriber' );
 		$this->getContainer()
 			->share( 'beaverbuilder_subscriber', BeaverBuilder::class )
@@ -199,12 +202,8 @@ class ServiceProvider extends AbstractServiceProvider {
 			->addArgument( $options )
 			->addTag( 'common_subscriber' );
 		$this->getContainer()
-			->share( 'flatsome', Flatsome::class )
-			->addTag( 'common_subscriber' );
-		$this->getContainer()
 			->share( 'convertplug', ConvertPlug::class )
 			->addTag( 'common_subscriber' );
-
 		$this->getContainer()
 			->share( 'unlimited_elements', UnlimitedElements::class )
 			->addTag( 'common_subscriber' );
@@ -214,5 +213,49 @@ class ServiceProvider extends AbstractServiceProvider {
 		$this->getContainer()
 			->share( 'wpml', WPML::class )
 			->addTag( 'common_subscriber' );
+		$this->getContainer()->add( 'cloudflare_plugin_facade', CloudflareFacade::class );
+		$this->getContainer()
+			->share( 'cloudflare_plugin_subscriber', Cloudflare::class )
+			->addArgument( $options )
+			->addArgument( $this->getContainer()->get( 'options_api' ) )
+			->addArgument( $this->getContainer()->get( 'beacon' ) )
+			->addArgument( $this->getContainer()->get( 'cloudflare_plugin_facade' ) )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'jetpack', Jetpack::class )
+			->addArgument( $options )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'convertplug', ConvertPlug::class )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'rank_math_seo', RankMathSEO::class )
+			->addArgument( $options )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'all_in_one_seo_pack', AllInOneSEOPack::class )
+			->addArgument( $options )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'seopress', SEOPress::class )
+			->addArgument( $options )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'the_seo_framework', TheSEOFramework::class )
+			->addArgument( $options )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'rocket_lazy_load', RocketLazyLoad::class )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'the_events_calendar', TheEventsCalendar::class )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'perfmatters', Perfmatters::class )
+			->addTag( 'common_subscriber' );
+		$this->getContainer()
+			->share( 'rapidload', RapidLoad::class );
+		$this->getContainer()->share( 'translatepress', TranslatePress::class );
+		$this->getContainer()->share( 'wpgeotargeting', WPGeotargeting::class );
 	}
 }

@@ -9,7 +9,6 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 if ( ! class_exists( 'Jet_Smart_Filters_Radio_Filter' ) ) {
-
 	/**
 	 * Define Jet_Smart_Filters_Radio_Filter class
 	 */
@@ -17,37 +16,38 @@ if ( ! class_exists( 'Jet_Smart_Filters_Radio_Filter' ) ) {
 
 		/**
 		 * Get provider name
-		 *
-		 * @return string
 		 */
 		public function get_name() {
+
 			return __( 'Radio', 'jet-smart-filters' );
 		}
 
 		/**
 		 * Get provider ID
-		 *
-		 * @return string
 		 */
 		public function get_id() {
+
 			return 'radio';
 		}
 
 		/**
+		 * Get icon URL
+		 */
+		public function get_icon_url() {
+
+			return jet_smart_filters()->plugin_url( 'admin/assets/img/filter-types/radio.png' );
+		}
+
+		/**
 		 * Get provider wrapper selector
-		 *
-		 * @return string
 		 */
 		public function get_scripts() {
+
 			return false;
 		}
 
 		/**
 		 * Prepare filter template argumnets
-		 *
-		 * @param  [type] $args [description]
-		 *
-		 * @return [type]       [description]
 		 */
 		public function prepare_args( $args ) {
 
@@ -117,7 +117,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Radio_Filter' ) ) {
 					break;
 
 				case 'posts':
-
 					$post_type = get_post_meta( $filter_id, '_source_post_type', true );
 					$args      = array(
 						'post_type' => $post_type,
@@ -138,7 +137,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Radio_Filter' ) ) {
 					break;
 
 				case 'custom_fields':
-
 					$custom_field   = get_post_meta( $filter_id, '_source_custom_field', true );
 					$get_from_field = get_post_meta( $filter_id, '_source_get_from_field_data', true );
 					$get_from_field = filter_var( $get_from_field, FILTER_VALIDATE_BOOLEAN );
@@ -219,7 +217,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Radio_Filter' ) ) {
 			}
 
 			return $result;
-
 		}
 
 		public function additional_filter_data_atts( $args ) {
@@ -229,9 +226,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Radio_Filter' ) ) {
 			if ( ! empty( $args['can_deselect'] ) ) $additional_filter_data_atts['data-can-deselect'] = $args['can_deselect'];
 
 			return $additional_filter_data_atts;
-
 		}
-
 	}
-
 }

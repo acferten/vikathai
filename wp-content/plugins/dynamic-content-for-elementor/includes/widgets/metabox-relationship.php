@@ -45,7 +45,7 @@ class MetaboxRelationship extends \DynamicContentForElementor\Widgets\DynamicPos
         $this->update_control('query_type', ['type' => Controls_Manager::HIDDEN, 'default' => 'metabox_relationship']);
     }
     /**
-     * Register Widget Specific Controls 
+     * Register Widget Specific Controls
      *
      * @return void
      */

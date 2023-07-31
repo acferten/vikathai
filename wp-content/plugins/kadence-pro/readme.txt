@@ -2,8 +2,8 @@
 Contributors: britner
 Tags: theme, blocks, hooks,
 Requires at least: 5.2
-Tested up to: 5.8
-Stable tag: 1.0.4
+Tested up to: 6.2
+Stable tag: 1.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,10 +36,61 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it. This
 
 == Changelog ==
 
+== 1.0.11 | 16th June 2023 ==
+* Update: Language Files.
+
+== 1.0.10 | 5th June 2023 ==
+* Update: Allow the toggle widget area to be used on mobile.
+* Fix: CSS errors on dark mode toggle
+* Fix: Dark mode custom mobile logo not working
+* Fix: WPML issue with selecting individual pages for conditional header.
+* Fix: Issue with mobile account registration settings.
+* Fix: Issue with amount to free shipping showing tax subtotal.
+* Fix: Issue with sorting elements in admin.
+* Fix: Issue with missing class when replacing content.
+* Fix: Issue with disabling custom header or footer.
+
+== 1.0.9 | 2nd March 2023 ==
+* Update: Elements to be public post type by default. (filter kadence_element_public_cpt).
+* Fix: Preload css issue.
+
+== 1.0.8 | 20th February 2023 ==
+* Update: Elements to be hidden post type by default.
+* Update: Infinite Scroll events.
+* Update: Add order option to element post settings.
+* Fix: Order of elements in admin.
+* Fix: Multiple Template overrides shouldn't both apply. 
+* Fix: Issue with elements type selection hiding on load.
+* Fix: Color Picker issue.
+* Fix: Possible character conversion in elements.
+
+== 1.0.7 | 23rd September 2022 ==
+* Fix: Possible issue of css styles in blocks breaking when using quick enable/disable.
+
+== 1.0.6 | 22nd September 2022 ==
+* Add: Element Duplicate button.
+* Add: Element quick disable.
+* Update: Event Calendar Hooks.
+* Fix: Issues with js translations not working.
+* Fix: Issue with custom padding of extra navigation areas.
+* Fix: Issue with showing elements on taxonomies.
+* Fix: Issue with possible notice in admin with shortpixel.
+* Fix: Issue with color switch losing "current".
+* Fix: Issue with custom archive settings missing 4 column option.
+* Fix: Issue with custom width mega menu missing on hover animations.
+
+== 1.0.5 | 4th March 2022 ==
+* Add: Menu Item description options.
+* Update: Mega menu controls for 5.9
+* Update: Box shadow and border radius settings in second mobile button.
+* Fix: Issue where images in elements didn't load srcset.
+* Fix: Elements admin title styling.
+* Fix: Issue where template loop elements breaks infinite scroll.
+
 == 1.0.4 | 9th December 2021 ==
 * Add: Single Content Template Override.
 * Add: Single Loop Item Template Override.
-* Add: Taxonomy Column Control, you can now set differt columns for specific categories in your blog.
+* Add: Taxonomy Column Control, you can now set different columns for specific categories in your blog.
 * Add: Editor width settings for elements.
 * Add: Language conditional to conditional header.
 * Add: Language conditional to elements.

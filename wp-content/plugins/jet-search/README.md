@@ -4,6 +4,56 @@ The best tool for adding complex search functionality to pages built with Elemen
 
 # ChangeLog
 
+# 3.1.1
+* FIX: [Crocoblock/suggestions#6933](https://github.com/Crocoblock/suggestions/issues/6933);
+* FIX: Include / Exclude terms issue
+* ADD: `Is Products Search` option in the Search Suggestions Widget
+* FIX: minor issues
+
+# 3.1.0
+* ADD: Search suggestions widget;
+* ADD: Search suggestions admin UI;
+* FIX: Better sanitizeing custom callbacks before execute;
+* FIX: Showing results by post type;
+* FIX: Markup issue with enabled highlight;
+* FIX: Search with products archive.
+
+# 3.0.3
+* ADD: `jet-search/ajax-search/query-args` filter hook
+* ADD: `jet-search/template/pre-get-content` filter hook
+* ADD: `jet-search/template/pre-get-meta-field` filter hook
+* ADD: `Minimal Quantity of Symbols for Search` option
+* ADD: `jet-ajax-search/show-results` trigger on search AJAX request success
+* FIX: minor issues
+
+# 3.0.2
+* ADD: [Crocoblock/suggestions#5712](https://github.com/Crocoblock/suggestions/issues/5712);
+* ADD: [Crocoblock/suggestions#5742](https://github.com/Crocoblock/suggestions/issues/5742);
+* FIX: issues with the `Search in taxonomy terms` option;
+* FIX: compatibility with Elementor 3.7.
+* FIX: minor issues
+
+# 3.0.1
+* UPD: Allow to disable submitting the search form on Enter click.
+
+## 3.0.0
+* ADD: Blocks Editor integration;
+* ADD: Allow to search in taxonomy terms (include into results posts wich has terms with search query);
+* ADD: Crocoblock/suggestions#4631;
+* ADD: Allow to highlight search query in the search results;
+* FIX: Navigation Arrows in Ajax Search withg Blocksy theme;
+* FIX: Deprecated notice for Elementor editor;
+* FIX: Items are duplicated in listing grid on search result page.
+
+## 2.2.0 - 14.06.2022
+* ADD: Blocks Editor integration;
+* ADD: Allow to search in taxonomy terms (include into results posts wich has terms with search query);
+* ADD: [Crocoblock/suggestions#4631](https://github.com/Crocoblock/suggestions/issues/4631);
+* ADD: Allow to highlight search query in the search results;
+* FIX: Navigation Arrows in Ajax Search withg Blocksy theme;
+* FIX: Deprecated notice for Elementor editor;
+* FIX: Items are duplicated in listing grid on search result page.
+
 ## [2.1.17](https://github.com/ZemezLab/jet-search/releases/tag/2.1.17) - 14.04.2022
 * Added: [Crocoblock/suggestions#5090](https://github.com/Crocoblock/suggestions/issues/5090)
 * Added: [Crocoblock/suggestions#4886](https://github.com/Crocoblock/suggestions/issues/4886)

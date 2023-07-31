@@ -33,7 +33,7 @@ trait Image
     public static function get_image_id($image_url)
     {
         global $wpdb;
-        $sql = 'SELECT ID FROM ' . $wpdb->prefix . "posts WHERE post_type LIKE 'attachment' AND guid LIKE '%" . esc_sql($image_url) . "';";
+        $sql = $wpdb->prepare("SELECT ID FROM {$wpdb->prefix}posts WHERE post_type LIKE 'attachment' AND guid LIKE %s;", '%' . $wpdb->esc_like($image_url) . '%');
         $attachment = $wpdb->get_col($sql);
         $img_id = \reset($attachment);
         if (!$img_id) {

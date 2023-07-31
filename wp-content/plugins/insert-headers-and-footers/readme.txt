@@ -4,7 +4,7 @@ Tags: code, css, php, footer, functions, content, facebook pixel, footer code, f
 Requires at least: 4.6
 Tested up to: 6.2
 Requires PHP: 5.5
-Stable tag: 2.0.13
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -307,6 +307,14 @@ Thank you
 Syed Balkhi
 
 == Changelog ==
+
+= 2.1.0 =
+* New: See exactly which scripts and snippets are loaded on the current page with the WPCode admin bar info menu.
+* Tweak: Minor update to connect process.
+
+= 2.0.13.1 =
+* Fix: Improve compatibility with older WordPress versions before version 4.7.
+* Fix: Add escaping to tag filter links in the list of snippets.
 
 = 2.0.13 =
 * New: We have added user customization options for the list of snippets in the admin. Now, you can choose snippet list columns, determine the number of snippets to display, and set the default order of the snippets.

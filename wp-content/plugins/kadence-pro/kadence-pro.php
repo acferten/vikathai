@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Kadence Pro - Premium addon for the Kadence Theme
- * Plugin URI:  https://www.kadence-theme.com/premium/
+ * Plugin URI:  https://www.kadencewp.com/kadence-theme/premium/
  * Description: Extends the Kadence theme with premium features and addons.
- * Version:     1.0.4
+ * Version:     1.0.11
  * Author:      Kadence WP
  * Author URI:  https://www.kadencewp.com/
  * License:     GPL2
@@ -17,15 +17,6 @@
 /**
  * Class KTP_Requirements_Check
  */
-
-update_option('kadence_pro_api_manager_activated',            'Activated');
-update_option('kadence_woocommerce_elementor_pro_activation', 'Activated');
-update_option('kadence_build_child_defaults_activation',      'Activated');
-update_option('kt_api_manager_kadence_amp_activated',         'Activated');
-update_option('kt_api_manager_kadence_galleries_activated',   'Activated');
-update_option('kt_api_manager_kadence_woo_activated',         'Activated');
-set_transient('kt_plugin_api_status_check', 1);
-
 final class KTP_Requirements_Check {
 
 	/**

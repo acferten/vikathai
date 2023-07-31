@@ -2,7 +2,7 @@
 /**
  * Checkbox list item template
  */
-
+//tabindex=0
 $checked_icon = apply_filters( 'jet-smart-filters/templates/checkboxes-item/checked-icon', 'fa fa-check' );
 ?>
 <div class="jet-checkboxes-list__row jet-filter-row<?php echo $extra_classes; ?>">

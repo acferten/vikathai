@@ -1,13 +1,13 @@
 "use strict";
 
-const initializeHiddenLabelField = (field, form) => {
+const initializeHiddenLabelField = (field, formWrapper) => {
 	const input = field.getElementsByTagName('input')[0];
 	const fieldId = input.getAttribute('data-field-id');
-	const hiddenField = form.getElementsByClassName('elementor-field-group-' + fieldId)[0];
+	const hiddenField = formWrapper.getElementsByClassName('elementor-field-group-' + fieldId)[0];
 	if (! hiddenField) {
 		let span = document.createElement('span');
 		span.textContent = 'Hiddel Label: Field not found.';
-		form.prepend(span);
+		formWrapper.prepend(span);
 		return;
 	}
 	const hiddenInputs = hiddenField.querySelectorAll(`[name^=form_fields]`)
@@ -25,7 +25,7 @@ const initializeHiddenLabelField = (field, form) => {
 				for (let input of hiddenInputs) {
 					if (input.checked) {
 						let id = input.getAttribute('id');
-						let label = form.querySelector(`label[for=${id}]`).innerHTML;
+						let label = formWrapper.querySelector(`label[for=${id}]`).innerHTML;
 						labels.push(label);
 					}
 				}
@@ -42,18 +42,12 @@ const initializeHiddenLabelField = (field, form) => {
 		}
 		prevValue = newValue;
 		input.value = newValue;
-		// event change trigger is needed for potential conditions on this field:
-		if ("createEvent" in document) {
-			var evt = document.createEvent("HTMLEvents");
-			evt.initEvent("change", false, true);
-			input.dispatchEvent(evt);
-		}
-		else {
-			input.fireEvent("onchange");
-		};
+		const evt = new Event('change');
+		const form = formWrapper.getElementsByTagName('form')[0];
+		form.dispatchEvent(evt);
 	}
 	if (hiddenField) {
-		form.addEventListener('change', updateLabel);
+		formWrapper.addEventListener('change', updateLabel);
 	} else {
 		alert(`Hidden Label, Could not find selector ${fieldId}`);
 	}

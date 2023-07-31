@@ -139,7 +139,7 @@ class Module extends Base_Module
         $results = [];
         $object_type = !empty($data['object_type']) ? $data['object_type'] : 'any';
         if ($object_type == 'type') {
-            $list = Helper::get_post_types();
+            $list = Helper::get_public_post_types();
             if (!empty($list)) {
                 foreach ($list as $akey => $alist) {
                     if (\strlen($data['q']) > 2) {
@@ -215,23 +215,28 @@ class Module extends Base_Module
             return [];
         }
         $results = [];
+        $found_metabox = [];
         $types = !empty($data['object_type']) ? (array) $data['object_type'] : [];
         // Retrieve all Meta Box Fields
         $all_fields = rwmb_get_registry('meta_box')->all();
         // Filter by Types
         if (!empty($types)) {
-            $all_fields = \array_filter($all_fields, function ($key) use($types) {
-                return \in_array(rwmb_get_field_settings($key)['type'] ?? '', $types, \true);
-            }, \ARRAY_FILTER_USE_KEY);
+            foreach ($all_fields as $id_meta => $value) {
+                foreach ($value->fields as $key => $value) {
+                    if (\in_array($value['type'] ?? '', $types, \true)) {
+                        $found_metabox[] = $value;
+                    }
+                }
+            }
         }
-        foreach ($all_fields as $key => $field) {
-            $name = rwmb_get_field_settings($key)['name'] ?? '';
+        foreach ($found_metabox as $key => $field) {
+            $name = \strtolower($field['name'] ?? '');
             if (\strlen($data['q']) > 2) {
-                if (\strpos($key, $data['q']) === \false && \strpos($name, $data['q']) === \false) {
+                if (\strpos((string) $key, $data['q']) === \false && \strpos((string) $name, $data['q']) === \false) {
                     continue;
                 }
             }
-            $results[] = ['id' => $key, 'text' => esc_attr($name)];
+            $results[] = ['id' => $field['id'], 'text' => esc_attr($name)];
         }
         return $results;
     }
@@ -339,15 +344,13 @@ class Module extends Base_Module
         if ($object_type == 'role') {
             $list = Helper::get_roles();
             $list['visitor'] = 'Visitor (non logged User)';
-            if (!empty($list)) {
-                foreach ($list as $akey => $alist) {
-                    if (\strlen($data['q']) > 2) {
-                        if (\strpos($akey, $data['q']) === \false && \strpos($alist, $data['q']) === \false) {
-                            continue;
-                        }
+            foreach ($list as $akey => $alist) {
+                if (\strlen($data['q']) > 2) {
+                    if (\strpos($akey, $data['q']) === \false && \strpos($alist, $data['q']) === \false) {
+                        continue;
                     }
-                    $results[] = ['id' => $akey, 'text' => esc_attr($alist)];
                 }
+                $results[] = ['id' => $akey, 'text' => esc_attr($alist)];
             }
         } else {
             $query_params = ['search' => '*' . $data['q'] . '*'];
@@ -468,7 +471,7 @@ class Module extends Base_Module
             $is_ctp = !\is_numeric($first);
         }
         if ($is_ctp) {
-            $post_types = Helper::get_post_types();
+            $post_types = Helper::get_public_post_types();
             if (!empty($ids)) {
                 foreach ($ids as $aid) {
                     if (isset($post_types[$aid])) {

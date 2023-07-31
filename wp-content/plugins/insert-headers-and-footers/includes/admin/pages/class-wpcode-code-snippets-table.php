@@ -141,10 +141,10 @@ class WPCode_Code_Snippets_Table extends WP_List_Table {
 					foreach ( $tags as $tag ) {
 						$tags_links[] = sprintf(
 							'<a href="%1$s" title="%2$s">%3$s</a>',
-							add_query_arg( 'tag', $tag ),
+							esc_url( add_query_arg( 'tag', $tag ) ),
 							// Translators: The tag by which to filter the list of snippets in the admin.
-							sprintf( __( 'Filter snippets by tag: %s', 'insert-headers-and-footers' ), $tag ),
-							$tag
+							sprintf( __( 'Filter snippets by tag: %s', 'insert-headers-and-footers' ), esc_attr( $tag ) ),
+							esc_html( $tag )
 						);
 					}
 				} else {
@@ -429,7 +429,8 @@ class WPCode_Code_Snippets_Table extends WP_List_Table {
 			$args['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 				array(
 					'taxonomy' => 'wpcode_location',
-					'terms'    => array( absint( $_GET['location'] ) ),
+					'terms'    => array( sanitize_key( $_GET['location'] ) ),
+					'field'    => 'slug',
 				),
 			);
 		}
@@ -794,7 +795,7 @@ class WPCode_Code_Snippets_Table extends WP_List_Table {
 		$used_locations = get_terms(
 			array(
 				'taxonomy'   => 'wpcode_location',
-				'hide_empty' => false,
+				'hide_empty' => true,
 			)
 		);
 
@@ -803,7 +804,7 @@ class WPCode_Code_Snippets_Table extends WP_List_Table {
 			return;
 		}
 
-		$displayed_location = isset( $_GET['location'] ) ? absint( $_GET['location'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$displayed_location = isset( $_GET['location'] ) ? sanitize_key( $_GET['location'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		?>
 		<label for="filter-by-location" class="screen-reader-text"><?php esc_html_e( 'Filter by location', 'insert-headers-and-footers' ); ?></label>
 		<select name="location" id="filter-by-location">
@@ -812,7 +813,7 @@ class WPCode_Code_Snippets_Table extends WP_List_Table {
 			foreach ( $used_locations as $used_location ) {
 				$pretty_name = wpcode()->auto_insert->get_location_label( $used_location->slug );
 				?>
-				<option<?php selected( $displayed_location, $used_location->term_id ); ?> value="<?php echo esc_attr( $used_location->term_id ); ?>"><?php echo esc_html( $pretty_name ); ?></option>
+				<option<?php selected( $displayed_location, $used_location->slug ); ?> value="<?php echo esc_attr( $used_location->slug ); ?>"><?php echo esc_html( $pretty_name ); ?></option>
 				<?php
 			}
 			?>
@@ -869,6 +870,6 @@ class WPCode_Code_Snippets_Table extends WP_List_Table {
 		$class    = $this->view === $slug ? ' class="current"' : '';
 		$count    = isset( $this->count[ $slug ] ) ? $this->count[ $slug ] : 0;
 
-		return sprintf( '<a href="%1$s"%2$s>%3$s&nbsp;<span class="count">(%4$d)</span></a>', esc_url( $url ), $class, $label, $count );
+		return sprintf( '<a href="%1$s"%2$s>%3$s&nbsp;<span class="count">(%4$d)</span></a>', esc_url( $url ), $class, esc_html( $label ), esc_html( $count ) );
 	}
 }

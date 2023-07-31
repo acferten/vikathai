@@ -8,7 +8,6 @@ $this->start_controls_section(
 	)
 );
 
-
 /**
  * Search controls
  */
@@ -36,7 +35,6 @@ $this->add_control(
 		)
 	)
 );
-
 
 /**
  * More Less controls
@@ -94,7 +92,6 @@ $this->add_control(
 	)
 );
 
-
 /**
  * Dropdown controls
  */
@@ -123,7 +120,6 @@ $this->add_control(
 		)
 	)
 );
-
 
 /**
  * Scroll controls
@@ -156,6 +152,5 @@ $this->add_control(
 		)
 	)
 );
-
 
 $this->end_controls_section();

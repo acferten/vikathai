@@ -1432,7 +1432,7 @@ class WPCode_Admin_Page_Snippet_Manager extends WPCode_Admin_Page {
 	public function maybe_syntax_highlighting_disabled( $body_class ) {
 		$user = wp_get_current_user();
 
-		if ( 'false' === $user->syntax_highlighting ) {
+		if ( ! isset( $user->syntax_highlighting ) || 'false' === $user->syntax_highlighting || ! function_exists( 'wp_enqueue_code_editor' ) ) {
 			$body_class .= ' wpcode-syntax-highlighting-disabled ';
 		}
 

@@ -27,7 +27,7 @@ class MyPosts extends \DynamicContentForElementor\Modules\DynamicTags\Tags\Posts
      */
     public function get_title()
     {
-        return __('My Posts', 'dynamic-content-for-elementor');
+        return __('Posts by the Current User', 'dynamic-content-for-elementor');
     }
     /**
      * Get Args

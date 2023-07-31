@@ -1,12 +1,16 @@
 (function ($) {
 
-    var DyncontEl_GoogleMapsHandler = function ($scope, $) {
+	var DyncontEl_GoogleMapsHandler = function ($scope, $) {
 		const initMap = () => {
 			var $map = $scope.find('.map');
 			var map = $map[0];
 			var bounds;
 
 			// Positions
+			if (!$map[0]) {
+				console.error('Missing params');
+				return;
+			}
 			let positions = $map[0].dataset.positions;
 			try {
 				positions = JSON.parse(positions);
@@ -55,7 +59,7 @@
 
 			// Map Type (Roadmap, satellite, etc.)
 			if (elementSettings.map_type && elementSettings.map_type !== "acfmap") {
-          		mapParams['mapTypeId'] = elementSettings.map_type;
+				mapParams['mapTypeId'] = elementSettings.map_type;
 			}
 
 			// Zoom Minimum and Maximum
@@ -193,8 +197,8 @@
 						}
 					}
 					if( elementSettings.markerclustererControl ){
-                		// Add a marker clusterer to manage the markers.
-                		new markerClusterer.MarkerClusterer({
+						// Add a marker clusterer to manage the markers.
+						new markerClusterer.MarkerClusterer({
 							map,
 							markers,
 							imagePath: '/wp-content/plugins/dynamic-content-for-elementor/assets/lib/gmap/markerclusterer/img/m'
@@ -325,7 +329,7 @@
 								for (var i = 0; i < numOfResults; i++) {
 									var result = results[i];
 									resultLocations.push(
-                      					{
+										{
 											text: result.formatted_address,
 											addressStr: result.formatted_address,
 											location: result.geometry.location,
@@ -334,7 +338,7 @@
 											infoWindow: iw,
 											markerWidth: markerWidth,
 											markerHeight: markerHeight,
-                      					}
+										}
 									);
 								}
 							}
@@ -362,19 +366,19 @@
 		}
 		// google api might loaded before or after this script based on third
 		// party plugins. So we take both cases into account:
-		if ( google !== undefined ) {
+		if ( typeof google !== "undefined" ) {
 			initMap();
 		} else {
 			window.addEventListener( 'dce-google-maps-api-loaded', initMap);
 		}
 
-    };
+	};
 
-    // Make sure you run this code under Elementor..
-    $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/dyncontel-acf-google-maps.default', DyncontEl_GoogleMapsHandler);
+	// The dynamicooo/google-maps/init event is for GDPR plugins like Borlabs:
+	$(window).on('elementor/frontend/init dynamicooo/google-maps-init', function () {
+		elementorFrontend.hooks.addAction('frontend/element_ready/dyncontel-acf-google-maps.default', DyncontEl_GoogleMapsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/dce-metabox-google-maps.default', DyncontEl_GoogleMapsHandler);
-    });
+	});
 
 })(jQuery);
 

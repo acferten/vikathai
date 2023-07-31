@@ -41,6 +41,8 @@ if ( ! class_exists( 'Jet_Search_Compatibility' ) ) {
 				add_filter( 'pll_home_url_white_list', array( $this, 'modify_pll_home_url_white_list' ) );
 
 				add_action( 'jet-search/ajax-search/search-query', array( $this, 'modify_pll_lang_search_query' ), 10, 2 );
+
+				add_action( 'jet-search/search-suggestions/search-query', array( $this, 'modify_pll_lang_search_query' ), 10, 2 );
 			}
 
 			// WooCommerce Compatibility
@@ -52,6 +54,8 @@ if ( ! class_exists( 'Jet_Search_Compatibility' ) ) {
 				add_filter( 'jet-search/ajax-search/query-settings', array( $this, 'modify_query_settings' ), 10, 2 );
 
 				add_action( 'jet-search/ajax-search/search-query', array( $this, 'modify_search_query' ), 10, 2 );
+
+				add_action( 'jet-search/search-suggestions/search-query', array( $this, 'modify_search_query' ), 10, 2 );
 			}
 		}
 

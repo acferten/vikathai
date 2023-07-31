@@ -33,12 +33,30 @@ class Favorites extends Tag
         $this->add_control('favorites_key', ['label' => __('Favorites Key', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => 'my_favorites']);
         $this->add_control('favorites_separator', ['label' => __('Separator', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['new_line' => __('New Line', 'dynamic-content-for-elementor'), 'line_break' => __('Line Break', 'dynamic-content-for-elementor'), 'comma' => __('Comma', 'dynamic-content-for-elementor')], 'default' => 'line_break', 'multiple' => \true]);
         $this->add_control('favorites_link', ['label' => __('Link to Favorite', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['favorites_separator!' => 'new_line']]);
-        $this->add_control('favorites_post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => Helper::get_post_types(), 'multiple' => \true, 'label_block' => \true]);
+        $this->add_control('favorites_post_type', ['label' => __('Post Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => Helper::get_public_post_types(), 'multiple' => \true, 'label_block' => \true]);
         $this->add_control('favorites_post_status', ['label' => __('Post Status', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT2, 'options' => get_post_statuses(), 'multiple' => \true, 'label_block' => \true, 'default' => ['publish']]);
         $this->add_control('favorites_orderby', ['label' => __('Order By', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => Helper::get_post_orderby_options(), 'default' => 'date']);
         $this->add_control('favorites_order', ['label' => __('Order', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['ASC' => __('Ascending', 'dynamic-content-for-elementor'), 'DESC' => __('Descending', 'dynamic-content-for-elementor')], 'default' => 'DESC']);
         $this->add_control('favorites_posts', ['label' => __('Results', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => '10']);
+        $this->add_control('return_format', ['label' => __('Return Format', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['title' => __('Title', 'dynamic-content-for-elementor'), 'title_id' => __('Title | ID', 'dynamic-content-for-elementor'), 'id' => __('ID', 'dynamic-content-for-elementor')], 'default' => 'title']);
         $this->add_control('favorites_fallback', ['label' => __('Fallback Content', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::TEXT, 'default' => __('No favorites found', 'dynamic-content-for-elementor')]);
+    }
+    /**
+     * Get Post By Format
+     *
+     * @return string|int|false
+     */
+    protected function get_post_by_format()
+    {
+        $return_format = $this->get_settings('return_format');
+        switch ($return_format) {
+            case 'title_id':
+                return esc_html(get_the_title()) . '|' . get_the_ID();
+            case 'id':
+                return get_the_ID();
+            default:
+                return esc_html(get_the_title());
+        }
     }
     public function render()
     {
@@ -58,7 +76,7 @@ class Favorites extends Tag
         if (!empty($favorites_post_in)) {
             if ('dce_wishlist' !== $settings['favorites_key']) {
                 // Favorites
-                $args = ['post_type' => $settings['favorites_post_type'], 'post__in' => $favorites_post_in, 'posts_per_page' => $settings['favorites_posts'], 'order' => $settings['favorites_order'], 'orderby' => $settings['favorites_orderby'], 'post_status' => $settings['favorites_post_status']];
+                $args = ['post_type' => \DynamicContentForElementor\Helper::validate_post_type($settings['favorites_post_type']), 'post__in' => $favorites_post_in, 'posts_per_page' => $settings['favorites_posts'], 'order' => $settings['favorites_order'], 'orderby' => $settings['favorites_orderby'], 'post_status' => $settings['favorites_post_status']];
             } else {
                 // Woo Wishlist
                 if (!is_user_logged_in()) {
@@ -77,9 +95,9 @@ class Favorites extends Tag
                 while ($wp_query->have_posts()) {
                     $wp_query->the_post();
                     if ('new_line' === $settings['favorites_separator'] || empty($settings['favorites_link'])) {
-                        echo sanitize_text_field(get_the_title());
+                        echo $this->get_post_by_format();
                     } else {
-                        echo '<a href=' . get_the_permalink() . '>' . sanitize_text_field(get_the_title()) . '</a>';
+                        echo '<a href=' . get_the_permalink() . '>' . $this->get_post_by_format() . '</a>';
                     }
                     if ($wp_query->current_post + 1 !== $wp_query->post_count) {
                         echo self::separator($settings['favorites_separator']);

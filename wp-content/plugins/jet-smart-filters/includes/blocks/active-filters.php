@@ -9,22 +9,20 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 if ( ! class_exists( 'Jet_Smart_Filters_Block_Active_Filters' ) ) {
-
 	/**
 	 * Define Jet_Smart_Filters_Block_Active_Filters class
 	 */
 	class Jet_Smart_Filters_Block_Active_Filters extends Jet_Smart_Filters_Block_Base {
-
 		/**
 		 * Returns block name
-		 *
-		 * @return string
 		 */
 		public function get_name() {
+
 			return 'active';
 		}
 
-		public function set_css_scheme(){
+		public function set_css_scheme() {
+
 			$this->css_scheme = apply_filters(
 				'jet-smart-filters/widgets/active-filters/css-scheme',
 				[
@@ -39,7 +37,7 @@ if ( ! class_exists( 'Jet_Smart_Filters_Block_Active_Filters' ) ) {
 			);
 		}
 
-		public function add_style_manager_options(){
+		public function add_style_manager_options() {
 
 			$this->controls_manager->start_section(
 				'style_controls',
@@ -467,6 +465,7 @@ if ( ! class_exists( 'Jet_Smart_Filters_Block_Active_Filters' ) ) {
 					'{{WRAPPER}} ' . $this->css_scheme[ 'filter-label' ] => 'font-family: {{FAMILY}}; font-weight: {{WEIGHT}}; text-transform: {{TRANSFORM}}; font-style: {{STYLE}}; text-decoration: {{DECORATION}}; line-height: {{LINEHEIGHT}}{{LH_UNIT}}; letter-spacing: {{LETTERSPACING}}{{LS_UNIT}}; font-size: {{SIZE}}{{S_UNIT}};',
 				],
 			]);
+
 			$this->controls_manager->start_tabs(
 				'style_controls',
 				[
@@ -762,8 +761,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Block_Active_Filters' ) ) {
 
 		/**
 		 * Return callback
-		 *
-		 * @return html
 		 */
 		public function render_callback( $settings = array() ) {
 
@@ -775,7 +772,7 @@ if ( ! class_exists( 'Jet_Smart_Filters_Block_Active_Filters' ) ) {
 
 			$base_class = 'jet-smart-filters-' . $this->get_name();
 			$provider   = $settings['content_provider'];
-			$query_id   = 'default';
+			$query_id   = ! empty( $settings['query_id'] ) ? $settings['query_id'] : 'default';
 
 			ob_start();
 
@@ -798,7 +795,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Block_Active_Filters' ) ) {
 			$filter_layout = ob_get_clean();
 
 			return $filter_layout;
-
 		}
 	}
 }

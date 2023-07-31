@@ -5,25 +5,16 @@ var Widget_DCE_Dynamicposts_base_Handler = function($scope, $) {
 	if (typeof widgetType !== 'string') {
 		return;
 	}
+	
 	const typeAndSkin = widgetType.split('.');
 	if (typeAndSkin.length !== 2) {
 		return;
 	}
-	const dpostsTypes = [
-		'dce-dynamicposts-v2',
-		'dce-metabox-relationship',
-		'dce-search-results',
-		'dce-sticky-posts',
-		'dce-my-posts',
-		'dce-dynamic-show-favorites',
-		'dce-dynamic-woo-products',
-		'dce-woo-product-crosssells',
-		'dce-woo-product-upsells',
-		'dce-woo-products-cart-on-sale',
-		'dce-woo-products-cart',
-		'dce-dynamic-woo-products-on-sale',
-	];
-	if (! dpostsTypes.includes(typeAndSkin[0])) {
+
+	// Features Dynamic Posts Collection
+	let features = dce_features_collection_dynamic_posts;
+
+	if (! features.includes(typeAndSkin[0])) {
 		return;
 	}
 	dceDynamicPostsSkin = typeAndSkin[1];

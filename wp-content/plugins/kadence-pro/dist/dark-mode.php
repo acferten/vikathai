@@ -91,7 +91,7 @@ class Dark_Mode {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'after_setup_theme', array( $this, 'load_actions' ), 20 );
 		add_filter( 'body_class', array( $this, 'add_body_class' ) );
-		add_filter( 'init', array( $this, 'filter_dark_mode_learn_dash' ) );
+		add_filter( 'template_redirect', array( $this, 'filter_dark_mode_learn_dash' ), 80 );
 		add_action( 'get_template_part_template-parts/header/dark-mode', array( $this, 'header_dark_mode_output' ), 10 );
 		add_action( 'get_template_part_template-parts/header/mobile-dark-mode', array( $this, 'mobile_dark_mode_output' ), 10 );
 		add_action( 'get_template_part_template-parts/footer/footer-dark-mode', array( $this, 'footer_dark_mode_output' ), 10 );
@@ -491,9 +491,10 @@ class Dark_Mode {
 		$css->add_property( 'right', $css->render_range( kadence()->option( 'dark_mode_switch_side_offset' ), 'desktop' ) );
 		$css->set_selector( '.kadence-color-palette-fixed-switcher.kcpf-position-left' );
 		$css->add_property( 'left', $css->render_range( kadence()->option( 'dark_mode_switch_side_offset' ), 'desktop' ) );
+		$dark_mode_icon_size = kadence()->option( 'dark_mode_icon_size' );
 		$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'width', 'calc( ' . $css->render_range( $dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'height', 'calc( ' . $css->render_range( $dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
 		$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
 		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'desktop' ) );
 		$css->start_media_query( $media_query['tablet'] );
@@ -504,11 +505,13 @@ class Dark_Mode {
 		$css->set_selector( '.kadence-color-palette-fixed-switcher.kcpf-position-left' );
 		$css->add_property( 'left', $css->render_range( kadence()->option( 'dark_mode_switch_side_offset' ), 'tablet' ) );
 		$css->set_selector( '.kadence-color-palette-fixed-switcher.kcpf-position-left' );
-		$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'tablet' ) );
+		if ( isset( $dark_mode_icon_size['size']['tablet'] ) ) {
+			$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'tablet' ) );
+		}
 		$css->stop_media_query();
 		$css->start_media_query( $media_query['mobile'] );
 		$css->set_selector( '.kadence-color-palette-fixed-switcher' );
@@ -518,10 +521,12 @@ class Dark_Mode {
 		$css->set_selector( '.kadence-color-palette-fixed-switcher.kcpf-position-left' );
 		$css->add_property( 'left', $css->render_range( kadence()->option( 'dark_mode_switch_side_offset' ), 'mobile' ) );
 		$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'dark_mode_icon_size' ), 'mobile' ) );
+		if ( isset( $dark_mode_icon_size['size']['mobile'] ) ) {
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-fixed-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $dark_mode_icon_size, 'mobile' ) );
+		}
 		$css->stop_media_query();
 		// Header Switcher.
 		$css->set_selector( '.kadence-color-palette-header-switcher' );
@@ -541,25 +546,30 @@ class Dark_Mode {
 		$css->add_property( 'font-size', $css->render_font_size( kadence()->option( 'header_dark_mode_typography' ), 'mobile' ) );
 		$css->add_property( 'line-height', $css->render_font_height( kadence()->option( 'header_dark_mode_typography' ), 'mobile' ) );
 		$css->stop_media_query();
+		$header_dark_mode_icon_size = kadence()->option( 'header_dark_mode_icon_size' );
 		$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'width', 'calc( ' . $css->render_range( $header_dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'height', 'calc( ' . $css->render_range( $header_dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
 		$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'desktop' ) );
-		$css->start_media_query( $media_query['tablet'] );
-		$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'tablet' ) );
-		$css->stop_media_query();
-		$css->start_media_query( $media_query['mobile'] );
-		$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'header_dark_mode_icon_size' ), 'mobile' ) );
-		$css->stop_media_query();
+		$css->add_property( 'font-size', $css->render_range( $header_dark_mode_icon_size, 'desktop' ) );
+		if ( isset( $header_dark_mode_icon_size['size']['tablet'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $header_dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $header_dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $header_dark_mode_icon_size, 'tablet' ) );
+			$css->stop_media_query();
+		}
+		if ( isset( $header_dark_mode_icon_size['size']['mobile'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $header_dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $header_dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-header-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $header_dark_mode_icon_size, 'mobile' ) );
+			$css->stop_media_query();
+		}
 		// Mobile Switcher.
 		$css->set_selector( '.kadence-color-palette-mobile-switcher' );
 		$css->add_property( '--global-light-toggle-switch', $css->render_color( kadence()->sub_option( 'mobile_dark_mode_colors', 'light' ) ) );
@@ -578,25 +588,30 @@ class Dark_Mode {
 		$css->add_property( 'font-size', $css->render_font_size( kadence()->option( 'mobile_dark_mode_typography' ), 'mobile' ) );
 		$css->add_property( 'line-height', $css->render_font_height( kadence()->option( 'mobile_dark_mode_typography' ), 'mobile' ) );
 		$css->stop_media_query();
+		$mobile_dark_mode_icon_size = kadence()->option( 'mobile_dark_mode_icon_size' );
 		$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'width', 'calc( ' . $css->render_range( $mobile_dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'height', 'calc( ' . $css->render_range( $mobile_dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
 		$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'desktop' ) );
-		$css->start_media_query( $media_query['tablet'] );
-		$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'tablet' ) );
-		$css->stop_media_query();
-		$css->start_media_query( $media_query['mobile'] );
-		$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'mobile_dark_mode_icon_size' ), 'mobile' ) );
-		$css->stop_media_query();
+		$css->add_property( 'font-size', $css->render_range( $mobile_dark_mode_icon_size, 'desktop' ) );
+		if( isset( $mobile_dark_mode_icon_size['size']['tablet'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $mobile_dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $mobile_dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $mobile_dark_mode_icon_size, 'tablet' ) );
+			$css->stop_media_query();
+		}
+		if( isset( $mobile_dark_mode_icon_size['size']['mobile'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $mobile_dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $mobile_dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-mobile-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $mobile_dark_mode_icon_size, 'mobile' ) );
+			$css->stop_media_query();
+		}
 		// Footer Switcher.
 		$css->set_selector( '.kadence-color-palette-footer-switcher' );
 		$css->add_property( '--global-light-toggle-switch', $css->render_color( kadence()->sub_option( 'footer_dark_mode_colors', 'light' ) ) );
@@ -615,25 +630,30 @@ class Dark_Mode {
 		$css->add_property( 'font-size', $css->render_font_size( kadence()->option( 'footer_dark_mode_typography' ), 'mobile' ) );
 		$css->add_property( 'line-height', $css->render_font_height( kadence()->option( 'footer_dark_mode_typography' ), 'mobile' ) );
 		$css->stop_media_query();
+		$footer_dark_mode_icon_size = kadence()->option( 'footer_dark_mode_icon_size' );
 		$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'width', 'calc( ' . $css->render_range( $footer_dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
+		$css->add_property( 'height', 'calc( ' . $css->render_range( $footer_dark_mode_icon_size, 'desktop' ) . ' + .3em )' );
 		$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'desktop' ) );
-		$css->start_media_query( $media_query['tablet'] );
-		$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'tablet' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'tablet' ) );
-		$css->stop_media_query();
-		$css->start_media_query( $media_query['mobile'] );
-		$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
-		$css->add_property( 'width', 'calc( ' . $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->add_property( 'height', 'calc( ' . $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'mobile' ) . ' + .3em )' );
-		$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
-		$css->add_property( 'font-size', $css->render_range( kadence()->option( 'footer_dark_mode_icon_size' ), 'mobile' ) );
-		$css->stop_media_query();
+		$css->add_property( 'font-size', $css->render_range( $footer_dark_mode_icon_size, 'desktop' ) );
+		if( isset( $footer_dark_mode_icon_size['size']['tablet'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $footer_dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $footer_dark_mode_icon_size, 'tablet' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $footer_dark_mode_icon_size, 'tablet' ) );
+			$css->stop_media_query();
+		}
+		if( isset( $footer_dark_mode_icon_size['size']['mobile'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher.kcps-style-switch.kcps-type-icon button.kadence-color-palette-toggle:after' );
+			$css->add_property( 'width', 'calc( ' . $css->render_range( $footer_dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->add_property( 'height', 'calc( ' . $css->render_range( $footer_dark_mode_icon_size, 'mobile' ) . ' + .3em )' );
+			$css->set_selector( '.kadence-color-palette-footer-switcher .kadence-color-palette-switcher button.kadence-color-palette-toggle .kadence-color-palette-icon' );
+			$css->add_property( 'font-size', $css->render_range( $footer_dark_mode_icon_size, 'mobile' ) );
+			$css->stop_media_query();
+		}
 		if ( kadence()->option( 'dark_mode_learndash_enable' ) && kadence()->option( 'dark_mode_learndash_lesson_logo' ) ) {
 			$css->set_selector( '.color-switch-dark .ld-brand-logo a:not(.brand)' );
 			$css->add_property( 'display', 'none' );

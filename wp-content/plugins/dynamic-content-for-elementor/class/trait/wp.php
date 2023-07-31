@@ -91,7 +91,13 @@ trait Wp
         $posts = get_posts($atts);
         return $posts;
     }
-    public static function get_post_types($exclude = \true)
+    /**
+     * Get Public Post Types
+     *
+     * @param boolean $exclude
+     * @return array<string>
+     */
+    public static function get_public_post_types($exclude = \true)
     {
         $args = array('public' => \true);
         $skip_post_types = ['attachment', 'elementor_library', 'oceanwp_library'];
@@ -101,7 +107,11 @@ trait Wp
         }
         foreach ($post_types as $akey => $acpt) {
             $cpt = get_post_type_object($acpt);
-            $post_types[$akey] = $cpt->label;
+            if ($cpt !== null && \is_object($cpt) && \property_exists($cpt, 'label')) {
+                $post_types[$akey] = (string) $cpt->label;
+            } else {
+                unset($post_types[$akey]);
+            }
         }
         return $post_types;
     }
@@ -227,20 +237,12 @@ trait Wp
     public static function get_the_terms_ordered($post_id, $taxonomy)
     {
         $terms = get_the_terms($post_id, $taxonomy);
-        $ret = array();
-        if (!empty($terms)) {
-            if (!\is_object($terms) && \is_array($terms)) {
-                foreach ($terms as $term) {
-                    if ($term && \is_object($term) && \get_class($term) == 'WP_Term') {
-                        $ret[$term->term_order ? $term->term_order : $term->slug] = (object) array('term_id' => $term->term_id, 'name' => $term->name, 'slug' => $term->slug, 'term_group' => $term->term_group, 'term_order' => $term->term_order, 'term_taxonomy_id' => $term->term_taxonomy_id, 'taxonomy' => $term->taxonomy, 'description' => $term->description, 'parent' => $term->parent, 'count' => $term->count, 'object_id' => $term->object_id);
-                    }
-                }
-            }
-            \ksort($ret);
-        } else {
-            $ret = $terms;
+        if (\is_array($terms)) {
+            \usort($terms, function ($a, $b) {
+                return $a->term_order - $b->term_order;
+            });
         }
-        return $ret;
+        return $terms;
     }
     public static function get_parentterms($tax)
     {
@@ -257,7 +259,8 @@ trait Wp
     }
     public static function get_post_settings($settings)
     {
-        $post_args['post_type'] = $settings['post_type'];
+        $post_type = \DynamicContentForElementor\Helper::validate_post_type($settings['post_type']);
+        $post_args['post_type'] = $post_type;
         if ($settings['post_type'] == 'post') {
             $post_args['category'] = $settings['category'];
         }
@@ -370,7 +373,14 @@ trait Wp
         return \reset($posts);
     }
     //+exclude_end
-    public static function get_roles($everyone = \false)
+    /**
+     * Get Roles
+     *
+     * @param boolean $everyone
+     * @param boolean $remove_admin
+     * @return array<string,string>
+     */
+    public static function get_roles($everyone = \false, $remove_admin = \false)
     {
         $all_roles = wp_roles()->roles;
         $ret = array();
@@ -379,6 +389,9 @@ trait Wp
         }
         foreach ($all_roles as $key => $value) {
             $ret[$key] = $value['name'];
+        }
+        if ($remove_admin) {
+            unset($ret['administrator']);
         }
         return $ret;
     }
@@ -780,9 +793,10 @@ trait Wp
         $options = array();
         $query = 'SELECT option_name FROM ' . $wpdb->prefix . 'options';
         if ($like) {
-            $query .= " WHERE option_name LIKE '%" . $like . "%'";
+            $query .= ' WHERE option_name LIKE %s';
         }
-        $results = $wpdb->get_results($query);
+        $prepared_query = $wpdb->prepare($query, $like ? '%' . $wpdb->esc_like($like) . '%' : '');
+        $results = $wpdb->get_results($prepared_query);
         if (!empty($results)) {
             foreach ($results as $key => $aopt) {
                 $options[$aopt->option_name] = $aopt->option_name;
@@ -1191,5 +1205,26 @@ trait Wp
             }
         }
         return $array;
+    }
+    /**
+     * Convert ACF Post Objects to IDS
+     * 
+     * @param object|array<mixed>|void $input
+     * 
+     * @return array<mixed>|void
+     */
+    public static function convert_acf_post_objects_to_ids($input)
+    {
+        if (\is_array($input)) {
+            if (!empty($input) && \is_object($input[0])) {
+                return \array_map(function ($post) {
+                    return $post->ID;
+                }, $input);
+            }
+            return $input;
+        } elseif (\is_object($input)) {
+            return $input->ID ?? '';
+        }
+        return $input;
     }
 }

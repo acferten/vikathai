@@ -229,9 +229,7 @@ class DiscoverTokens extends \DynamicContentForElementor\Widgets\WidgetPrototype
         echo '<td>' . $this->remove_filters($field) . '</td>';
         $token = $this->maybe_sanitize($type, $field, $token);
         echo '<td><code>' . $token . '</code>';
-        if (!\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-            $this->render_copy_button($token);
-        }
+        $this->render_copy_button($token);
         echo '</td>';
         echo '<td>' . Helper::get_dynamic_value($token) . '</td>';
         echo '</tr>';
@@ -471,7 +469,6 @@ class DiscoverTokens extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $query = new \WP_Query($args);
         if ($query->have_posts()) {
             while ($query->have_posts()) {
-                // @phpstan-ignore-line
                 $query->the_post();
                 $sample[get_the_ID()] = '';
             }
@@ -491,7 +488,6 @@ class DiscoverTokens extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $query = new \WP_Query($args);
         if ($query->have_posts()) {
             while ($query->have_posts()) {
-                // @phpstan-ignore-line
                 $query->the_post();
                 $sample[get_the_ID()] = '';
             }
@@ -665,7 +661,7 @@ class DiscoverTokens extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 // Description to show before the table
                 'description' => __('This token is useful for retrieving the fields of the current user', 'dynamic-content-for-elementor'),
                 // Static fields to show
-                'fields' => ['ID', 'email', 'nicename', 'roles'],
+                'fields' => ['ID', 'email', 'nicename', 'roles', 'ID|get_avatar_url', 'ID|get_avatar'],
                 // Fields to hide when executed 'functions'
                 'hidden' => ['password'],
                 // Functions to populate fields

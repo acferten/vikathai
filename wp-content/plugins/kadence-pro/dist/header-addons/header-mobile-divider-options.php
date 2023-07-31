@@ -25,6 +25,14 @@ $settings = array(
 				'pattern'  => '$',
 				'key'      => 'border',
 			),
+			array(
+				'type'     => 'css_border',
+				'selector' => '#mobile-drawer .header-mobile-divider',
+				'pattern'  => '$',
+				'property' => 'border-top',
+				'pattern'  => '$',
+				'key'      => 'border',
+			),
 		),
 		'input_attrs'  => array(
 			'responsive' => false,
@@ -33,13 +41,20 @@ $settings = array(
 	'header_mobile_divider_height' => array(
 		'control_type' => 'kadence_range_control',
 		'section'      => 'header_mobile_divider',
-		'label'        => esc_html__( 'Mobile Divider Height', 'kadence-pro' ),
+		'label'        => esc_html__( 'Mobile Divider Length', 'kadence-pro' ),
 		'live_method'     => array(
 			array(
 				'type'     => 'css',
 				'selector' => '#mobile-header .header-mobile-divider',
 				'pattern'  => '$',
 				'property' => 'height',
+				'key'      => 'size',
+			),
+			array(
+				'type'     => 'css',
+				'selector' => '#mobile-drawer .header-mobile-divider',
+				'pattern'  => '$',
+				'property' => 'width',
 				'key'      => 'size',
 			),
 		),
@@ -71,7 +86,7 @@ $settings = array(
 		'live_method'     => array(
 			array(
 				'type'     => 'css',
-				'selector' => '#mobile-header .header-mobile-divider',
+				'selector' => '#mobile-header .header-mobile-divider, #mobile-drawer .header-mobile-divider',
 				'property' => 'margin',
 				'pattern'  => '$',
 				'key'      => 'measure',

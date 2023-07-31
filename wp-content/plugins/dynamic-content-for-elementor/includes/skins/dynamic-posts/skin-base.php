@@ -2,6 +2,7 @@
 
 namespace DynamicContentForElementor\Includes\Skins;
 
+use DynamicContentForElementor\DynamicQuery;
 use Elementor\Skin_Base as Elementor_Skin_Base;
 use Elementor\Utils;
 use Elementor\Controls_Manager;
@@ -157,7 +158,7 @@ abstract class Skin_Base extends Elementor_Skin_Base
     {
         // Blocks - Style
         $this->start_controls_section('section_blocks_style', ['label' => __('Blocks', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['style_items!' => ['template']]]);
-        $this->add_responsive_control('blocks_align', ['label' => __('Text Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'toggle' => \false, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right']], 'default' => 'left', 'prefix_class' => 'dce-align%s-', 'selectors' => ['{{WRAPPER}} .dce-post-item' => 'text-align: {{VALUE}};'], 'separator' => 'before']);
+        $this->add_responsive_control('blocks_align', ['label' => __('Text Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'toggle' => \false, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right']], 'default' => is_rtl() ? 'right' : 'left', 'render_type' => 'template', 'prefix_class' => 'dce-align%s-', 'selectors' => ['{{WRAPPER}} .dce-post-item' => 'text-align: {{VALUE}};'], 'separator' => 'before']);
         $this->add_responsive_control('blocks_align_v', ['label' => __('Vertical Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['flex-start' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'eicon-v-align-top'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'eicon-v-align-middle'], 'flex-end' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'eicon-v-align-bottom'], 'space-between' => ['title' => __('Space Between', 'dynamic-content-for-elementor'), 'icon' => 'eicon-v-align-stretch'], 'space-around' => ['title' => __('Space Around', 'dynamic-content-for-elementor'), 'icon' => 'eicon-v-align-stretch']], 'separator' => 'after', 'selectors' => ['{{WRAPPER}} .dce-post-block, {{WRAPPER}} .dce-item-area' => 'justify-content: {{VALUE}} !important;'], 'condition' => ['v_pos_postitems' => ['', 'stretch']]]);
         $this->add_control('blocks_bgcolor', ['label' => __('Background Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-post-item .dce-post-block' => 'background-color: {{VALUE}};']]);
         $this->add_group_control(Group_Control_Border::get_type(), ['name' => 'blocks_border', 'selector' => '{{WRAPPER}} .dce-post-item .dce-post-block']);
@@ -169,7 +170,7 @@ abstract class Skin_Base extends Elementor_Skin_Base
         $this->add_responsive_control('blocks_alternate', ['label' => __('Vertical Alternate', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'size_units' => ['px'], 'range' => ['px' => ['max' => 100, 'min' => 0, 'step' => 1]], 'selectors' => ['{{WRAPPER}}.dce-col-3 .dce-post-item:nth-child(3n+2) .dce-post-block, {{WRAPPER}}:not(.dce-col-3) .dce-post-item:nth-child(even) .dce-post-block' => 'margin-top: {{SIZE}}{{UNIT}};'], 'condition' => ['grid_type' => ['flex']]]);
         $this->end_controls_section();
         $this->start_controls_section('section_fallback_style', ['label' => __('No Results Behaviour', 'dynamic-content-for-elementor'), 'tab' => Controls_Manager::TAB_STYLE, 'condition' => ['fallback!' => '', 'fallback_type' => 'text']]);
-        $this->add_responsive_control('fallback_align', ['label' => __('Text Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'toggle' => \false, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right']], 'default' => 'left', 'selectors' => ['{{WRAPPER}} .dce-posts-fallback' => 'text-align: {{VALUE}};'], 'separator' => 'before']);
+        $this->add_responsive_control('fallback_align', ['label' => __('Text Alignment', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'toggle' => \false, 'options' => ['left' => ['title' => __('Left', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-left'], 'center' => ['title' => __('Center', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-center'], 'right' => ['title' => __('Right', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-align-right']], 'default' => is_rtl() ? 'right' : 'left', 'selectors' => ['{{WRAPPER}} .dce-posts-fallback' => 'text-align: {{VALUE}};'], 'separator' => 'before']);
         $this->add_control('fallback_color', ['label' => __('Text Color', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::COLOR, 'selectors' => ['{{WRAPPER}} .dce-posts-fallback' => 'color: {{VALUE}};']]);
         $this->add_group_control(Group_Control_Typography::get_type(), ['name' => 'fallback_typography', 'selector' => '{{WRAPPER}} .dce-posts-fallback']);
         $this->add_group_control(Group_Control_Text_Shadow::get_type(), ['name' => 'fallback_text_shadow', 'selector' => '{{WRAPPER}} .dce-posts-fallback']);
@@ -183,10 +184,21 @@ abstract class Skin_Base extends Elementor_Skin_Base
         $this->counter = 0;
         $this->get_parent()->add_render_attribute('_wrapper', 'class', 'dce-dynamic-posts-collection');
         $this->get_parent()->add_render_attribute('_wrapper', 'class', 'dce-fix-background-loop');
+        // Add WP_Query args to a data attribute so you can retrieve it for debug on the Elementor Editor
+        if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+            $this->get_parent()->add_render_attribute('container', 'data-dce-debug-query-args', wp_json_encode($this->get_parent()->get_query_args()));
+        }
+        // RTL
+        if ($this->get_parent()->get_settings_for_display('rtl')) {
+            $this->get_parent()->add_render_attribute('container', 'class', 'dce-rtl');
+        }
         // Add Search and Filter Pro class when used to make it compatible with the plugin
         $this->add_search_filter_class();
         $fallback = $this->get_parent()->get_settings_for_display('fallback');
-        if ($this->get_parent()->get_settings('infiniteScroll_enable') && \Elementor\Plugin::$instance->editor->is_edit_mode()) {
+        if ($this->get_parent()->get_settings('infiniteScroll_enable') && $this->get_parent()->get_settings('pagination_enable') && 'rand' === $this->get_parent()->get_settings('orderby') && current_user_can('edit_posts')) {
+            Helper::notice('', __('Infinite Scroll does not work correctly if you set the order randomly. Please choose another sorting type. This notice is not visible to your visitors.', 'dynamic-content-for-elementor'));
+        }
+        if ($this->get_parent()->get_settings('infiniteScroll_enable') && $this->get_parent()->get_settings('pagination_enable') && \Elementor\Plugin::$instance->editor->is_edit_mode()) {
             Helper::notice('', __('Infinite Scroll is not displayed correctly in the Elementor editor due to technical limitations but works correctly in the frontend.', 'dynamic-content-for-elementor'));
         }
         if ('masonry' === $this->get_instance_value('grid_type') && \Elementor\Plugin::$instance->editor->is_edit_mode()) {
@@ -208,10 +220,11 @@ abstract class Skin_Base extends Elementor_Skin_Base
             }
             return;
         }
-        if (get_the_ID() === \false) {
-            return;
+        $query_post_before_loop = \false;
+        $post_id = get_the_ID();
+        if ($post_id !== \false) {
+            $query_post_before_loop = get_post($post_id);
         }
-        $post = get_post(get_the_ID());
         $this->render_loop_start();
         if ($query->in_the_loop) {
             $this->current_permalink = get_permalink();
@@ -226,20 +239,30 @@ abstract class Skin_Base extends Elementor_Skin_Base
             }
         }
         global $wp_query;
-        // in case we are already nested inside a loop wp_reset_postdata would
-        // reset the post to the one at the very top and not the one we are in:
-        $wp_query->post = $post;
-        $wp_query->reset_postdata();
+        if ($query_post_before_loop) {
+            // in case we are already nested inside a loop wp_reset_postdata would
+            // reset the post to the one at the very top and not the one we are in:
+            $wp_query->post = $query_post_before_loop;
+            $wp_query->reset_postdata();
+        } else {
+            wp_reset_postdata();
+        }
         $this->render_loop_end();
     }
     protected function render_post()
     {
         $style_items = $this->get_parent()->get_settings('style_items');
         $this->render_post_start();
-        if ('template' === $style_items) {
-            $this->render_post_template();
-        } elseif ('html_tokens' === $style_items) {
-            $this->render_post_html_tokens();
+        $skins_with_style_items = ['', 'grid', 'grid-filters', 'carousel', 'filters', 'dualcarousel', 'smoothscroll', '3d', 'accordion'];
+        $skin = $this->get_parent()->get_settings('_skin');
+        if (\in_array($skin, $skins_with_style_items, \true)) {
+            if ('template' === $style_items) {
+                $this->render_post_template();
+            } elseif ('html_tokens' === $style_items) {
+                $this->render_post_html_tokens();
+            } else {
+                $this->render_post_items();
+            }
         } else {
             $this->render_post_items();
         }
@@ -519,7 +542,7 @@ abstract class Skin_Base extends Elementor_Skin_Base
     protected function render_title($settings)
     {
         $html_tag = !empty($settings['html_tag']) ? \DynamicContentForElementor\Helper::validate_html_tag($settings['html_tag']) : 'h3';
-        $title_text = get_the_title() ? esc_html(get_the_title()) : get_the_ID();
+        $title_text = get_the_title() ? wp_kses_post(get_the_title()) : get_the_ID();
         $use_link = $settings['use_link'];
         $open_target_blank = $settings['open_target_blank'];
         echo \sprintf('<%1$s class="dce-post-title">', $html_tag);
@@ -540,6 +563,11 @@ abstract class Skin_Base extends Elementor_Skin_Base
             $this->get_parent()->add_render_attribute($attribute_button, 'class', ['elementor-button-link', 'elementor-button', 'dce-button']);
             $this->get_parent()->add_render_attribute($attribute_button, 'href', $cart_url . '?add-to-cart=' . $product_id);
             $this->get_parent()->add_render_attribute($attribute_button, 'role', 'button');
+            if ('ajax' === $settings['add_to_cart_action']) {
+                $this->get_parent()->add_render_attribute($attribute_button, 'class', ['add_to_cart_button', 'ajax_add_to_cart']);
+                $this->get_parent()->add_render_attribute($attribute_button, 'data-product_id', (string) $product_id);
+                $this->get_parent()->add_render_attribute($attribute_button, 'data-quantity', '1');
+            }
             ?>
 
 			<div class="dce-post-button">
@@ -549,6 +577,7 @@ abstract class Skin_Base extends Elementor_Skin_Base
             echo $button_text;
             ?></a>
 			</div>
+
 			<?php 
         }
     }
@@ -1224,12 +1253,17 @@ abstract class Skin_Base extends Elementor_Skin_Base
 		</article>
 		<?php 
     }
+    /**
+     * Render Fallback
+     *
+     * @return void
+     */
     protected function render_fallback()
     {
         $fallback_type = $this->get_parent()->get_settings_for_display('fallback_type');
         $fallback_text = $this->get_parent()->get_settings_for_display('fallback_text');
         $fallback_template = $this->get_parent()->get_settings_for_display('fallback_template');
-        $this->get_parent()->add_render_attribute('container', ['class' => ['dce-posts-container', 'dce-posts', $this->get_scrollreveal_class(), $this->get_container_class()]]);
+        $this->get_parent()->add_render_attribute('container', ['class' => ['dce-posts-container', 'dce-posts', $this->get_scrollreveal_class()]]);
         $this->get_parent()->add_render_attribute('container_wrap', ['class' => ['dce-posts-fallback']]);
         ?>
 		<div <?php 
@@ -1251,6 +1285,17 @@ abstract class Skin_Base extends Elementor_Skin_Base
 		<?php 
     }
     /**
+     * Add Direction
+     *
+     * @return void
+     */
+    protected function add_direction(string $attribute = 'container')
+    {
+        if ($this->get_parent()->get_settings_for_display('rtl')) {
+            $this->get_parent()->add_render_attribute($attribute, ['dir' => ['rtl']]);
+        }
+    }
+    /**
      * Render Loop Start
      *
      * @return void
@@ -1260,8 +1305,6 @@ abstract class Skin_Base extends Elementor_Skin_Base
         if (!$this->parent) {
             throw new \Exception('Parent not found');
         }
-        $settings = $this->get_parent()->get_settings_for_display();
-        $p_query = $this->get_parent()->get_query();
         $this->get_parent()->add_render_attribute('container', ['class' => ['dce-posts-container', 'dce-posts', $this->get_scrollreveal_class(), $this->get_container_class()]]);
         $this->get_parent()->add_render_attribute('container_wrap', ['class' => ['dce-posts-wrapper', $this->get_wrapper_class()]]);
         $this->render_pagination_top();
@@ -1288,8 +1331,9 @@ abstract class Skin_Base extends Elementor_Skin_Base
     {
         $settings = $this->get_parent()->get_settings_for_display();
         $p_query = $this->get_parent()->get_query();
+        $rtl = $this->get_parent()->get_settings_for_display('rtl');
         if ($settings['pagination_enable'] && ('top' === $settings['pagination_position'] || 'both' === $settings['pagination_position'])) {
-            Helper::numeric_query_pagination($p_query->max_num_pages, $settings, 'dce-pagination-top');
+            Helper::numeric_query_pagination($p_query->max_num_pages, $settings, 'dce-pagination-top', (bool) $rtl);
         }
     }
     /**
@@ -1301,8 +1345,9 @@ abstract class Skin_Base extends Elementor_Skin_Base
     {
         $settings = $this->get_parent()->get_settings_for_display();
         $p_query = $this->get_parent()->get_query();
+        $rtl = $this->get_parent()->get_settings_for_display('rtl');
         if ($settings['pagination_enable'] && ('bottom' === $settings['pagination_position'] || 'both' === $settings['pagination_position'])) {
-            Helper::numeric_query_pagination($p_query->max_num_pages, $settings, 'dce-pagination-bottom');
+            Helper::numeric_query_pagination($p_query->max_num_pages, $settings, 'dce-pagination-bottom', (bool) $rtl);
         }
     }
     /**

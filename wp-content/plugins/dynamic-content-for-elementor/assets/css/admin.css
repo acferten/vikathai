@@ -72,25 +72,6 @@ body.admin_page_dce_info {
 .elementor-device-desktop .dce-elementor-control-responsive-switchers .elementor-responsive-switcher.elementor-responsive-switcher-desktop {
   background-color: #006799;
 }
-#editor #dce_metabox .hndle, #dce_metabox .hndle, #dce_metabox .handlediv .toggle-indicator {
-  color: #FFF !important;
-  background-color: #006799;
-  border-bottom: none;
-}
-#dce_metabox {
-  background-color: #008ec2;
-  color: #FFF !important;
-}
-#dce_metabox .select2-container {
-  min-width: 100%;
-}
-#dce_metabox .inside>label {
-  padding: 6px 0;
-  display: inline-block;
-}
-#dce_metabox .dashicons {
-  padding-right: 10px;
-}
 .dce-form-table, .dce-metabox-holder {
   max-width: 1000px;
   margin: 15px 0;
@@ -153,14 +134,10 @@ body.admin_page_dce_info {
 }
 
 .term-php .dce-term-edit th {
-  background-color: #006799;
-  color: #fff;
   padding: 1em;
 }
 
 .term-php .dce-term-edit td {
-  background-color: #008ec2;
-  color: #fff;
   padding: 1em;
 }
 
@@ -1124,6 +1101,7 @@ a.dce-feature-activate-all, a.dce-feature-deactivate-all {
 .dce-container .dot.green {
   background-color: #5ABF4B;
 }
+
 .dce-check {
   margin-top: 20px;
   height: 50px;

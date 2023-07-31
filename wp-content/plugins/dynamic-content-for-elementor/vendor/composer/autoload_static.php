@@ -4,20 +4,19 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
+class ComposerStaticInit206b47ce7e59f55b2d4d57568281ec9e
 {
     public static $files = array (
         'a6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'aa4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'a7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'aa0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        'ac964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'a37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'a6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'a320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        'a49a1299791c25c6fd83542c6fedacddd' => __DIR__ . '/..' . '/yahnis-elsts/plugin-update-checker/load-v4p11.php',
+        'a7166494aeff09009178f278afd86c83f' => __DIR__ . '/..' . '/yahnis-elsts/plugin-update-checker/load-v4p13.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -308,14 +307,21 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Extensions\\DynamicEmail' => __DIR__ . '/../..' . '/includes/extensions/form/dynamic-email.php',
         'DynamicContentForElementor\\Extensions\\DynamicRedirect' => __DIR__ . '/../..' . '/includes/extensions/form/dynamic-redirect.php',
         'DynamicContentForElementor\\Extensions\\DynamicSelect' => __DIR__ . '/../..' . '/includes/extensions/form/dynamic-select.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\AcfRelationship' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/acf-relationship.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\Cryptocurrency' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/cryptocurrency.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\DynamicGoogleMapsDirectionsInfo' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/dynamic-google-maps-directions-info.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\DynamicGoogleMapsDirectionsInstructions' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/dynamic-google-maps-directions-instructions.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\Favorites' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/favorites.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\MetaboxRelationship' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/metabox-relationship.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\MyPosts' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/my-posts.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\Php' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/php.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\Posts' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/posts.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\StickyPosts' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/sticky-posts.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\Tags' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/tags.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\Template' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/template.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\Terms' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/terms.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\Token' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/token.php',
+        'DynamicContentForElementor\\Extensions\\DynamicTags\\WooProductCategories' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/woo-product-categories.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\WooProducts' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/woo-products.php',
         'DynamicContentForElementor\\Extensions\\DynamicTags\\WooWishlist' => __DIR__ . '/../..' . '/includes/extensions/dynamic-tags/woo-wishlist.php',
         'DynamicContentForElementor\\Extensions\\DynamicVisibility' => __DIR__ . '/../..' . '/includes/extensions/dynamic-visibility.php',
@@ -366,6 +372,18 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Includes\\Settings\\DCE_Settings_Prototype' => __DIR__ . '/../..' . '/includes/global-settings/prototype.php',
         'DynamicContentForElementor\\Includes\\Settings\\SmoothTransition' => __DIR__ . '/../..' . '/includes/global-settings/smooth-transition.php',
         'DynamicContentForElementor\\Includes\\Settings\\TrackerHeader' => __DIR__ . '/../..' . '/includes/global-settings/tracker-header.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_3D' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-3d.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Accordion' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-accordion.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Carousel' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-carousel.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_CrossroadsSlideshow' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-crossroadsSlideshow.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_DualCarousel' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-dualcarousel.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Grid' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-grid.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Grid_Filters' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-grid-filters.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Gridtofullscreen3d' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-gridtofullscreen3d.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_List' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-list.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Table' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-table.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skin_Timeline' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-timeline.php',
+        'DynamicContentForElementor\\Includes\\Skins\\Acf_Relationship_Skinhip_Skin_Smoothscroll' => __DIR__ . '/../..' . '/includes/skins/acf-relationship/skin-smoothscroll.php',
         'DynamicContentForElementor\\Includes\\Skins\\Dynamic_Woo_Products_On_Sale_Skin_Accordion' => __DIR__ . '/../..' . '/includes/skins/dynamic-woo-products-on-sale/skin-accordion.php',
         'DynamicContentForElementor\\Includes\\Skins\\Dynamic_Woo_Products_On_Sale_Skin_Carousel' => __DIR__ . '/../..' . '/includes/skins/dynamic-woo-products-on-sale/skin-carousel.php',
         'DynamicContentForElementor\\Includes\\Skins\\Dynamic_Woo_Products_On_Sale_Skin_DualCarousel' => __DIR__ . '/../..' . '/includes/skins/dynamic-woo-products-on-sale/skin-dualcarousel.php',
@@ -451,7 +469,6 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Includes\\Skins\\Skin_Grid_Filters' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-grid-filters.php',
         'DynamicContentForElementor\\Includes\\Skins\\Skin_Gridtofullscreen3d' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-gridtofullscreen3d.php',
         'DynamicContentForElementor\\Includes\\Skins\\Skin_List' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-list.php',
-        'DynamicContentForElementor\\Includes\\Skins\\Skin_NextPost' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-nextpost.php',
         'DynamicContentForElementor\\Includes\\Skins\\Skin_Smoothscroll' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-smoothscroll.php',
         'DynamicContentForElementor\\Includes\\Skins\\Skin_Table' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-table.php',
         'DynamicContentForElementor\\Includes\\Skins\\Skin_Timeline' => __DIR__ . '/../..' . '/includes/skins/dynamic-posts/skin-timeline.php',
@@ -488,18 +505,24 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Includes\\Skins\\Woo_Products_Cart_Skin_Grid_Filters' => __DIR__ . '/../..' . '/includes/skins/woo-products-cart/skin-grid-filters.php',
         'DynamicContentForElementor\\Includes\\Skins\\Woo_Products_Cart_Skin_List' => __DIR__ . '/../..' . '/includes/skins/woo-products-cart/skin-list.php',
         'DynamicContentForElementor\\Includes\\Skins\\Woo_Products_Cart_Skin_Table' => __DIR__ . '/../..' . '/includes/skins/woo-products-cart/skin-table.php',
-        'DynamicContentForElementor\\LicenseSystem' => __DIR__ . '/../..' . '/class/license-system.php',
         'DynamicContentForElementor\\Meta' => __DIR__ . '/../..' . '/class/trait/meta.php',
         'DynamicContentForElementor\\Metabox' => __DIR__ . '/../..' . '/class/metabox.php',
         'DynamicContentForElementor\\Model' => __DIR__ . '/../..' . '/class/settings-model.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\AcfRelationship' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/acf-relationship.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Cryptocurrency' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/cryptocurrency.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\DynamicGoogleMapsDirectionsInfo' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/dynamic-google-maps-directions-info.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\DynamicGoogleMapsDirectionsInstructions' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/dynamic-google-maps-directions-instructions.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Favorites' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/favorites.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\MetaboxRelationship' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/metabox-relationship.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\MyPosts' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/my-posts.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Php' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/php.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Posts' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/posts.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\StickyPosts' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/sticky-posts.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Tags' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/tags.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Template' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/template.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Terms' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/terms.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\Token' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/token.php',
+        'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\WooProductCategories' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/woo-product-categories.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\WooProducts' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/woo-products.php',
         'DynamicContentForElementor\\Modules\\DynamicTags\\Tags\\WooWishlist' => __DIR__ . '/../..' . '/modules/dynamic-tags/tags/woo-wishlist.php',
         'DynamicContentForElementor\\Modules\\QueryControl\\Module' => __DIR__ . '/../..' . '/modules/query-control/module.php',
@@ -514,6 +537,7 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Plugin' => __DIR__ . '/../..' . '/core/plugin.php',
         'DynamicContentForElementor\\Plugins' => __DIR__ . '/../..' . '/class/trait/plugins.php',
         'DynamicContentForElementor\\Rollback' => __DIR__ . '/../..' . '/class/rollback.php',
+        'DynamicContentForElementor\\RollbackManager' => __DIR__ . '/../..' . '/class/rollback-manager.php',
         'DynamicContentForElementor\\SaveGuard' => __DIR__ . '/../..' . '/class/save-guard.php',
         'DynamicContentForElementor\\Strings' => __DIR__ . '/../..' . '/class/trait/strings.php',
         'DynamicContentForElementor\\Stripe' => __DIR__ . '/../..' . '/class/stripe.php',
@@ -525,6 +549,7 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Widgets\\AcfFlexibleContent' => __DIR__ . '/../..' . '/includes/widgets/acf-flexible-content.php',
         'DynamicContentForElementor\\Widgets\\AcfGallery' => __DIR__ . '/../..' . '/includes/widgets/acf-gallery.php',
         'DynamicContentForElementor\\Widgets\\AcfRelationship' => __DIR__ . '/../..' . '/includes/widgets/acf-relationship.php',
+        'DynamicContentForElementor\\Widgets\\AcfRelationshipOldVersion' => __DIR__ . '/../..' . '/includes/widgets/acf-relationship-old-version.php',
         'DynamicContentForElementor\\Widgets\\AcfRepeater' => __DIR__ . '/../..' . '/includes/widgets/acf-repeater.php',
         'DynamicContentForElementor\\Widgets\\AcfRepeaterOldVersion' => __DIR__ . '/../..' . '/includes/widgets/acf-repeater-old-version.php',
         'DynamicContentForElementor\\Widgets\\AcfSlider' => __DIR__ . '/../..' . '/includes/widgets/acf-slider.php',
@@ -546,6 +571,8 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Widgets\\DynamicCharts' => __DIR__ . '/../..' . '/includes/widgets/dynamic-charts.php',
         'DynamicContentForElementor\\Widgets\\DynamicCookie' => __DIR__ . '/../..' . '/includes/widgets/dynamic-cookie.php',
         'DynamicContentForElementor\\Widgets\\DynamicGoogleMaps' => __DIR__ . '/../..' . '/includes/widgets/dynamic-google-maps.php',
+        'DynamicContentForElementor\\Widgets\\DynamicGoogleMapsDirections' => __DIR__ . '/../..' . '/includes/widgets/dynamic-google-maps-directions.php',
+        'DynamicContentForElementor\\Widgets\\DynamicOsmMap' => __DIR__ . '/../..' . '/includes/widgets/dynamic-osm-map.php',
         'DynamicContentForElementor\\Widgets\\DynamicPosts' => __DIR__ . '/../..' . '/includes/widgets/dynamic-posts.php',
         'DynamicContentForElementor\\Widgets\\DynamicPostsBase' => __DIR__ . '/../..' . '/includes/widgets/dynamic-posts-base.php',
         'DynamicContentForElementor\\Widgets\\DynamicPostsOldVersion' => __DIR__ . '/../..' . '/includes/widgets/dynamic-posts-old-version.php',
@@ -612,6 +639,7 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
         'DynamicContentForElementor\\Widgets\\WooWishlist' => __DIR__ . '/../..' . '/includes/widgets/woo-wishlist.php',
         'DynamicContentForElementor\\Woo' => __DIR__ . '/../..' . '/class/trait/woo.php',
         'DynamicContentForElementor\\Wp' => __DIR__ . '/../..' . '/class/trait/wp.php',
+        'DynamicContentForElementor\\WpCli' => __DIR__ . '/../..' . '/class/wp-cli.php',
         'DynamicContentForElementor\\Wpml' => __DIR__ . '/../..' . '/class/wpml.php',
         'DynamicOOOS\\Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'DynamicOOOS\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
@@ -679,9 +707,9 @@ class ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit43ca83e6540af9566dd2d00a023d9c24::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit206b47ce7e59f55b2d4d57568281ec9e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit206b47ce7e59f55b2d4d57568281ec9e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit206b47ce7e59f55b2d4d57568281ec9e::$classMap;
 
         }, null, ClassLoader::class);
     }

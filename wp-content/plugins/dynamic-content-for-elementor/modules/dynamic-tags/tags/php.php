@@ -92,7 +92,7 @@ class Php extends Tag
      * @param array<mixed> $options
      * @return string
      */
-    public function get_content($options = [])
+    public function get_content(array $options = [])
     {
         $settings = $this->get_settings_for_display();
         if ($settings['data'] === 'yes') {

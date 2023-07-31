@@ -3,13 +3,21 @@
 namespace DynamicContentForElementor;
 
 class Features {
+	/**
+	 * all main features that can be activated/deactivated independently.
+	 */
 	public $all_features;
+	/**
+	 * @var array<string,array<string,string>>
+	 */
+	public $bundled_features;
 	private $features_status = false;
 	const FEATURES_STATUS_OPTION = 'dce_features_status_option';
 
 	public function __construct() {
 		$this->all_features = self::get_all_features_data();
 		$status = $this->get_features_status();
+		$this->bundled_features = self::get_bundled_features_data();
 		$this->update_all_features_with_new_status( $status );
 		$this->save_later_if_empty();
 	}
@@ -22,8 +30,8 @@ class Features {
 	public function save_later_if_empty() {
 		$option_json = get_option( self::FEATURES_STATUS_OPTION );
 		if ( $option_json === false ) {
-			if ( ! wp_next_scheduled( 'dce_save_features' ) ) {
-				wp_schedule_single_event( time() * 15 * 60, 'dce_save_features' );
+			if ( ! wp_next_scheduled( 'dce_auto_save_features' ) ) {
+				wp_schedule_single_event( time() + 15 * 60, 'dce_auto_save_features' );
 			}
 			add_action( 'dce_save_features', function() {
 				update_option( self::FEATURES_STATUS_OPTION, wp_json_encode( $this->get_features_status() ) );
@@ -31,6 +39,11 @@ class Features {
 		}
 	}
 
+	/**
+	 * Get Widgets Groups
+	 *
+	 * @return array<string,string>
+	 */
 	public static function get_widgets_groups() {
 		return [
 			'LIST' => __( 'List', 'dynamic-content-for-elementor' ),
@@ -51,18 +64,50 @@ class Features {
 		];
 	}
 
+	/**
+	 * Get Extensions Groups
+	 *
+	 * @return array<string,string>
+	 */
 	public static function get_extensions_groups() {
 		return [
 			'COMMON' => __( 'for All Widgets', 'dynamic-content-for-elementor' ),
 			'FREE' => __( 'for Elementor Free', 'dynamic-content-for-elementor' ),
 			'PRO' => __( 'for Elementor Pro', 'dynamic-content-for-elementor' ),
 			'FORM' => __( 'for Elementor Pro Form', 'dynamic-content-for-elementor' ),
-			'EDITOR' => __( 'for Elementor Editor', 'dynamic-content-for-elementor' ),
+		];
+	}
+
+	/**
+	 * Get Dynamic Tags Groups
+	 *
+	 * @return array<string,string>
+	 */
+	public static function get_dynamic_tags_groups() {
+		return [
+			'POST' => __( 'Posts and Pages', 'dynamic-content-for-elementor' ),
+			'WOO' => 'WooCommerce',
+			'TERMS' => __( 'Terms', 'dynamic-content-for-elementor' ),
+			'CONTENT' => __( 'Content', 'dynamic-content-for-elementor' ),
+			'DEV' => __( 'Developer', 'dynamic-content-for-elementor' ),
+			'ACF' => __( 'Advanced Custom Fields', 'dynamic-content-for-elementor' ),
+			'METABOX' => 'Meta Box',
+			'DYNAMIC_GOOGLE_MAPS_DIRECTIONS' => 'Dynamic Google Maps Directions',
 		];
 	}
 
 	public function get_feature_info( string $feature_id, string $info ) {
 		return $this->all_features[ $feature_id ][ $info ];
+	}
+
+	/**
+	 * Get Feature Title
+	 *
+	 * @param string $feature_id
+	 * @return string
+	 */
+	public function get_feature_title( string $feature_id ) {
+		return $this->all_features[ $feature_id ][ 'title' ];
 	}
 
 	public function get_feature_info_by_array( array $features, string $key ) {
@@ -77,9 +122,32 @@ class Features {
 		return wp_list_filter( $this->all_features, $args, $operator );
 	}
 
+	/**
+	 * Filter Bundled
+	 *
+	 * @param array<mixed> $args
+	 * @param string $operator
+	 * @return array<mixed>
+	 */
+	public function filter_bundled( array $args, string $operator = 'AND' ) {
+		return wp_list_filter( $this->bundled_features, $args, $operator );
+	}
+
 	public function filter_by_tag( string $value ) {
 		return array_filter( $this->all_features, function( $f ) use ( $value ) {
 			return in_array( $value, $f['tag'] ?? [], true );
+		} );
+	}
+
+	/**
+	 * Filter By Collection
+	 *
+	 * @param string $value
+	 * @return array<string,array<string,string>>
+	 */
+	public function filter_by_collection( string $value ) {
+		return array_filter( $this->all_features, function( $f ) use ( $value ) {
+			return isset( $f['collection'] ) && $value === $f['collection'];
 		} );
 	}
 
@@ -89,10 +157,26 @@ class Features {
 		} );
 	}
 
+	/**
+	 * Is Feature Active
+	 *
+	 * @param string $feature
+	 * @return boolean
+	 */
+	public function is_feature_active( string $feature ) {
+		return $this->get_feature_info( $feature, 'status' ) === 'active';
+	}
+
 	public function update_all_features_with_new_status( $status ) {
 		array_walk( $this->all_features, function( &$v, $k ) use ( $status ) {
 			$v['status'] = $status[ $k ];
 		});
+		// bundled features should have the same status as the main features
+		// they are bundled with:
+		foreach( $this->bundled_features as $key => $data) {
+			$status = $this->all_features[ $data['activated_by'] ]['status'];
+			$this->bundled_features[$key]['status'] = $status;
+		}
 	}
 
 	/**
@@ -143,6 +227,47 @@ class Features {
 		$this->update_all_features_with_new_status( $new_status );
 	}
 
+	/**
+	 * Get Bundled Features Data
+	 *
+	 * @return array<string,mixed>
+	 */
+	public static function get_bundled_features_data() {
+		return [
+			'ext_tag_dynamic_google_maps_directions_info' => [
+				'activated_by' => 'wdg_google_maps_directions',
+				'name' => 'ext_tag_dynamic_google_maps_directions_info',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\DynamicGoogleMapsDirectionsInfo',
+				'category' => 'DYNAMIC_GOOGLE_MAPS_DIRECTIONS',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Map Info', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Shows information from a map created with Dynamic Google Maps Directions', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-google-maps-directions-info',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-map-info',
+			],
+			'ext_tag_dynamic_google_maps_directions_instructions' => [
+				'activated_by' => 'wdg_google_maps_directions',
+				'name' => 'ext_tag_dynamic_google_maps_directions_instructions',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\DynamicGoogleMapsDirectionsInstructions',
+				'category' => 'DYNAMIC_GOOGLE_MAPS_DIRECTIONS',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Map Instructions', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Shows the road information of a map created with Dynamic Google Maps Directions', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-google-maps-directions-instructions',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-map-instructions',
+			],
+		];
+	}
+
+	/**
+	 * Get All Features Data
+	 *
+	 * @return array<string,mixed>
+	 */
 	public static function get_all_features_data() {
 		return [
 			///  Extensions ///
@@ -161,6 +286,8 @@ class Features {
 				'name' => 'dce_extension_copypaste',
 				'type' => 'extension',
 				'class' => 'Extensions\CopyPaste',
+				'legacy' => true,
+				'replaced_by_custom_message' => __( 'This feature has been set as deprecated since Elementor released its own "Copy and Paste Between Websites" functionality in v3.11.0.', 'dynamic-content-for-elementor' ),
 				'category' => 'EDITOR',
 				'title' => __( 'Copy&Paste Cross Sites', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Copy and Paste any element from one site to another', 'dynamic-content-for-elementor' ),
@@ -201,116 +328,6 @@ class Features {
 				'plugin_depends' => '',
 				'doc_url' => 'https://www.dynamic.ooo/widget/scroll-reveals/',
 			],
-			'ext_tag_cryptocurrency' => [
-				'name' => '',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\Cryptocurrency',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Cryptocurrency', 'dynamic-content-for-elementor' ),
-				'description' => __( 'The perfect way to use cryptocurrency on all widgets', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-crypto',
-				'plugin_depends' => '',
-				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-cryptocurrency',
-			],
-			'ext_tag_posts' => [
-				'name' => 'ext_tag_posts',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\Posts',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Posts', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support to show posts in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-posts',
-				'plugin_depends' => '',
-				'doc_url' => '',
-			],
-			'ext_tag_woo_products' => [
-				'name' => 'ext_tag_woo_products',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\WooProducts',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Products', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support to show WooCommerce products in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-woo-products',
-				'plugin_depends' => [ 'woocommerce' ],
-				'doc_url' => '',
-			],
-			'ext_tag_sticky_posts' => [
-				'name' => 'ext_tag_sticky_posts',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\StickyPosts',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Sticky Posts', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support to show Sticky Posts in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-sticky-posts',
-				'plugin_depends' => '',
-				'doc_url' => '',
-			],
-			'ext_tag_my_posts' => [
-				'name' => 'ext_tag_my_posts',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\MyPosts',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - My Posts', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support to show posts of the current user in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-my-posts',
-				'plugin_depends' => '',
-				'doc_url' => '',
-			],
-			'ext_tag_favorites' => [
-				'name' => '',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\Favorites',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Favorites', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support for Favorites in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-favorites',
-				'plugin_depends' => '',
-				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-favorites',
-			],
-			'ext_tag_wishlist' => [
-				'name' => '',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\WooWishlist',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Woo Wishlist', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support for Woo Wishlist in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-woo-wishlist',
-				'plugin_depends' => [ 'woocommerce' ],
-				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-woo-wishlist',
-			],
-			'ext_template' => [
-				'name' => 'dce_extension_template',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\Template',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Template', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support for Template in Dynamic Tag for text, HTML and textarea settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dyn-template',
-				'plugin_depends' => '',
-				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-template',
-			],
-			'ext_token' => [
-				'name' => 'dce_extension_token',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\Token',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - Tokens', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support for Tokens in Dynamic Tag for all settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dyn-tokens',
-				'plugin_depends' => '',
-				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-token/',
-			],
-			'dynamic_tag_php' => [
-				'name' => 'dce_dynamic_tag_php',
-				'type' => 'extension',
-				'class' => 'Extensions\DynamicTags\Php',
-				'extension_type' => 'dynamic-tag',
-				'title' => __( 'Dynamic Tag - PHP', 'dynamic-content-for-elementor' ),
-				'description' => __( 'Add support for PHP Code in Dynamic Tag for all settings', 'dynamic-content-for-elementor' ),
-				'icon' => 'icon-dce-dynamic-tag-php',
-				'plugin_depends' => '',
-				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-php/',
-			],
 			'ext_transforms' => [
 				'name' => 'dce_extension_transforms',
 				'type' => 'extension',
@@ -324,6 +341,7 @@ class Features {
 			],
 			'ext_unwrap' => [
 				'name' => 'dce_extension_unwrap',
+				'default_status' => 'inactive',
 				'type' => 'extension',
 				'class' => 'Extensions\Unwrap',
 				'category' => 'COMMON',
@@ -626,6 +644,7 @@ class Features {
 				'icon' => 'icon-dyn-multistep',
 				'plugin_depends' => [ 'elementor-pro' ],
 				'doc_url' => 'https://www.dynamic.ooo/widget/enhanced-multi-step-elementor-pro-form/',
+				'legacy' => true,
 			],
 			'ext_form_submit_on_change' => [
 				'name' => 'dce_extension_form_submit_on_change',
@@ -684,7 +703,6 @@ class Features {
 				'icon' => 'icon-dyn-conditional-fields',
 				'plugin_depends' => [ 'elementor-pro' ],
 				'doc_url' => 'https://www.dynamic.ooo/widget/conditional-fields-v2-for-elementor-pro-form/',
-				'minimum_php' => '7.2',
 			],
 			'ext_form_wysiwyg' => [
 				'name' => 'ext_form_wysiwyg',
@@ -790,6 +808,8 @@ class Features {
 				'type' => 'extension',
 				'class' => 'Extensions\DynamicCountdown',
 				'category' => 'PRO',
+				'legacy' => true,
+				'replaced_by_custom_message' => __( 'This feature has been deprecated since Elementor Pro added new dynamic tag for due date in v3.10.0.', 'dynamic-content-for-elementor' ),
 				'title' => __( 'Dynamic Due Date for Elementor Countdown', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Add a Dynamic Due Date field on Elementor Countdown widget to permit dynamic values', 'dynamic-content-for-elementor' ),
 				'icon' => 'icon-dyn-dynamic-countdown',
@@ -806,6 +826,189 @@ class Features {
 				'icon' => 'icon-dce-confirm-dialog',
 				'plugin_depends' => [ 'elementor-pro' ],
 				'doc_url' => 'https://www.dynamic.ooo/widget/confirm-dialog-for-elementor-pro-form/',
+			],
+
+			///  Dynamic Tags ///
+
+			'ext_tag_cryptocurrency' => [
+				'name' => '',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Cryptocurrency',
+				'category' => 'COMMON',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Cryptocurrency', 'dynamic-content-for-elementor' ),
+				'description' => __( 'The perfect way to use cryptocurrency on all widgets', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-crypto',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-cryptocurrency',
+			],
+			'ext_tag_posts' => [
+				'name' => 'ext_tag_posts',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Posts',
+				'category' => 'POST',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Posts', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show posts in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-posts',
+				'plugin_depends' => '',
+				'doc_url' => '',
+			],
+			'ext_tag_woo_products' => [
+				'name' => 'ext_tag_woo_products',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\WooProducts',
+				'category' => 'WOO',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Products', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show WooCommerce products in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-woo-products',
+				'plugin_depends' => [ 'woocommerce' ],
+				'doc_url' => '',
+			],
+			'ext_tag_sticky_posts' => [
+				'name' => 'ext_tag_sticky_posts',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\StickyPosts',
+				'category' => 'POST',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Sticky Posts', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show Sticky Posts in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-sticky-posts',
+				'plugin_depends' => '',
+				'doc_url' => '',
+			],
+			'ext_tag_my_posts' => [
+				'name' => 'ext_tag_my_posts',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\MyPosts',
+				'category' => 'POST',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Posts by the Current User', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show posts of the current user in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-my-posts',
+				'plugin_depends' => '',
+				'doc_url' => '',
+			],
+			'ext_tag_favorites' => [
+				'name' => '',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Favorites',
+				'category' => 'POST',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Favorites', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support for Favorites in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-favorites',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-favorites',
+			],
+			'ext_tag_wishlist' => [
+				'name' => '',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\WooWishlist',
+				'category' => 'WOO',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Woo Wishlist', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support for Woo Wishlist in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-woo-wishlist',
+				'plugin_depends' => [ 'woocommerce' ],
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-woo-wishlist',
+			],
+			'ext_tag_acf_relationship' => [
+				'name' => 'ext_tag_acf_relationship',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\AcfRelationship',
+				'category' => 'ACF',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - ACF Relationship', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show ACF Relationships in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-acf-relationship',
+				'plugin_depends' => [ 'acf' ],
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-acf-relationship',
+			],
+			'ext_tag_metabox_relationship' => [
+				'name' => 'ext_tag_metabox_relationship',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\MetaboxRelationship',
+				'category' => 'METABOX',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Meta Box Relationship', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show Meta Box Relationships in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-metabox-relationship',
+				'plugin_depends' => [ 'meta-box' ],
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-meta-box-relationship',
+			],
+			'ext_tag_terms' => [
+				'name' => 'ext_tag_terms',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Terms',
+				'category' => 'TERMS',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Terms', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show terms in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-terms',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-terms',
+			],
+			'ext_tag_tags' => [
+				'name' => 'ext_tag_tags',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Tags',
+				'category' => 'TERMS',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Tags', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show tags in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-tags',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-tags',
+			],
+			'ext_tag_woo_product_categories' => [
+				'name' => 'ext_tag_woo_product_categories',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\WooProductCategories',
+				'category' => 'WOO',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Woo Product Categories', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support to show WooCommerce Product Categories in Dynamic Tag for text settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-woo-product-categories',
+				'plugin_depends' => [ 'woocommerce' ],
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-woo-product-categories',
+			],
+			'ext_template' => [
+				'name' => 'dce_extension_template',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Template',
+				'category' => 'CONTENT',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Template', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support for Template in Dynamic Tag for text, HTML and textarea settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dyn-template',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-template',
+			],
+			'ext_token' => [
+				'name' => 'dce_extension_token',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Token',
+				'category' => 'CONTENT',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - Tokens', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support for Tokens in Dynamic Tag for all settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dyn-tokens',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-token/',
+			],
+			'dynamic_tag_php' => [
+				'name' => 'dce_dynamic_tag_php',
+				'type' => 'extension',
+				'class' => 'Extensions\DynamicTags\Php',
+				'category' => 'DEV',
+				'extension_type' => 'dynamic-tag',
+				'title' => __( 'Dynamic Tag - PHP', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Add support for PHP Code in Dynamic Tag for all settings', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-tag-php',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-tag-php/',
 			],
 
 			/// Widgets ///
@@ -835,16 +1038,32 @@ class Features {
 				'keywords' => [ 'Advanced Custom Fields', 'gallery', 'fields', 'images', 'image' ],
 			],
 			'wdg_relationship' => [
-				'class' => 'Widgets\\AcfRelationship',
+				'class' => 'Widgets\\AcfRelationshipOldVersion',
 				'type' => 'widget',
 				'category' => 'ACF',
+				'legacy' => true,
+				'replaced_by' => 'wdg_acf_relationship',
 				'tag' => [ 'loop' ],
 				'name' => 'dyncontel-acf-relation',
-				'title' => __( 'ACF Relationship', 'dynamic-content-for-elementor' ),
+				'title' => __( 'ACF Relationship (old version)', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Use the ACF Relationship field to easily display related content', 'dynamic-content-for-elementor' ),
 				'icon' => 'icon-dyn-relation',
 				'plugin_depends' => [ 'acf' ],
-				'doc_url' => 'https://www.dynamic.ooo/widget/acf-relationship/',
+				'doc_url' => 'https://www.dynamic.ooo/widget/acf-relationship-old-version/',
+				'keywords' => [ 'Advanced Custom Fields', 'fields' ],
+			],
+			'wdg_acf_relationship' => [
+				'class' => 'Widgets\\AcfRelationship',
+				'type' => 'widget',
+				'category' => 'ACF',
+				'name' => 'dce-acf-relationship',
+				'title' => __( 'ACF Relationship', 'dynamic-content-for-elementor' ),
+				'collection' => 'dynamic-posts',
+				'tag' => [ 'pagination', 'loop' ],
+				'description' => __( 'Use the ACF Relationship field to easily display related content', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dyn-relation',
+				'plugin_depends' => [ 'acf' ],
+				'doc_url' => 'https://www.dynamic.ooo/widget/acf-relationship-new-version/',
 				'keywords' => [ 'Advanced Custom Fields', 'fields' ],
 			],
 			'wdg_repeater' => [
@@ -923,7 +1142,6 @@ class Features {
 				'plugin_depends' => '',
 				'doc_url' => 'https://www.dynamic.ooo/widget/button-calendar/',
 				'keywords' => [ 'date', 'calendar', 'ics', 'reminder' ],
-				'minimum_php' => '7.2',
 			],
 			'wdg_clipboard' => [
 				'class' => 'Widgets\\CopyToClipboard',
@@ -1036,6 +1254,7 @@ class Features {
 				'class' => 'Widgets\\TextEditorWithTokens',
 				'type' => 'widget',
 				'category' => 'CONTENT',
+				'admin_only' => true,
 				'name' => 'dce-tokens',
 				'title' => __( 'Text Editor with Tokens', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Add Tokens to show values from posts, users, terms, custom fields, options and others', 'dynamic-content-for-elementor' ),
@@ -1133,6 +1352,7 @@ class Features {
 				'class' => 'Widgets\\ShortcodeWithTokens',
 				'type' => 'widget',
 				'category' => 'DEV',
+				'admin_only' => true,
 				'name' => 'dyncontel-doshortcode',
 				'title' => __( 'Shortcode with Tokens', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Apply a WordPress shortcode using Tokens', 'dynamic-content-for-elementor' ),
@@ -1378,7 +1598,7 @@ class Features {
 				'collection' => 'dynamic-posts',
 				'tag' => [ 'pagination', 'loop' ],
 				'name' => 'dce-my-posts',
-				'title' => __( 'My Posts', 'dynamic-content-for-elementor' ),
+				'title' => __( 'Posts by the Current User', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Show your logged-in customers posts written by them', 'dynamic-content-for-elementor' ),
 				'icon' => 'icon-dce-my-posts',
 				'plugin_depends' => '',
@@ -1404,6 +1624,7 @@ class Features {
 				'class' => 'Widgets\\DynamicGoogleMaps',
 				'type' => 'widget',
 				'category' => 'MAPS',
+				'admin_only' => true,
 				'name' => 'dyncontel-acf-google-maps',
 				'title' => __( 'Dynamic Google Maps', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Build a map using data from ACF Google Map fields, Meta Box Google Map fields, addresses or latitude and longitude', 'dynamic-content-for-elementor' ),
@@ -1411,6 +1632,18 @@ class Features {
 				'plugin_depends' => '',
 				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-google-maps/',
 				'keywords' => [ 'Advanced Custom Fields', 'fields' ],
+			],
+			'wdg_google_maps_directions' => [
+				'class' => 'Widgets\\DynamicGoogleMapsDirections',
+				'type' => 'widget',
+				'category' => 'MAPS',
+				'name' => 'dce-dynamic-google-maps-directions',
+				'title' => __( 'Dynamic Google Maps Directions', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Show the map and calculate the direction between two locations. Can be used in conjunction with its Dynamic Tags to show distance info and directions', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-google-maps-directions',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-google-maps-directions',
+				'keywords' => [ 'distance' ],
 			],
 			'wdg_metabox_google_maps' => [
 				'class' => 'Widgets\\MetaBoxGoogleMaps',
@@ -1526,6 +1759,7 @@ class Features {
 				'category' => 'LIST',
 				'admin_only' => true,
 				'name' => 'dce-views',
+				'tag' => [ 'loop' ],
 				'title' => __( 'Views', 'dynamic-content-for-elementor' ),
 				'description' => __( 'Create a custom list from query results', 'dynamic-content-for-elementor' ),
 				'icon' => 'icon-dyn-views',
@@ -1560,6 +1794,7 @@ class Features {
 				'class' => 'Widgets\\PodsRelationship',
 				'type' => 'widget',
 				'category' => 'PODS',
+				'admin_only' => true,
 				'tag' => [ 'loop' ],
 				'name' => 'dyncontel-pods-relation',
 				'title' => __( 'Pods Relationship', 'dynamic-content-for-elementor' ),
@@ -1820,6 +2055,7 @@ class Features {
 				'class' => 'Widgets\\ToolsetRelationship',
 				'type' => 'widget',
 				'category' => 'TOOLSET',
+				'admin_only' => true,
 				'tag' => [ 'loop' ],
 				'name' => 'dyncontel-toolset-relation',
 				'title' => __( 'Toolset Relationship', 'dynamic-content-for-elementor' ),
@@ -1875,6 +2111,18 @@ class Features {
 				'icon' => 'icon-dyn-osm',
 				'plugin_depends' => '',
 				'doc_url' => 'https://www.dynamic.ooo/widget/openstreetmap-elementor/',
+				'keywords' => [ 'map', 'open street map', 'google maps', 'osm', 'address' ],
+			],
+			'wdg_dynamic_osm_map' => [
+				'class' => 'Widgets\\DynamicOsmMap',
+				'type' => 'widget',
+				'category' => 'MAPS',
+				'name' => 'dce-dynamic-osm-map',
+				'title' => __( 'Dynamic OpenStreetMap', 'dynamic-content-for-elementor' ),
+				'description' => __( 'Display and customize multiple points of interest on OpenStreetMap', 'dynamic-content-for-elementor' ),
+				'icon' => 'icon-dce-dynamic-openstreetmap',
+				'plugin_depends' => '',
+				'doc_url' => 'https://www.dynamic.ooo/widget/dynamic-openstreetmap/',
 				'keywords' => [ 'map', 'open street map', 'google maps', 'osm', 'address' ],
 			],
 			'wdg_cryptocoin_badge' => [

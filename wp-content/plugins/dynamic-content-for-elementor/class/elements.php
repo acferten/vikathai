@@ -45,7 +45,7 @@ class Elements
                         \DynamicContentForElementor\Plugin::instance()->assets->register_and_enqueue_dce_icons();
                         wp_enqueue_style('dce-admin-bar', plugins_url('/assets/css/admin-bar.css', DCE__FILE__), [], DCE_VERSION);
                     });
-                    add_action('admin_bar_menu', array($this, 'add_frontend_navigator'), 100, 2);
+                    add_action('admin_bar_menu', array($this, 'add_frontend_navigator'), 100);
                     if (isset($_GET['dce-nav'])) {
                         add_action('wp_head', function () {
                             echo '<meta name="robots" content="noindex" />';

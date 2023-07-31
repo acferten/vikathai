@@ -322,7 +322,7 @@ trait RedisTrait
     {
         if ($this->redis instanceof \DynamicOOOS\Predis\ClientInterface) {
             $prefix = $this->redis->getOptions()->prefix ? $this->redis->getOptions()->prefix->getPrefix() : '';
-            $prefixLen = \strlen($prefix);
+            $prefixLen = \strlen($prefix ?? '');
         }
         $cleared = \true;
         $hosts = $this->getHosts();

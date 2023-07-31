@@ -34,8 +34,9 @@ class ParentChildMenu extends \DynamicContentForElementor\Widgets\WidgetPrototyp
         $this->add_control('exclude_io', ['label' => __('Exclude myself', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes']);
         $this->add_control('no_siblings', ['label' => __('Hide Siblings', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['dynamic_parentchild!' => '']]);
         $this->add_control('only_children', ['label' => __('Only children', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['no_siblings!' => '']]);
-        $this->add_control('show_parent', ['label' => __('Show parent page Title', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes']);
-        $this->add_control('show_childlist', ['label' => __('Show Child List', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes']);
+        $this->add_control('show_parent', ['label' => __('Parent Page Title', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'label_on' => __('Show', 'dynamic-content-for-elementor'), 'label_off' => __('Hide', 'dynamic-content-for-elementor'), 'default' => 'yes']);
+        $this->add_control('title_html_tag', ['label' => __('Title HTML Tag', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => Helper::get_html_tags(), 'default' => 'h4', 'condition' => ['show_parent!' => '']]);
+        $this->add_control('show_childlist', ['label' => __('Child List', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'label_on' => __('Show', 'dynamic-content-for-elementor'), 'label_off' => __('Hide', 'dynamic-content-for-elementor'), 'default' => 'yes']);
         $this->add_control('blockwidth_enable', ['label' => __('Force Block width', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'condition' => ['show_border' => '2']]);
         $this->add_control('menu_width', ['label' => __('Box Width', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SLIDER, 'default' => ['size' => ''], 'size_units' => ['px', '%'], 'range' => ['px' => ['min' => 0, 'max' => 800], '%' => ['min' => 0, 'max' => 100]], 'condition' => ['blockwidth_enable' => 'yes'], 'selectors' => ['{{WRAPPER}} .dce-menu .box' => 'width: {{SIZE}}{{UNIT}};']]);
         $this->add_responsive_control('show_separators', ['label' => __('Show Separator', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['solid' => ['title' => __('Yes', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-check'], 'none' => ['title' => __('No', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-ban']], 'toggle' => \true, 'default' => 'solid', 'selectors' => ['{{WRAPPER}} .dce-menu.horizontal li' => 'border-left-style: {{VALUE}};'], 'condition' => ['menu_style' => 'horizontal']]);
@@ -119,7 +120,8 @@ class ParentChildMenu extends \DynamicContentForElementor\Widgets\WidgetPrototyp
             echo '<div class="box">';
         }
         if ($settings['show_parent']) {
-            echo '<h4 class="dce-parent-title"><a href="' . get_permalink($id_page) . '">' . wp_kses_post(get_the_title($id_page)) . '</a></h4>';
+            $html_tag = Helper::validate_html_tag($settings['title_html_tag']);
+            echo '<' . $html_tag . ' class="dce-parent-title"><a href="' . get_permalink($id_page) . '">' . wp_kses_post(get_the_title($id_page)) . '</a></' . $html_tag . '>';
             if ($settings['show_border']) {
                 echo '<hr />';
             }

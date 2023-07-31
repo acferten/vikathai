@@ -15,7 +15,9 @@ use function apply_filters;
  */
 function kadence_pro_custom_shop_page() {
 	$shop_page = get_post( wc_get_page_id( 'shop' ) );
-	echo apply_filters( 'the_content', $shop_page->post_content );
+	if ( isset( $shop_page ) && is_object( $shop_page ) ) {
+		echo apply_filters( 'the_content', $shop_page->post_content );
+	}
 }
 add_action( 'kadence_pro_woocommerce_shop_page_content', 'Kadence_Pro\kadence_pro_custom_shop_page' );
 

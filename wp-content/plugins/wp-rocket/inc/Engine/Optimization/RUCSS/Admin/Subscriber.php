@@ -68,8 +68,11 @@ class Subscriber implements Subscriber_Interface {
 			'update_option_' . $slug                  => [
 				[ 'clean_used_css_and_cache', 9, 2 ],
 				[ 'maybe_set_processing_transient', 50, 2 ],
+				[ 'maybe_unlock_preload', 9, 2 ],
+				[ 'maybe_delete_transient', 10, 2 ],
 			],
 			'switch_theme'                            => 'truncate_used_css',
+			'permalink_structure_changed'             => 'truncate_used_css',
 			'wp_trash_post'                           => 'delete_used_css_on_update_or_delete',
 			'delete_post'                             => 'delete_used_css_on_update_or_delete',
 			'clean_post_cache'                        => 'delete_used_css_on_update_or_delete',
@@ -80,11 +83,12 @@ class Subscriber implements Subscriber_Interface {
 			'admin_post_rocket_clear_usedcss_url'     => 'clear_url_usedcss',
 			'admin_notices'                           => [
 				[ 'clear_usedcss_result' ],
-				[ 'notice_write_permissions' ],
 				[ 'display_processing_notice' ],
 				[ 'display_success_notice' ],
-				[ 'display_as_missed_tables_notice' ],
 				[ 'display_wrong_license_notice' ],
+				[ 'display_saas_error_notice' ],
+				[ 'display_no_table_notice' ],
+				[ 'notice_write_permissions' ],
 			],
 			'rocket_admin_bar_items'                  => [
 				[ 'add_clean_used_css_menu_item' ],
@@ -95,13 +99,13 @@ class Subscriber implements Subscriber_Interface {
 				[ 'set_optimize_css_delivery_method_value', 10, 1 ],
 			],
 			'rocket_localize_admin_script'            => 'add_localize_script_data',
-			'action_scheduler_queue_runner_concurrent_batches' => 'adjust_as_concurrent_batches',
 			'pre_update_option_wp_rocket_settings'    => [ 'maybe_disable_combine_css', 11, 2 ],
 			'wp_rocket_upgrade'                       => [
 				[ 'set_option_on_update', 14, 2 ],
 				[ 'update_safelist_items', 15, 2 ],
 				[ 'delete_used_css', 16, 2 ],
 				[ 'cancel_pending_jobs_as', 16, 2 ],
+				[ 'drop_resources_table', 18, 2 ],
 			],
 			'wp_ajax_rocket_spawn_cron'               => 'spawn_cron',
 			'rocket_deactivation'                     => 'cancel_queues',
@@ -109,31 +113,6 @@ class Subscriber implements Subscriber_Interface {
 			'pre_get_rocket_option_remove_unused_css' => 'disable_russ_on_wrong_license',
 			'rocket_before_rollback'                  => 'cancel_queues',
 		];
-	}
-
-	/**
-	 * Checks if Action scheduler tables are there or not.
-	 *
-	 * @since 3.11.0.3
-	 *
-	 * @return bool
-	 */
-	private function is_valid_as_tables() {
-		$cached_count = get_transient( 'rocket_rucss_as_tables_count' );
-		if ( false !== $cached_count && ! is_admin() ) { // Stop caching in admin UI.
-			return 4 === (int) $cached_count;
-		}
-
-		global $wpdb;
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		$found_as_tables = $wpdb->get_col(
-			$wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . 'actionscheduler%' )
-		);
-
-		set_transient( 'rocket_rucss_as_tables_count', count( $found_as_tables ), rocket_get_constant( 'DAY_IN_SECONDS', 24 * 60 * 60 ) );
-
-		return 4 === count( $found_as_tables );
 	}
 
 	/**
@@ -150,6 +129,10 @@ class Subscriber implements Subscriber_Interface {
 			return;
 		}
 
+		if ( ! $this->is_deletion_enabled() ) {
+			return;
+		}
+
 		$url = get_permalink( $post_id );
 
 		if ( false === $url ) {
@@ -157,6 +140,30 @@ class Subscriber implements Subscriber_Interface {
 		}
 
 		$this->used_css->delete_used_css( untrailingslashit( $url ) );
+	}
+
+	/**
+	 * Maybe unlock all locked preload urls.
+	 *
+	 * @param array $old_value An array of submitted values for the settings.
+	 * @param array $value     An array of previous values for the settings.
+	 *
+	 * @return void
+	 */
+	public function maybe_unlock_preload( $old_value, $value ) {
+		if ( ! isset( $value['remove_unused_css'], $old_value['remove_unused_css'] ) ) {
+			return;
+		}
+
+		if ( $value['remove_unused_css'] === $old_value['remove_unused_css'] ) {
+			return;
+		}
+
+		if ( $value['remove_unused_css'] ) {
+			return;
+		}
+
+		do_action( 'rocket_preload_unlock_all_urls' );
 	}
 
 	/**
@@ -170,6 +177,10 @@ class Subscriber implements Subscriber_Interface {
 	 */
 	public function delete_term_used_css( $term_id ) {
 		if ( ! $this->settings->is_enabled() ) {
+			return;
+		}
+
+		if ( ! $this->is_deletion_enabled() ) {
 			return;
 		}
 
@@ -194,8 +205,22 @@ class Subscriber implements Subscriber_Interface {
 			return;
 		}
 
+		if ( ! $this->is_deletion_enabled() ) {
+			return;
+		}
+
 		$this->delete_used_css_rows();
 		$this->set_notice_transient();
+
+		wp_safe_remote_get(
+			home_url(),
+			[
+				'timeout'    => 0.01,
+				'blocking'   => false,
+				'user-agent' => 'WP Rocket/Homepage Preload',
+				'sslverify'  => apply_filters( 'https_local_ssl_verify', false ), // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			]
+		);
 	}
 
 	/**
@@ -325,6 +350,16 @@ class Subscriber implements Subscriber_Interface {
 
 		$this->set_notice_transient();
 
+		wp_remote_get(
+			home_url(),
+			[
+				'timeout'    => 0.01,
+				'blocking'   => false,
+				'user-agent' => 'WP Rocket/Homepage Preload',
+				'sslverify'  => apply_filters( 'https_local_ssl_verify', false ), // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			]
+		);
+
 		wp_safe_redirect( esc_url_raw( wp_get_referer() ) );
 		rocket_get_constant( 'WP_ROCKET_IS_TESTING', false ) ? wp_die() : exit;
 	}
@@ -422,7 +457,7 @@ class Subscriber implements Subscriber_Interface {
 	 * @return void
 	 */
 	public function display_wrong_license_notice() {
-		$transient = get_transient( 'wp_rocket_no_licence' );
+		$transient = get_option( 'wp_rocket_no_licence' );
 
 		if ( ! $transient ) {
 			return;
@@ -432,6 +467,16 @@ class Subscriber implements Subscriber_Interface {
 	}
 
 	/**
+	 * Display error notice when connection to SAAS fails
+	 *
+	 * @return void
+	 */
+	public function display_saas_error_notice() {
+		$this->settings->display_saas_error_notice();
+	}
+
+
+	/**
 	 * Display admin notice when detecting any missed Action scheduler tables.
 	 *
 	 * @since 3.11.0.3
@@ -439,7 +484,9 @@ class Subscriber implements Subscriber_Interface {
 	 * @return void
 	 */
 	public function display_as_missed_tables_notice() {
-		if ( function_exists( 'get_current_screen' ) && 'tools_page_action-scheduler' === get_current_screen()->id ) {
+		$screen = get_current_screen();
+
+		if ( isset( $screen->id ) && 'tools_page_action-scheduler' === $screen->id ) {
 			return;
 		}
 
@@ -468,6 +515,12 @@ class Subscriber implements Subscriber_Interface {
 	 * @return void
 	 */
 	public function clear_url_usedcss() {
+		check_admin_referer( 'rocket_clear_usedcss_url' );
+
+		if ( ! current_user_can( 'rocket_remove_unused_css' ) ) {
+			wp_nonce_ays( '' );
+		}
+
 		$url = wp_get_referer();
 
 		if ( 0 !== strpos( $url, 'http' ) ) {
@@ -479,17 +532,6 @@ class Subscriber implements Subscriber_Interface {
 
 		wp_safe_redirect( esc_url_raw( wp_get_referer() ) );
 		rocket_get_constant( 'WP_ROCKET_IS_TESTING', false ) ? wp_die() : exit;
-	}
-
-	/**
-	 * Adjust Action Scheduler to have two concurrent batches on the same time.
-	 *
-	 * @param int $num Number of concurrent batches.
-	 *
-	 * @return int
-	 */
-	public function adjust_as_concurrent_batches( int $num = 1 ) {
-		return ( 2 < $num ) ? $num : 2;
 	}
 
 	/**
@@ -680,9 +722,9 @@ class Subscriber implements Subscriber_Interface {
 	}
 
 	/**
-	 * Deletes the used CSS on update to 3.11.3 for new storage method
+	 * Deletes the used CSS on update to 3.11.4 for new storage method
 	 *
-	 * @since 3.11.3
+	 * @since 3.11.4
 	 *
 	 * @param string $new_version New plugin version.
 	 * @param string $old_version Previous plugin version.
@@ -703,10 +745,28 @@ class Subscriber implements Subscriber_Interface {
 	 * @return bool
 	 */
 	public function disable_russ_on_wrong_license() {
-		if ( false !== get_transient( 'wp_rocket_no_licence' ) ) {
+		if ( false !== (bool) get_option( 'wp_rocket_no_licence' ) ) {
 			return false;
 		}
 		return null;
+	}
+
+	/**
+	 * Remove the resources table & version stored in options table on update to 3.12
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $new_version New plugin version.
+	 * @param string $old_version Previous plugin version.
+	 *
+	 * @return void
+	 */
+	public function drop_resources_table( $new_version, $old_version ) {
+		if ( version_compare( $old_version, '3.12', '>=' ) ) {
+			return;
+		}
+
+		$this->database->drop_resources_table();
 	}
 
 	/**
@@ -718,5 +778,52 @@ class Subscriber implements Subscriber_Interface {
 	 */
 	public function notice_write_permissions() {
 		$this->used_css->notice_write_permissions();
+	}
+
+	/**
+	 * Display a notice on table missing.
+	 *
+	 * @return void
+	 */
+	public function display_no_table_notice() {
+		$this->settings->display_no_table_notice();
+	}
+
+	/**
+	 * Maybe delete transient.
+	 *
+	 * @param mixed $old_value Option old value.
+	 * @param mixed $value     Option new value.
+	 *
+	 * @return void
+	 */
+	public function maybe_delete_transient( $old_value, $value ) {
+		if ( ! isset( $old_value['remove_unused_css'], $value['remove_unused_css'] ) ) {
+			return;
+		}
+
+		if ( 1 === (int) $value['remove_unused_css'] ) {
+			return;
+		}
+
+		if ( $old_value['remove_unused_css'] === $value['remove_unused_css'] ) {
+			return;
+		}
+
+		delete_transient( 'wp_rocket_no_licence' );
+	}
+
+	/**
+	 * Checks if the RUCSS deletion is enabled.
+	 *
+	 * @return bool
+	 */
+	protected function is_deletion_enabled(): bool {
+		/**
+		 * Filters the enable RUCSS deletion value
+		 *
+		 * @param bool $delete_rucss True to enable deletion, false otherwise.
+		 */
+		return (bool) apply_filters( 'rocket_rucss_deletion_enabled', true );
 	}
 }

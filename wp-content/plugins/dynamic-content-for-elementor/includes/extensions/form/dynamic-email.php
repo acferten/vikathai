@@ -122,20 +122,8 @@ class DynamicEmail extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $settings = Helper::get_dynamic_value($settings, $fields);
         $this->email($fields, $settings, $ajax_handler, $record);
     }
-    public function on_export($element)
-    {
-        $tmp = array();
-        if (!empty($element)) {
-            foreach ($element['settings'] as $key => $value) {
-                if (\substr($key, 0, 4) == 'dce_') {
-                    unset($element['settings'][$key]);
-                }
-            }
-        }
-    }
     protected function email($fields, $settings = null, $ajax_handler = null, $record = null)
     {
-        global $phpmailer;
         $remove_uploaded_files = \false;
         $all_pdf_attachments = [];
         $remove_pdf_files = \false;
@@ -339,8 +327,11 @@ class DynamicEmail extends \ElementorPro\Modules\Forms\Classes\Action_Base
                 if (($amail['dce_form_pdf_attachments_delete'] ?? '') === 'yes') {
                     $remove_pdf_files = \true;
                 }
-                $phpmailer->AltBody = '';
-                // clear the previous alt body for the next email.
+                global $phpmailer;
+                if (isset($phpmailer) && $phpmailer !== NULL) {
+                    $phpmailer->AltBody = '';
+                    // clear the previous alt body for the next email.
+                }
                 remove_action('phpmailer_init', [$this, 'set_wp_mail_altbody']);
             }
         }
@@ -374,8 +365,9 @@ class DynamicEmail extends \ElementorPro\Modules\Forms\Classes\Action_Base
     }
     public static function set_wp_mail_altbody($phpmailer)
     {
-        global $phpmailer;
-        $phpmailer->AltBody = self::$txt;
+        if (isset($phpmailer) && $phpmailer !== NULL) {
+            $phpmailer->AltBody = self::$txt;
+        }
     }
     public function remove_attachment_tokens($dce_form_email_content, $fields)
     {
@@ -473,7 +465,7 @@ class DynamicEmail extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $email_content = \str_replace($all_fields_shortcode, $text, $email_content);
         $all_valued_fields_shortcode = '[all-fields|!empty]';
         $text = $this->get_shortcode_value($all_valued_fields_shortcode, $email_content, $record, $line_break, \false);
-        $email_content = \str_replace($all_fields_shortcode, $text, $email_content);
+        $email_content = \str_replace($all_valued_fields_shortcode, $text, $email_content);
         return $email_content;
     }
     /**
@@ -508,5 +500,9 @@ class DynamicEmail extends \ElementorPro\Modules\Forms\Classes\Action_Base
         // Add Email Template Type
         $dce_email = 'Elementor\\Modules\\Library\\Documents\\Email';
         \Elementor\Plugin::instance()->documents->register_document_type($dce_email::get_name_static(), \Elementor\Modules\Library\Documents\Email::get_class_full_name());
+    }
+    public function on_export($element)
+    {
+        return $element;
     }
 }

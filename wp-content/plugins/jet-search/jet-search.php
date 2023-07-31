@@ -1,18 +1,15 @@
 <?php
 /**
- * Plugin Name: JetSearch For Elementor
+ * Plugin Name: JetSearch
  * Plugin URI:  https://crocoblock.com/plugins/jetsearch/
- * Description: The best tool for adding complex search functionality to pages built with Elementor
- * Version:     2.1.17
+ * Description: The best tool for adding complex search functionality to pages built with Elementor or Blocks editor
+ * Version:     3.1.1
  * Author:      Crocoblock
  * Author URI:  https://crocoblock.com/
  * Text Domain: jet-search
  * License:     GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path: /languages
- *
- * Elementor tested up to: 3.3
- * Elementor Pro tested up to: 3.3
  *
  * @package jet-search
  * @author  Zemez
@@ -49,7 +46,7 @@ if ( ! class_exists( 'Jet_Search' ) ) {
 		 * @access private
 		 * @var    string
 		 */
-		private $version = '2.1.17';
+		private $version = '3.1.1';
 
 		/**
 		 * Holder for base plugin URL.
@@ -77,6 +74,12 @@ if ( ! class_exists( 'Jet_Search' ) ) {
 		 * @var    object
 		 */
 		public $module_loader = null;
+
+		/**
+		 * @var Jet_Search_DB
+		 */
+		public $db;
+		public $rest_api = null;
 
 		/**
 		 * Sets up needed actions/filters for the plugin to initialize.
@@ -175,59 +178,26 @@ if ( ! class_exists( 'Jet_Search' ) ) {
 		 * @return void
 		 */
 		public function init() {
-			if ( ! $this->has_elementor() ) {
-				add_action( 'admin_notices', array( $this, 'required_plugins_notice' ) );
-				return;
-			}
 
 			$this->load_files();
 
-			jet_search_integration()->init();
+			if ( $this->has_elementor() ) {
+				require $this->plugin_path( 'includes/elementor-views/integration.php' );
+				jet_search_integration()->init();
+			}
+
+			$this->db       = new Jet_Search_DB();
+			$this->rest_api = new Jet_Search_REST_API();
+
+			jet_search_blocks_integration()->init();
 			jet_search_ajax_handlers()->init();
 			jet_search_assets()->init();
 			jet_search_compatibility()->init();
-		}
 
-		/**
-		 * Show required plugins notice.
-		 *
-		 * @since  1.0.0
-		 * @access public
-		 * @return void
-		 */
-		public function required_plugins_notice() {
-			$screen = get_current_screen();
-
-			if ( isset( $screen->parent_file ) && 'plugins.php' === $screen->parent_file && 'update' === $screen->id ) {
-				return;
+			if ( is_admin() ) {
+				//Init Settings Manager
+				new \Jet_Search\Settings();
 			}
-
-			$plugin = 'elementor/elementor.php';
-
-			$installed_plugins      = get_plugins();
-			$is_elementor_installed = isset( $installed_plugins[ $plugin ] );
-
-			if ( $is_elementor_installed ) {
-				if ( ! current_user_can( 'activate_plugins' ) ) {
-					return;
-				}
-
-				$activation_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
-
-				$message = sprintf( '<p>%s</p>', esc_html__( 'JetSearch requires Elementor to be activated.', 'jet-search' ) );
-				$message .= sprintf( '<p><a href="%s" class="button-primary">%s</a></p>', $activation_url, esc_html__( 'Activate Elementor Now', 'jet-search' ) );
-			} else {
-				if ( ! current_user_can( 'install_plugins' ) ) {
-					return;
-				}
-
-				$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=elementor' ), 'install-plugin_elementor' );
-
-				$message = sprintf( '<p>%s</p>', esc_html__( 'JetSearch requires Elementor to be installed.', 'jet-search' ) );
-				$message .= sprintf( '<p><a href="%s" class="button-primary">%s</a></p>', $install_url, esc_html__( 'Install Elementor Now', 'jet-search' ) );
-			}
-
-			printf( '<div class="notice notice-warning is-dismissible"><p>%s</p></div>', wp_kses_post( $message ) );
 		}
 
 		/**
@@ -238,7 +208,7 @@ if ( ! class_exists( 'Jet_Search' ) ) {
 		 * @return boolean
 		 */
 		public function has_elementor() {
-			return did_action( 'elementor/loaded' );
+			return defined( 'ELEMENTOR_VERSION' );
 		}
 
 		/**
@@ -260,12 +230,20 @@ if ( ! class_exists( 'Jet_Search' ) ) {
 		 * @return void
 		 */
 		public function load_files() {
-			require $this->plugin_path( 'includes/integration.php' );
+
+			require $this->plugin_path( 'includes/renders/ajax-search.php' );
+			require $this->plugin_path( 'includes/renders/search-suggestions.php' );
+			require $this->plugin_path( 'includes/blocks-views/integration.php' );
 			require $this->plugin_path( 'includes/assets.php' );
 			require $this->plugin_path( 'includes/ajax-handlers.php' );
 			require $this->plugin_path( 'includes/tools.php' );
 			require $this->plugin_path( 'includes/compatibility.php' );
 			require $this->plugin_path( 'includes/template-functions.php' );
+			require $this->plugin_path( 'includes/class-jet-search-settings.php' );
+			require $this->plugin_path( 'includes/settings/manager.php' );
+			require $this->plugin_path( 'includes/core/db.php' );
+			require $this->plugin_path( 'includes/rest-api/manager.php' );
+
 		}
 
 		/**
@@ -353,6 +331,8 @@ if ( ! class_exists( 'Jet_Search' ) ) {
 		 * @return void
 		 */
 		public function activation() {
+			require $this->plugin_path( 'includes/core/db.php' );
+			Jet_Search_DB::create_all_tables();
 		}
 
 		/**

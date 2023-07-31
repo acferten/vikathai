@@ -21,7 +21,11 @@ class Plugin
      */
     public $controls;
     /**
-     * @var \DynamicContentForElementor\LicenseSystem
+     * @var \DynamicContentForElementor\Widgets
+     */
+    public $widgets;
+    /**
+     * @var \DynamicLicense\License
      */
     public $license_system;
     /**
@@ -60,6 +64,18 @@ class Plugin
      * @var AdminPages\Manager
      */
     public $admin_pages;
+    /**
+     * @var \DynamicContentForElementor\PageSettings
+     */
+    public $page_settings;
+    /**
+     * @var \DynamicContentForElementor\Extensions
+     */
+    public $extensions;
+    /**
+     * @var \DynamicContentForElementor\RollbackManager
+     */
+    public $rollback_manager;
     public $assets;
     protected static $instance;
     public $cron;
@@ -137,12 +153,23 @@ class Plugin
         new \DynamicContentForElementor\Ajax();
         $this->assets = new \DynamicContentForElementor\Assets();
         new \DynamicContentForElementor\Dashboard();
-        $this->license_system = new \DynamicContentForElementor\LicenseSystem();
+        $this->license_system = new \DynamicOOOS\DynamicLicense\License(
+            ['prefix' => DCE_PREFIX, 'plugin_base' => DCE_PLUGIN_BASE, 'slug' => DCE_SLUG, 'admin_license_page' => 'dce-license', 'beta_option' => 'dce_beta', 'product_unique_id' => 'WP-DCE-1', 'version' => DCE_VERSION, 'license_url' => DCE_LICENSE_URL, 'pricing_page' => DCE_PRICING_PAGE],
+            $this->admin_pages->notices,
+            // translators: all are HTML tags:
+            ['buy' => esc_html__('It seems that your copy is not activated, please %1$sactivate it%2$s or %3$sbuy a new license%4$s.', 'dynamic-content-for-elementor')]
+        );
+        $this->rollback_manager = new \DynamicContentForElementor\RollbackManager();
         $this->updates = new \DynamicContentForElementor\Updates();
         $this->wpml = new \DynamicContentForElementor\Wpml();
         $this->cron = new \DynamicContentForElementor\Cron();
         $this->template_system = new \DynamicContentForElementor\TemplateSystem();
         new \DynamicContentForElementor\Elements();
+        // WP-CLI Integration
+        if (\defined('WP_CLI') && WP_CLI) {
+            new \DynamicContentForElementor\WpCli();
+            \WP_CLI::add_command('dce', \DynamicContentForElementor\WpCli::class);
+        }
         // Init hook
         do_action('dynamic_content_for_elementor/init');
     }
@@ -180,7 +207,11 @@ class Plugin
         \DynamicContentForElementor\GlobalSettings::init();
         $this->upgrade = UpgradeManager::instance();
         // Controls
-        add_action('elementor/controls/controls_registered', [$this->controls, 'on_controls_registered']);
+        if (\version_compare(ELEMENTOR_VERSION, '3.5.0', '>=')) {
+            add_action('elementor/controls/controls_registered', [$this->controls, 'on_controls_registered']);
+        } else {
+            add_action('elementor/controls/register', [$this->controls, 'on_controls_registered']);
+        }
         // Force Dynamic Tags
         if (!\defined('DCE_NO_CM_OVERRIDE') || !DCE_NO_CM_OVERRIDE) {
             \Elementor\Plugin::$instance->controls_manager = new \DynamicContentForElementor\ForceDynamicTags();
@@ -190,7 +221,7 @@ class Plugin
         // Page Settings
         $this->page_settings->on_page_settings_registered();
         // Widgets
-        add_action('elementor/widgets/widgets_registered', [$this->widgets, 'on_widgets_registered']);
+        add_action('elementor/widgets/register', [$this->widgets, 'on_widgets_registered']);
     }
     /**
      * Add Enchanted Tab for Form Fields

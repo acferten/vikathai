@@ -34,6 +34,10 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
     {
         return ['dce-infinitescroll', 'dce-datatables', 'dce-views'];
     }
+    protected function get_objects()
+    {
+        return ['post' => ['title' => __('Posts', 'dynamic-content-for-elementor'), 'icon' => 'eicon-post-content'], 'user' => ['title' => __('Users', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-users'], 'term' => ['title' => __('Terms', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-tags']];
+    }
     /**
      * Register controls after check if this feature is only for admin
      *
@@ -42,7 +46,7 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
     protected function safe_register_controls()
     {
         $cpts = $templates = $taxonomies = $taxonomies_terms = $post_fields = $post_status = array();
-        $cpts = Helper::get_post_types(\false);
+        $cpts = Helper::get_public_post_types(\false);
         $taxonomies = Helper::get_taxonomies();
         $post_status = get_post_statuses();
         $roles = Helper::get_roles();
@@ -50,18 +54,18 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $sql_operators = Helper::get_sql_operators();
         //* OBJECT *//
         $this->start_controls_section('section_object', ['label' => __('Object', 'dynamic-content-for-elementor')]);
-        $this->add_control('dce_views_object', ['label' => __('Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => ['post' => ['title' => __('Posts', 'dynamic-content-for-elementor'), 'icon' => 'eicon-post-content'], 'user' => ['title' => __('Users', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-users'], 'term' => ['title' => __('Terms', 'dynamic-content-for-elementor'), 'icon' => 'fa fa-tags']], 'default' => 'post', 'toggle' => \false]);
+        $this->add_control('dce_views_object', ['label' => __('Type', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CHOOSE, 'options' => $this->get_objects(), 'default' => 'post', 'toggle' => \false]);
         $this->end_controls_section();
         // SKIN //
         $this->start_controls_section('section_skin', ['label' => __('Skin', 'dynamic-content-for-elementor')]);
-        $this->add_control('dce_views_style_format', ['label' => __('Skin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['grid' => __('Grid', 'dynamic-content-for-elementor'), 'table' => __('Table', 'dynamic-content-for-elementor'), 'list' => __('List', 'dynamic-content-for-elementor'), 'slideshow' => __('Carousel', 'dynamic-content-for-elementor')], 'default' => 'grid']);
+        $this->add_control('dce_views_style_format', ['label' => __('Skin', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['grid' => __('Grid', 'dynamic-content-for-elementor'), 'table' => __('Table', 'dynamic-content-for-elementor'), 'list' => __('List', 'dynamic-content-for-elementor'), 'slideshow' => __('Carousel', 'dynamic-content-for-elementor')], 'frontend_available' => \true, 'default' => 'grid']);
         // SLIDESHOW
         $this->add_control('section_slider_options', ['label' => __('Carousel Options', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::HEADING, 'separator' => 'before', 'condition' => ['dce_views_style_format' => 'slideshow']]);
         $slides_to_show = \range(1, 10);
         $slides_to_show = \array_combine($slides_to_show, $slides_to_show);
         $this->add_responsive_control('slides_to_show', ['label' => __('Slides per View', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['' => __('Default', 'dynamic-content-for-elementor')] + $slides_to_show, 'frontend_available' => \true, 'condition' => ['dce_views_style_format' => 'slideshow']]);
         $this->add_responsive_control('slides_to_scroll', ['label' => __('Slides per Group', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'options' => ['' => __('Default', 'dynamic-content-for-elementor')] + $slides_to_show, 'condition' => ['slides_to_show!' => '1', 'dce_views_style_format' => 'slideshow'], 'frontend_available' => \true]);
-        $this->add_responsive_control('spaceBetween', ['label' => __('Space Between', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 0, 'tablet_default' => '', 'mobile_default' => '', 'min' => 0, 'max' => 100, 'step' => 1, 'frontend_available' => \true]);
+        $this->add_responsive_control('spaceBetween', ['label' => __('Space Between', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::NUMBER, 'default' => 0, 'tablet_default' => '', 'mobile_default' => '', 'min' => 0, 'max' => 100, 'step' => 1, 'frontend_available' => \true, 'selectors' => ['{{WRAPPER}} div.dce-view-results div.elementor-row.dce-view-grid div.item-page.dce-view-col.dce-view-single-wrapper.dce-view-grid-element' => 'padding: {{VALUE}}px;']]);
         $this->add_control('navigation', ['label' => __('Navigation', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SELECT, 'default' => 'none', 'options' => ['both' => __('Arrows and Dots', 'dynamic-content-for-elementor'), 'arrows' => __('Arrows', 'dynamic-content-for-elementor'), 'dots' => __('Dots', 'dynamic-content-for-elementor'), 'none' => __('None', 'dynamic-content-for-elementor')], 'frontend_available' => \true, 'condition' => ['dce_views_style_format' => 'slideshow']]);
         $this->add_control('autoplay', ['label' => __('Autoplay', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes', 'frontend_available' => \true, 'condition' => ['dce_views_style_format' => 'slideshow']]);
         $this->add_control('pause_on_hover', ['label' => __('Pause on Hover', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::SWITCHER, 'default' => 'yes', 'frontend_available' => \true, 'condition' => ['dce_views_style_format' => 'slideshow', 'autoplay!' => '']]);
@@ -681,9 +685,9 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
                         $next = 'left';
                         $direction = 'rtl';
                     }
+                    $swiper_class = \Elementor\Plugin::$instance->experiments->is_feature_active('e_swiper_latest') ? 'swiper' : 'swiper-container';
                     echo '<div class="elementor-swiper ' . $wrapper_class . '">';
-                    echo '<div class="elementor-slides-wrapper elementor-main-swiper swiper-container swiper-container-autoheight" dir="' . $direction . '">';
-                    // data-animation="'.$settings['content_animation'].'">';
+                    echo '<div class="elementor-slides-wrapper elementor-main-swiper ' . $swiper_class . ' swiper-container-autoheight" dir="' . $direction . '">';
                     echo '<div class="swiper-wrapper elementor-slides dce-view-archive">';
                     break;
                 case 'grid':
@@ -891,6 +895,7 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 if (!empty($settings['dce_views_style_col_width_mobile'])) {
                     $responsive_cols .= ' elementor-sm-' . $settings['dce_views_style_col_width_mobile'];
                 }
+                $row_html = '';
                 switch ($settings['dce_views_select_type']) {
                     case 'fields':
                         switch ($settings['dce_views_style_format']) {
@@ -993,6 +998,7 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
                         $row_html = Helper::get_dynamic_value($field_value);
                         break;
                 }
+                $row_html = apply_filters('dynamicooo/views/row-html', $row_html);
                 if (\in_array($settings['dce_views_select_type'], array('text', 'template'))) {
                     switch ($settings['dce_views_style_format']) {
                         case 'grid':
@@ -1037,10 +1043,10 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
                         echo $this->get_id();
                         ?> table.dce-datatable').DataTable({
 								language: {
-				        	url: '<?php 
+							url: '<?php 
                         echo DCE_URL . 'assets/lib/datatables/i18n/' . Helper::get_datatables_language() . '.json';
                         ?>'
-				        },
+						},
 								order: [],
 							<?php 
                         if ($settings['dce_views_style_table_data_autofill']) {
@@ -1832,6 +1838,7 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 ?>.hide().fadeIn("slow")<?php 
             }
             ?>;
+						$scope.trigger('dynamicooo/views/ajax_success');
 						},
 				});
 
@@ -2056,20 +2063,22 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
         if (empty($settings)) {
             return \false;
         }
+        $posts_per_page = \intval($settings['dce_views_post_per_page']);
+        $posts_per_page = $posts_per_page <= 0 ? 10 : $posts_per_page;
         switch ($settings['dce_views_object']) {
             case 'post':
                 $max = \intval($the_query->max_num_pages);
                 break;
             case 'user':
-                $max = $settings['dce_views_post_per_page'] ? \ceil($total_objects / $settings['dce_views_post_per_page']) : 0;
+                $max = $settings['dce_views_post_per_page'] ? \ceil(\intval($total_objects) / $posts_per_page) : 0;
                 break;
             case 'term':
-                $max = $settings['dce_views_post_per_page'] ? \ceil($total_objects / $settings['dce_views_post_per_page']) : 0;
+                $max = $settings['dce_views_post_per_page'] ? \ceil(\intval($total_objects) / $posts_per_page) : 0;
                 break;
         }
         $dce_views_pagination_page_limit = \intval($settings['dce_views_pagination_page_limit']);
         if ($settings['dce_views_limit_to']) {
-            $dce_views_pagination_page_to = \ceil($settings['dce_views_limit_to'] / $settings['dce_views_post_per_page']);
+            $dce_views_pagination_page_to = \ceil($settings['dce_views_limit_to'] / $posts_per_page);
             if (!$dce_views_pagination_page_limit || $dce_views_pagination_page_to < $dce_views_pagination_page_limit) {
                 $dce_views_pagination_page_limit = $dce_views_pagination_page_to;
             }
@@ -2324,6 +2333,9 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
         }
         if (isset($_GET['p'])) {
             $ret .= '&p=' . sanitize_text_field($_GET['p']);
+        }
+        if (isset($_GET['s'])) {
+            $ret .= '&s=' . sanitize_text_field($_GET['s']);
         }
         return $ret;
     }
@@ -2960,8 +2972,8 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
         $obj_first = \substr($settings['dce_views_object'], 0, 1);
         $field_id = $settings['dce_views_object'] == 'term' ? $settings['dce_views_object'] . '_id' : 'ID';
         $post_fields = $settings['dce_views_object'] == 'post' ? ', p.post_type, p.post_parent' : '';
-        $table = $wpdb->prefix . $settings['dce_views_object'] . 's';
-        $table_meta = $wpdb->prefix . $settings['dce_views_object'] . 'meta';
+        $table = $wpdb->prefix . $this->validate_object($settings['dce_views_object']) . 's';
+        $table_meta = $wpdb->prefix . $this->validate_object($settings['dce_views_object']) . 'meta';
         if ($settings['dce_views_object'] == 'user') {
             if (\defined('CUSTOM_USER_TABLE')) {
                 $table = CUSTOM_USER_TABLE;
@@ -2974,7 +2986,7 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
             // TODO: support for all operator in term wp_term_taxonomy table
             if (\in_array($awhere['dce_views_where_field'], array('parent', 'description', 'taxonomy', 'count'))) {
                 $is_meta = \false;
-                $table = $wpdb->prefix . $settings['dce_views_object'] . '_taxonomy ';
+                $table = $wpdb->prefix . $this->validate_object($settings['dce_views_object']) . '_taxonomy ';
             }
         }
         if ($is_meta) {
@@ -3479,6 +3491,19 @@ class Views extends \DynamicContentForElementor\Widgets\WidgetPrototype
                 }
             }
         }
+    }
+    /**
+     * Validate Object
+     *
+     * @param string $object
+     * @return string
+     */
+    protected function validate_object($object)
+    {
+        if (\in_array($object, \array_keys($this->get_objects()), \true)) {
+            return $object;
+        }
+        return '';
     }
     public function remove_filters()
     {

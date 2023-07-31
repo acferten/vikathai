@@ -68,6 +68,7 @@
 	text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+	max-width: 50ch;
 }
 
 .kadence-sticky-add-to-cart-action-wrap {
@@ -145,6 +146,13 @@
 	.kadence-sticky-add-to-cart-title-wrap .kadence-sticky-add-to-cart-title {
 		font-size: 16px;
 		padding-left: 0.6em;
+
+		@media screen and (max-width: 767px) {
+			max-width: 35ch;
+		}
+		@media screen and (max-width: 544px) {
+			max-width: 15ch;
+		}
 	}
 	.kadence-sticky-add-to-cart-action-wrap .single_link_to_cart_button, .kadence-sticky-add-to-cart-action-wrap .single_add_to_cart_button {
 		padding: 0.4em 0.6em;

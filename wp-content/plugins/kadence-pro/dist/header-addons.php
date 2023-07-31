@@ -402,6 +402,25 @@ class Header_Addons {
 		$css->add_property( 'border-width', '1px' );
 		$css->set_selector( '#login-drawer .register-field' );
 		$css->add_property( 'font-size', '90%' );
+		$css->start_media_query( $media_query['desktop'] );
+		$css->set_selector( '#login-drawer hr.register-divider.hide-desktop' );
+		$css->add_property( 'display', 'none');
+		$css->set_selector( '#login-drawer p.register-field.hide-desktop' );
+		$css->add_property( 'display', 'none' );
+		$css->stop_media_query();
+		$css->start_media_query( $media_query['tablet'] );
+		$css->set_selector( '#login-drawer hr.register-divider.hide-mobile' );
+		$css->add_property( 'display', 'none');
+		$css->set_selector( '#login-drawer p.register-field.hide-mobile' );
+		$css->add_property( 'display', 'none' );
+		$css->stop_media_query();
+		$css->start_media_query( $media_query['mobile'] );
+		$css->set_selector( '#login-drawer hr.register-divider.hide-mobile' );
+		$css->add_property( 'display', 'none');
+		$css->set_selector( '#login-drawer p.register-field.hide-mobile' );
+		$css->add_property( 'display', 'none' );
+		$css->stop_media_query();
+
 		// Header HTML2.
 		$css->set_selector( '.header-html2' );
 		$css->render_font( kadence()->option( 'header_html2_typography' ), $css );
@@ -436,7 +455,7 @@ class Header_Addons {
 		$css->set_selector( '.transparent-header #main-header .header-html2 a:hover, .mobile-transparent-header .mobile-html2 a:hover' );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'transparent_header_html2_color', 'hover' ) ) );
 		// Tertiary Navigation.
-		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul > li > a' );
+		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul > li.menu-item > a' );
 		$css->add_property( 'padding-left', $css->render_half_size( kadence()->option( 'tertiary_navigation_spacing' ) ) );
 		$css->add_property( 'padding-right', $css->render_half_size( kadence()->option( 'tertiary_navigation_spacing' ) ) );
 		if ( kadence()->option( 'tertiary_navigation_style' ) === 'standard' || kadence()->option( 'tertiary_navigation_style' ) === 'underline' ) {
@@ -445,16 +464,16 @@ class Header_Addons {
 		}
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'tertiary_navigation_color', 'color' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'tertiary_navigation_background', 'color' ) ) );
-		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul li a' );
+		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul li.menu-item a' );
 		$css->render_font( kadence()->option( 'tertiary_navigation_typography' ), $css );
-		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul > li > a:hover' );
+		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul > li.menu-item > a:hover' );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'tertiary_navigation_color', 'hover' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'tertiary_navigation_background', 'hover' ) ) );
-		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul > li.current-menu-item > a' );
+		$css->set_selector( '.tertiary-navigation .tertiary-menu-container > ul > li.menu-item.current-menu-item > a' );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'tertiary_navigation_color', 'active' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'tertiary_navigation_background', 'active' ) ) );
 		// Quaternary Navigation.
-		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul > li > a' );
+		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul > li.menu-item > a' );
 		$css->add_property( 'padding-left', $css->render_half_size( kadence()->option( 'quaternary_navigation_spacing' ) ) );
 		$css->add_property( 'padding-right', $css->render_half_size( kadence()->option( 'quaternary_navigation_spacing' ) ) );
 		if ( kadence()->option( 'quaternary_navigation_style' ) === 'standard' || kadence()->option( 'quaternary_navigation_style' ) === 'underline' ) {
@@ -463,12 +482,12 @@ class Header_Addons {
 		}
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'quaternary_navigation_color', 'color' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'quaternary_navigation_background', 'color' ) ) );
-		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul li a' );
+		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul li.menu-item a' );
 		$css->render_font( kadence()->option( 'quaternary_navigation_typography' ), $css );
-		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul > li > a:hover' );
+		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul > li.menu-item > a:hover' );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'quaternary_navigation_color', 'hover' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'quaternary_navigation_background', 'hover' ) ) );
-		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul > li.current-menu-item > a' );
+		$css->set_selector( '.quaternary-navigation .quaternary-menu-container > ul > li.menu-item.current-menu-item > a' );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'quaternary_navigation_color', 'active' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'quaternary_navigation_background', 'active' ) ) );
 		// Header divider.
@@ -492,19 +511,27 @@ class Header_Addons {
 		$css->add_property( 'margin', $css->render_measure( kadence()->option( 'header_divider3_margin' ) ) );
 		$css->set_selector( '.transparent-header #main-header .header-divider3' );
 		$css->add_property( 'border-color', $css->render_color( kadence()->sub_option( 'transparent_header_divider3_color', 'color' ) ) );
-		// Header Mobile Divider.
-		$css->set_selector( '#mobile-header .header-mobile-divider' );
+		// Header Mobile Divider (on and off canvas).
+		$css->set_selector( '#mobile-header .header-mobile-divider, #mobile-drawer .header-mobile-divider' );
 		$css->add_property( 'border-right', $css->render_border( kadence()->option( 'header_mobile_divider_border' ) ) );
 		$css->add_property( 'height', $css->render_size( kadence()->option( 'header_mobile_divider_height' ) ) );
+		$css->set_selector( '#mobile-drawer .header-mobile-divider' );
+		$css->add_property( 'border-top', $css->render_border( kadence()->option( 'header_mobile_divider_border' ) ) );
+		$css->add_property( 'width', $css->render_size( kadence()->option( 'header_mobile_divider_height' ) ) );
+		$css->set_selector( '#mobile-header .header-mobile-divider, #mobile-drawer .header-mobile-divider' );
 		$css->add_property( 'margin', $css->render_measure( kadence()->option( 'header_mobile_divider_margin' ) ) );
-		$css->set_selector( '.mobile-transparent-header #mobile-header .header-mobile-divider' );
+		$css->set_selector( '.mobile-transparent-header #mobile-header .header-mobile-divider, .mobile-transparent-header #mobile-drawer .header-mobile-divider' );
 		$css->add_property( 'border-color', $css->render_color( kadence()->sub_option( 'transparent_header_mobile_divider_color', 'color' ) ) );
-		// Header Mobile Divider 2.
+		// Header Mobile Divider 2 (on and off canvas).
 		$css->set_selector( '#mobile-header .header-mobile-divider2' );
 		$css->add_property( 'border-right', $css->render_border( kadence()->option( 'header_mobile_divider2_border' ) ) );
 		$css->add_property( 'height', $css->render_size( kadence()->option( 'header_mobile_divider2_height' ) ) );
+		$css->set_selector( '#mobile-drawer .header-mobile-divider2' );
+		$css->add_property( 'border-top', $css->render_border( kadence()->option( 'header_mobile_divider2_border' ) ) );
+		$css->add_property( 'width', $css->render_size( kadence()->option( 'header_mobile_divider2_height' ) ) );
+		$css->set_selector( '#mobile-header .header-mobile-divider2, #mobile-drawer .header-mobile-divider2' );
 		$css->add_property( 'margin', $css->render_measure( kadence()->option( 'header_mobile_divider2_margin' ) ) );
-		$css->set_selector( '.mobile-transparent-header #mobile-header .header-mobile-divider2' );
+		$css->set_selector( '.mobile-transparent-header #mobile-header .header-mobile-divider2, .mobile-transparent-header #mobile-drawer .header-mobile-divider2' );
 		$css->add_property( 'border-color', $css->render_color( kadence()->sub_option( 'transparent_header_mobile_divider2_color', 'color' ) ) );
 		// Header Search Bar.
 		$css->set_selector( '.header-item-search-bar form ::-webkit-input-placeholder' );
@@ -705,27 +732,30 @@ class Header_Addons {
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'transparent_header_button2_color', 'backgroundHover' ) ) );
 		$css->add_property( 'border-color', $css->render_color( kadence()->sub_option( 'transparent_header_button2_color', 'borderHover' ) ) );
 		// Header Mobile Button2.
-		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button2' );
+		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2' );
 		$css->render_font( kadence()->option( 'mobile_button2_typography' ), $css );
 		$css->add_property( 'margin', $css->render_measure( kadence()->option( 'mobile_button2_margin' ) ) );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'mobile_button2_color', 'color' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'mobile_button2_background', 'color' ) ) );
 		$css->add_property( 'border', $css->render_border( kadence()->option( 'mobile_button2_border' ) ) );
 		$css->add_property( 'border-color', $css->render_color( kadence()->sub_option( 'mobile_button2_border_colors', 'color' ) ) );
+		$css->add_property( 'border-radius', $css->render_measure( kadence()->option( 'mobile_button2_radius' ) ) );
+		$css->add_property( 'box-shadow', $css->render_shadow( kadence()->option( 'mobile_button2_shadow' ), kadence()->default( 'mobile_button2_shadow' ) ) );
 		$css->start_media_query( $media_query['tablet'] );
-		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button2' );
+		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2' );
 		$css->add_property( 'font-size', $css->render_font_size( kadence()->option( 'mobile_button2_typography' ), 'tablet' ) );
 		$css->add_property( 'line-height', $css->render_font_height( kadence()->option( 'mobile_button2_typography' ), 'tablet' ) );
 		$css->stop_media_query();
 		$css->start_media_query( $media_query['mobile'] );
-		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button2' );
+		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2' );
 		$css->add_property( 'font-size', $css->render_font_size( kadence()->option( 'mobile_button2_typography' ), 'mobile' ) );
 		$css->add_property( 'line-height', $css->render_font_height( kadence()->option( 'mobile_button2_typography' ), 'mobile' ) );
 		$css->stop_media_query();
-		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button2:hover' );
+		$css->set_selector( '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2:hover' );
 		$css->add_property( 'color', $css->render_color( kadence()->sub_option( 'mobile_button2_color', 'hover' ) ) );
 		$css->add_property( 'background', $css->render_color( kadence()->sub_option( 'mobile_button2_background', 'hover' ) ) );
 		$css->add_property( 'border-color', $css->render_color( kadence()->sub_option( 'mobile_button2_border_colors', 'hover' ) ) );
+		$css->add_property( 'box-shadow', $css->render_shadow( kadence()->option( 'mobile_button2_shadow_hover' ), kadence()->default( 'mobile_button2_shadow_hover' ) ) );
 		// Widget toggle.
 		$css->set_selector( '#widget-drawer.popup-drawer-layout-fullwidth .drawer-content .header-widget2, #widget-drawer.popup-drawer-layout-sidepanel .drawer-inner' );
 		$css->add_property( 'max-width', $css->render_size( kadence()->option( 'header_toggle_widget_pop_width' ) ) );
@@ -1977,6 +2007,27 @@ class Header_Addons {
 				'unit'  => 'px',
 				'style' => 'none',
 			),
+			'mobile_button2_radius' => array(
+				'size'   => array( '', '', '', '' ),
+				'unit'   => 'px',
+				'locked' => true,
+			),
+			'mobile_button2_shadow' => array(
+				'color'   => 'rgba(0,0,0,0)',
+				'hOffset' => 0,
+				'vOffset' => 0,
+				'blur'    => 0,
+				'spread'  => -7,
+				'inset'   => false,
+			),
+			'mobile_button2_shadow_hover' => array(
+				'color'   => 'rgba(0,0,0,0.1)',
+				'hOffset' => 0,
+				'vOffset' => 15,
+				'blur'    => 25,
+				'spread'  => -7,
+				'inset'   => false,
+			),
 			'mobile_button2_margin' => array(
 				'size'   => array( '', '', '', '' ),
 				'unit'   => 'px',
@@ -2169,6 +2220,10 @@ class Header_Addons {
 			'section' => 'kadence_customizer_header_button2',
 		);
 		$choices['header_desktop_items']['toggle-widget'] = array(
+			'name'    => esc_html__( 'Toggle Widget Area', 'kadence-pro' ),
+			'section' => 'kadence_customizer_header_toggle_widget',
+		);
+		$choices['header_mobile_items']['toggle-widget'] = array(
 			'name'    => esc_html__( 'Toggle Widget Area', 'kadence-pro' ),
 			'section' => 'kadence_customizer_header_toggle_widget',
 		);

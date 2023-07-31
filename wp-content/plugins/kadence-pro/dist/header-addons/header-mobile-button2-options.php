@@ -188,14 +188,14 @@ Theme_Customizer::add_settings(
 			'live_method'     => array(
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
 					'property' => 'color',
 					'pattern'  => '$',
 					'key'      => 'color',
 				),
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2:hover',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2:hover',
 					'property' => 'color',
 					'pattern'  => '$',
 					'key'      => 'hover',
@@ -222,14 +222,14 @@ Theme_Customizer::add_settings(
 			'live_method'     => array(
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
 					'property' => 'background',
 					'pattern'  => '$',
 					'key'      => 'color',
 				),
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2:hover',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2:hover',
 					'property' => 'background',
 					'pattern'  => '$',
 					'key'      => 'hover',
@@ -263,14 +263,14 @@ Theme_Customizer::add_settings(
 			'live_method'     => array(
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
 					'property' => 'border-color',
 					'pattern'  => '$',
 					'key'      => 'color',
 				),
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2:hover',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2:hover',
 					'property' => 'border-color',
 					'pattern'  => '$',
 					'key'      => 'hover',
@@ -297,7 +297,7 @@ Theme_Customizer::add_settings(
 			'live_method'     => array(
 				array(
 					'type'     => 'css_border',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
 					'property' => 'border',
 					'pattern'  => '$',
 					'key'      => 'border',
@@ -308,6 +308,25 @@ Theme_Customizer::add_settings(
 				'color'      => false,
 			),
 		),
+		'mobile_button2_radius' => array(
+			'control_type' => 'kadence_measure_control',
+			'section'      => 'mobile_button2_design',
+			'priority'     => 10,
+			'default'      => kadence()->default( 'mobile_button2_radius' ),
+			'label'        => esc_html__( 'Border Radius', 'kadence-pro' ),
+			'live_method'     => array(
+				array(
+					'type'     => 'css',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
+					'property' => 'border-radius',
+					'pattern'  => '$',
+					'key'      => 'measure',
+				),
+			),
+			'input_attrs'  => array(
+				'responsive' => false,
+			),
+		),
 		'mobile_button2_typography' => array(
 			'control_type' => 'kadence_typography_control',
 			'section'      => 'mobile_button2_design',
@@ -316,7 +335,7 @@ Theme_Customizer::add_settings(
 			'live_method'     => array(
 				array(
 					'type'     => 'css_typography',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
 					'pattern'  => array(
 						'desktop' => '$',
 						'tablet'  => '$',
@@ -331,6 +350,36 @@ Theme_Customizer::add_settings(
 				'options' => 'no-color',
 			),
 		),
+		'mobile_button2_shadow' => array(
+			'control_type' => 'kadence_shadow_control',
+			'section'      => 'mobile_button2_design',
+			'label'        => esc_html__( 'Button Shadow', 'kadence-pro' ),
+			'live_method'     => array(
+				array(
+					'type'     => 'css_boxshadow',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
+					'property' => 'box-shadow',
+					'pattern'  => '$',
+					'key'      => '',
+				),
+			),
+			'default'      => kadence()->default( 'mobile_button2_shadow' ),
+		),
+		'mobile_button2_shadow_hover' => array(
+			'control_type' => 'kadence_shadow_control',
+			'section'      => 'mobile_button2_design',
+			'label'        => esc_html__( 'Button Hover State Shadow', 'kadence-pro' ),
+			'live_method'     => array(
+				array(
+					'type'     => 'css_boxshadow',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2',
+					'property' => 'box-shadow',
+					'pattern'  => '$',
+					'key'      => '',
+				),
+			),
+			'default'      => kadence()->default( 'mobile_button2_shadow_hover' ),
+		),
 		'mobile_button2_margin' => array(
 			'control_type' => 'kadence_measure_control',
 			'section'      => 'mobile_button2_design',
@@ -340,7 +389,7 @@ Theme_Customizer::add_settings(
 			'live_method'     => array(
 				array(
 					'type'     => 'css',
-					'selector' => '.mobile-header-button2-wrap .mobile-header-button2-wrap',
+					'selector' => '.mobile-header-button2-wrap .mobile-header-button-inner-wrap .mobile-header-button2-wrap',
 					'property' => 'margin',
 					'pattern'  => '$',
 					'key'      => 'measure',

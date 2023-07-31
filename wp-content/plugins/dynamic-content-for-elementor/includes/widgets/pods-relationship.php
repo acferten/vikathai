@@ -20,6 +20,18 @@ class PodsRelationship extends \DynamicContentForElementor\Widgets\WidgetPrototy
         return ['dce-relationship'];
     }
     /**
+     * Run Once
+     *
+     * @return void
+     */
+    public function run_once()
+    {
+        parent::run_once();
+        $save_guard = \DynamicContentForElementor\Plugin::instance()->save_guard;
+        $save_guard->register_unsafe_control($this->get_type(), 'pods_relation_label');
+        $save_guard->register_unsafe_control($this->get_type(), 'pods_relation_text');
+    }
+    /**
      * Register controls after check if this feature is only for admin
      *
      * @return void

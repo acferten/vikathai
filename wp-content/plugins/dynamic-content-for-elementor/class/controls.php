@@ -57,15 +57,11 @@ class Controls
         $controls_manager = \Elementor\Plugin::$instance->controls_manager;
         foreach ($this->controls as $key => $name) {
             $class = self::$namespace . $name;
-            if (\version_compare(ELEMENTOR_VERSION, '3.5.0', '>=')) {
-                /**
-                 * @var \Elementor\Base_Control $new_class
-                 */
-                $new_class = new $class();
-                $controls_manager->register($new_class);
-            } else {
-                $controls_manager->register_control($key, new $class());
-            }
+            /**
+             * @var \Elementor\Base_Control $new_class
+             */
+            $new_class = new $class();
+            $controls_manager->register($new_class);
         }
         foreach ($this->group_controls as $key => $name) {
             $class = self::$namespace . $name;

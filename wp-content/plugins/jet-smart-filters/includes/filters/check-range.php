@@ -9,44 +9,44 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 if ( ! class_exists( 'Jet_Smart_Filters_Check_Range_Filter' ) ) {
-
 	/**
 	 * Define Jet_Smart_Filters_Check_Range_Filter class
 	 */
 	class Jet_Smart_Filters_Check_Range_Filter extends Jet_Smart_Filters_Filter_Base {
-
 		/**
 		 * Get provider name
-		 *
-		 * @return string
 		 */
 		public function get_name() {
+
 			return __( 'Check Range Filter', 'jet-smart-filters' );
 		}
 
 		/**
 		 * Get provider ID
-		 *
-		 * @return string
 		 */
 		public function get_id() {
+
 			return 'check-range';
 		}
 
 		/**
+		 * Get icon URL
+		 */
+		public function get_icon_url() {
+
+			return jet_smart_filters()->plugin_url( 'admin/assets/img/filter-types/check-range.png' );
+		}
+
+		/**
 		 * Get provider wrapper selector
-		 *
-		 * @return string
 		 */
 		public function get_scripts() {
+
 			return false;
 		}
 
 		/**
 		 * Prepare filter template argumnets
-		 *
-		 * @param  [type] $args [description]
-		 * @return [type]       [description]
 		 */
 		public function prepare_args( $args ) {
 
@@ -67,19 +67,21 @@ if ( ! class_exists( 'Jet_Smart_Filters_Check_Range_Filter' ) ) {
 				return false;
 			}
 
-			$source      = get_post_meta( $filter_id, '_data_source', true );
-			$raw_options = get_post_meta( $filter_id, '_source_manual_input_range', true );
-			$prefix      = get_post_meta( $filter_id, '_values_prefix', true );
-			$suffix      = get_post_meta( $filter_id, '_values_suffix', true );
-			$query_type  = 'meta_query';
-			$query_var   = get_post_meta( $filter_id, '_query_var', true );
-			$options     = array();
-			$format      = array();
-
-			$format['thousands_sep'] = get_post_meta( $filter_id, '_values_thousand_sep', true );
-			$format['decimal_sep']   = get_post_meta( $filter_id, '_values_decimal_sep', true );
-			$format['decimal_num']   = get_post_meta( $filter_id, '_values_decimal_num', true );
-			$format['decimal_num']   = absint( $format['decimal_num'] );
+			$source       = get_post_meta( $filter_id, '_data_source', true );
+			$raw_options  = get_post_meta( $filter_id, '_source_manual_input_range', true );
+			$prefix       = get_post_meta( $filter_id, '_values_prefix', true );
+			$suffix       = get_post_meta( $filter_id, '_values_suffix', true );
+			$query_type   = 'meta_query';
+			$query_var    = get_post_meta( $filter_id, '_query_var', true );
+			$options      = array();
+			$decimal_num  = get_post_meta( $filter_id, '_values_decimal_num', true );
+			$decimal_sep  = get_post_meta( $filter_id, '_values_decimal_sep', true );
+			$thousand_sep = get_post_meta( $filter_id, '_values_thousand_sep', true );
+			$format       = array(
+				'decimal_num'   => $decimal_num ? absint( $decimal_num ) : 0,
+				'decimal_sep'   => $decimal_sep ? $decimal_sep : '.',
+				'thousands_sep' => $thousand_sep ? $thousand_sep : ''
+			);
 
 			if ( ! empty( $raw_options ) ) {
 				foreach ( $raw_options as $option ) {
@@ -133,9 +135,6 @@ if ( ! class_exists( 'Jet_Smart_Filters_Check_Range_Filter' ) ) {
 				'dropdown_enabled'     => $dropdown_enabled,
 				'dropdown_placeholder' => $dropdown_placeholder,
 			);
-
 		}
-
 	}
-
 }

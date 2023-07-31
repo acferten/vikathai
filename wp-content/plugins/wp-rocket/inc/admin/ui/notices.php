@@ -148,6 +148,9 @@ function rocket_plugins_to_deactivate() {
 		'add-expires-headers'                        => 'add-expires-headers/add-expires-headers.php',
 		'page-optimize'                              => 'page-optimize/page-optimize.php',
 		'psn-pagespeed-ninja'                        => 'psn-pagespeed-ninja/pagespeedninja.php',
+		'wp-optimize'                                => 'wp-optimize/wp-optimize.php',
+		'wp-asset-clean-up'                          => 'wp-asset-clean-up/wpacu.php',
+		'wp-asset-clean-up-pro'                      => 'wp-asset-clean-up-pro/wpacu.php',
 	];
 
 	if ( get_rocket_option( 'lazyload' ) ) {
@@ -183,11 +186,6 @@ function rocket_plugins_to_deactivate() {
 		$plugins['combine-js']           = 'combine-js/combine-js.php';
 		$plugins['footer-javascript']    = 'footer-javascript/footer-javascript.php';
 		$plugins['scripts-to-footerphp'] = 'scripts-to-footerphp/scripts-to-footer.php';
-	}
-
-	if ( get_rocket_option( 'do_cloudflare' ) ) {
-		$plugins['cloudflare']              = 'cloudflare/cloudflare.php';
-		$plugins_explanations['cloudflare'] = __( 'WP Rocket Cloudflare Add-on provides similar functionalities. They can not be active at the same time.', 'rocket' );
 	}
 
 	if ( get_rocket_option( 'control_heartbeat' ) ) {
@@ -539,7 +537,7 @@ function rocket_thank_you_license() {
 			/* translators: %1$s = plugin name, %2$s + %3$s = opening links, %4$s = closing link */
 			__( '%1$s is good to go! %2$sTest your load time%4$s, or visit your %3$ssettings%4$s.', 'rocket' ),
 			'<strong>' . WP_ROCKET_PLUGIN_NAME . '</strong>',
-			'<a href="https://wp-rocket.me/blog/correctly-measure-websites-page-load-time/?utm_source=wp_plugin&utm_medium=wp_rocket" target="_blank">',
+			'<a href="https://wp-rocket.me/blog/how-to-test-wordpress-site-performance-measure-speed-results/?utm_source=wp_plugin&utm_medium=wp_rocket" target="_blank">',
 			'<a href="' . admin_url( 'options-general.php?page=' . WP_ROCKET_PLUGIN_SLUG ) . '">',
 			'</a>'
 		);
@@ -736,13 +734,14 @@ add_action( 'admin_notices', 'rocket_clear_cache_notice' );
  */
 function rocket_notice_html( $args ) {
 	$defaults = [
-		'status'           => 'success',
-		'dismissible'      => 'is-dismissible',
-		'message'          => '',
-		'action'           => '',
-		'dismiss_button'   => false,
-		'readonly_content' => '',
-		'id'               => '',
+		'status'                 => 'success',
+		'dismissible'            => 'is-dismissible',
+		'message'                => '',
+		'action'                 => '',
+		'dismiss_button'         => false,
+		'dismiss_button_message' => __( 'Dismiss this notice', 'rocket' ),
+		'readonly_content'       => '',
+		'id'                     => '',
 	];
 
 	$args = wp_parse_args( $args, $defaults );
@@ -753,6 +752,18 @@ function rocket_notice_html( $args ) {
 			break;
 		case 'stop_preload':
 			$args['action'] = '<a class="wp-core-ui button" href="' . wp_nonce_url( admin_url( 'admin-post.php?action=rocket_stop_preload&type=all' ), 'rocket_stop_preload' ) . '">' . __( 'Stop Preload', 'rocket' ) . '</a>';
+			break;
+		case 'switch_to_rucss':
+			$params         = [
+				'action' => 'switch_to_rucss',
+			];
+			$args['action'] = '<a class="wp-core-ui button" href="' . add_query_arg( $params, wp_nonce_url( admin_url( 'admin-post.php' ), 'rucss_switch' ) ) . '">' . __( 'Turn on Remove Unused CSS', 'rocket' ) . '</a>';
+			break;
+		case 'enable_separate_mobile_cache':
+			$params         = [
+				'action' => 'rocket_enable_separate_mobile_cache',
+			];
+			$args['action'] = '<a class="wp-core-ui button" href="' . add_query_arg( $params, wp_nonce_url( admin_url( 'admin-post.php' ), 'rocket_enable_separate_mobile_cache' ) ) . '">' . __( 'Enable “Separate Cache Files for Mobile Devices” now', 'rocket' ) . '</a>';
 			break;
 		case 'force_deactivation':
 			/**
@@ -799,7 +810,7 @@ function rocket_notice_html( $args ) {
 		<p>
 			<?php echo $args['action']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php if ( $args['dismiss_button'] ) : ?>
-			<a class="rocket-dismiss <?php echo $args['dismiss_button_class'] ?? ''; ?>" href="<?php echo wp_nonce_url( admin_url( 'admin-post.php?action=rocket_ignore&box=' . $args['dismiss_button'] ), 'rocket_ignore_' . $args['dismiss_button'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Dismiss this notice', 'rocket' ); ?></a>
+			<a class="rocket-dismiss <?php echo $args['dismiss_button_class'] ?? ''; ?>" href="<?php echo wp_nonce_url( admin_url( 'admin-post.php?action=rocket_ignore&box=' . $args['dismiss_button'] ), 'rocket_ignore_' . $args['dismiss_button'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php echo esc_html( $args['dismiss_button_message'] ); ?></a>
 			<?php endif; ?>
 		</p>
 		<?php endif; ?>
@@ -840,3 +851,4 @@ function rocket_notice_writing_permissions( $file ) {
 
 	return $message;
 }
+

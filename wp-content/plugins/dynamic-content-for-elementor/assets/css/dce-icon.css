@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'dce-icon';
-  src: url('../font/dce-icon.eot?29673047');
-  src: url('../font/dce-icon.eot?29673047#iefix') format('embedded-opentype'),
-       url('../font/dce-icon.woff2?29673047') format('woff2'),
-       url('../font/dce-icon.woff?29673047') format('woff'),
-       url('../font/dce-icon.ttf?29673047') format('truetype'),
-       url('../font/dce-icon.svg?29673047#dce-icon') format('svg');
+  src: url('../font/dce-icon.eot?62590075');
+  src: url('../font/dce-icon.eot?62590075#iefix') format('embedded-opentype'),
+       url('../font/dce-icon.woff2?62590075') format('woff2'),
+       url('../font/dce-icon.woff?62590075') format('woff'),
+       url('../font/dce-icon.ttf?62590075') format('truetype'),
+       url('../font/dce-icon.svg?62590075#dce-icon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'dce-icon';
-    src: url('../font/dce-icon.svg?29673047#dce-icon') format('svg');
+    src: url('../font/dce-icon.svg?62590075#dce-icon') format('svg');
   }
 }
 */
@@ -240,3 +240,12 @@
 .icon-dyn-transforms:before { content: '\e8b7'; } /* '' */
 .icon-dyn-page-scroll:before { content: '\e8b8'; } /* '' */
 .icon-dyn-hidden-label:before { content: '\e8b9'; } /* '' */
+.icon-dce-dynamic-google-maps-directions-instructions:before { content: '\e8ba'; } /* '' */
+.icon-dce-dynamic-google-maps-directions-info:before { content: '\e8bb'; } /* '' */
+.icon-dce-dynamic-tag-woo-product-categories:before { content: '\e8bc'; } /* '' */
+.icon-dce-dynamic-tag-acf-relationship:before { content: '\e8bd'; } /* '' */
+.icon-dce-dynamic-tag-metabox-relationship:before { content: '\e8be'; } /* '' */
+.icon-dce-dynamic-tag-terms:before { content: '\e8bf'; } /* '' */
+.icon-dce-dynamic-tag-tags:before { content: '\e8c0'; } /* '' */
+.icon-dce-dynamic-google-maps-directions:before { content: '\e8c1'; } /* '' */
+.icon-dce-dynamic-openstreetmap:before { content: '\e8c2'; } /* '' */

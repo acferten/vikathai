@@ -4,4 +4,4 @@
  */
 ?>
 
-<button class="jet-ajax-search__results-count"><span></span> <?php $this->__html( 'results_counter_text', '%s' ); ?></button>
+<button class="jet-ajax-search__results-count"><span></span> <?php $this->html( 'results_counter_text', '%s' ); ?></button>

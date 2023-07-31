@@ -101,6 +101,10 @@ export default {
 			order: 'DESC'
 		}],
 	},
+	query_id: {
+		type: 'string',
+		default: '',
+	},
 	// Indexer
 	apply_indexer: {
 		type: 'boolean',

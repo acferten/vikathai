@@ -229,6 +229,9 @@ class FavoritesAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
             case 'user':
                 $current_user_id = get_current_user_id();
                 $current_favorites = get_user_meta($current_user_id, $key, \true);
+                if (!\is_array($current_favorites)) {
+                    $current_favorites = [];
+                }
                 break;
             case 'cookie':
                 if (isset($_COOKIE[$key])) {
@@ -291,23 +294,8 @@ class FavoritesAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
         }
         update_option('dce_favorite_cookies', $cookies_counter);
     }
-    /**
-     * On Export
-     *
-     * Clears form settings on export
-     * @access Public
-     * @param array<mixed> $element
-     * @return void
-     */
     public function on_export($element)
     {
-        $tmp = array();
-        if (!empty($element)) {
-            foreach ($element['settings'] as $key => $value) {
-                if ('dce_' === \substr($key, 0, 4)) {
-                    unset($element['settings'][$key]);
-                }
-            }
-        }
+        return $element;
     }
 }

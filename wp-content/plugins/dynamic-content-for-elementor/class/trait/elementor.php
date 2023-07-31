@@ -145,12 +145,11 @@ trait Elementor
             // find element settings (because it may not be on post, but in a template)
             global $wpdb;
             $table = $wpdb->prefix . 'postmeta';
-            $query = 'SELECT post_id FROM ' . esc_sql($table) . " WHERE meta_key LIKE '_elementor_data' AND meta_value LIKE '%\"id\":\"" . esc_sql($element_id) . "\",%'";
+            $query = $wpdb->prepare("SELECT post_id FROM {$table} WHERE meta_key LIKE %s AND meta_value LIKE %s", '_elementor_data', '%"id":"' . $wpdb->esc_like($element_id) . '",%');
             if ($post_id) {
-                $query .= ' AND post_id = ' . esc_sql($post_id);
+                $query .= $wpdb->prepare(' AND post_id = %d', $post_id);
             } else {
-                $query .= ' AND post_id IN (
-                    SELECT id FROM ' . $wpdb->prefix . "posts\n                    WHERE post_status LIKE 'publish'\n                  )";
+                $query .= " AND post_id IN (\n\t\t\t\t\tSELECT id FROM {$wpdb->prefix}posts\n\t\t\t\t\tWHERE post_status LIKE 'publish'\n\t\t\t\t)";
             }
             $results = $wpdb->get_results($query);
             if (!empty($results)) {
@@ -461,7 +460,7 @@ trait Elementor
     public static function get_elementor_elements($type = '')
     {
         global $wpdb;
-        $sql_query = 'SELECT * FROM ' . $wpdb->prefix . "postmeta\n\t\tWHERE meta_key LIKE '_elementor_data'\n\t\tAND meta_value LIKE '%\"widgetType\":\"" . $type . "\"%'\n            AND post_id IN (\n            SELECT id FROM " . $wpdb->prefix . "posts\n            WHERE post_status LIKE 'publish'\n          )";
+        $sql_query = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}postmeta\n\t\t\tWHERE meta_key LIKE %s\n\t\t\tAND meta_value LIKE %s\n\t\t\tAND post_id IN (\n\t\t\t\tSELECT id FROM {$wpdb->prefix}posts\n\t\t\t\tWHERE post_status LIKE 'publish'\n\t\t\t)", '_elementor_data', '%"widgetType":"' . $wpdb->esc_like($type) . '"%');
         $results = $wpdb->get_results($sql_query);
         if (!\count($results)) {
             return \false;
@@ -529,11 +528,29 @@ trait Elementor
         $allowed_tags = self::ALLOWED_HTML_WRAPPER_TAGS;
         return \in_array(\strtolower($tag), $allowed_tags, \true) ? $tag : 'div';
     }
+    /**
+     * Validate Post Types
+     *
+     * @param string|array|void $post_type
+     * @return mixed
+     */
+    public static function validate_post_type($post_type)
+    {
+        $allowed_post_types = \DynamicContentForElementor\Helper::get_public_post_types();
+        if (\is_string($post_type) && \array_key_exists($post_type, $allowed_post_types)) {
+            return $post_type;
+        } else {
+            if (\is_array($post_type)) {
+                $post_type = \array_filter($post_type, function ($type) use($allowed_post_types) {
+                    return \array_key_exists($type, $allowed_post_types);
+                });
+                return $post_type;
+            }
+        }
+        return '';
+    }
     public static function get_active_devices_list()
     {
-        if (!\version_compare(ELEMENTOR_VERSION, '3.4.0', '>')) {
-            return ['desktop', 'tablet', 'mobile'];
-        }
         return \Elementor\Plugin::$instance->breakpoints->get_active_devices_list(['reverse' => \true]);
     }
 }

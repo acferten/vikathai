@@ -75,6 +75,7 @@ function dceAddPasteAction(groups, element) {
                 {
                     name: 'dce_paste',
                     title: 'Paste from Clipboard',
+					icon: 'icon-dyn-logo-dce',
                     callback: function () {
                         pasteAction = _.findWhere(transferGroup.actions, { name: 'paste' });
                         return dcePasteFromClipboard(pasteAction);
@@ -83,6 +84,7 @@ function dceAddPasteAction(groups, element) {
                 {
                     name: 'dce_paste_style',
                     title: 'Paste Style from Clipboard',
+					icon: 'icon-dyn-logo-dce',
                     callback: function () {
                         // do your stuff, element should be available here
                         pasteStyleAction = _.findWhere(transferGroup.actions, { name: 'pasteStyle' });

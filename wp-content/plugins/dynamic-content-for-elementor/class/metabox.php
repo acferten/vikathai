@@ -11,66 +11,107 @@ class Metabox
     public function __construct()
     {
         // metabox Template in page
-        add_action('add_meta_boxes', [\get_class(), 'metabox_template'], 1, 2);
-        add_action('save_post', [\get_class(), 'save_metaboxdata_template'], 1, 2);
+        add_action('add_meta_boxes', [$this, 'add_metabox_to_registered_post_types'], 1, 2);
+        add_action('save_post', [$this, 'save_metaboxdata_template'], 1, 2);
         // metabox Template in elementor_library for Demo
-        add_action('add_meta_boxes', [\get_class(), 'metabox_demo_id'], 1, 2);
-        add_action('save_post', [\get_class(), 'save_metaboxdata_demo_id'], 1, 2);
+        add_action('add_meta_boxes', [$this, 'metabox_demo_id'], 1, 2);
+        add_action('save_post', [$this, 'save_metaboxdata_demo_id'], 1, 2);
         // metabox Template for terms
-        add_action('admin_init', [\get_class(), 'taxonomybox_init']);
+        add_action('admin_init', [$this, 'taxonomybox_init']);
     }
-    public static function metabox_template($post_type = 'post', $post = \false)
+    /**
+     * Add a metabox to the registered post types.
+     *
+     * @param string $post_type The type of post. Defaults to 'post'.
+     * @param bool $post The post object. Defaults to false.
+     * @return void
+     */
+    public static function add_metabox_to_registered_post_types($post_type = 'post', $post = \false)
     {
-        $class = \get_class();
         if (\in_array($post_type, TemplateSystem::get_registered_types())) {
-            add_meta_box('dce_metabox', __('Dynamic.ooo Template System', 'dynamic-content-for-elementor'), $class . '::metabox_template_select', null, 'side');
+            add_meta_box('dce_metabox', 'Dynamic.ooo ' . __('Template System', 'dynamic-content-for-elementor'), [self::class, 'metabox_template_select'], null, 'side');
         }
     }
+    /**
+     * Display the metabox template select options.
+     *
+     * @param \WP_Post $post_object The post object.
+     */
     public static function metabox_template_select($post_object)
     {
-        $html = '';
         $templates = \DynamicContentForElementor\Helper::get_all_templates(\true);
-        $dyncontel_elementor_templates = get_post_meta($post_object->ID, 'dyncontel_elementor_templates', \true);
+        $elementor_templates = get_post_meta($post_object->ID, 'dyncontel_elementor_templates', \true);
+        $html = '';
         if (!empty($templates)) {
-            $html .= '<label for="dce_post_template"><strong>' . esc_html__('Assign an Elementor Template', 'dynamic-content-for-elementor') . '</strong></label><br /><select id="dce_post_template" name="dyncontel_elementor_templates" class="js-dce-select">';
-            foreach ($templates as $akey => $atmp) {
-                $selected = $dyncontel_elementor_templates && $dyncontel_elementor_templates == $akey ? ' selected="selected"' : '';
-                $html .= '<option value="' . $akey . '"' . $selected . '>' . $atmp . '</option>';
-            }
-            $html .= '<select>';
-            if ($post_object->post_parent) {
-                $dyncontel_elementor_templates_parent = get_post_meta($post_object->ID, 'dyncontel_elementor_templates_parent', \true);
-                $html .= '<br /><label for="dce_post_template_parent"><input type="checkbox" value="1" name="dyncontel_elementor_templates_parent" id="dce_post_template_parent"' . ($dyncontel_elementor_templates_parent ? ' checked' : '') . '>' . __('From Parent', 'dynamic-content-for-elementor') . '</label>';
-            }
+            $html .= self::build_template_select_html($templates, $elementor_templates, $post_object);
         }
         echo $html;
     }
+    /**
+     * Build the HTML for the template select options.
+     *
+     * @param array<mixed> $templates Array of templates.
+     * @param string $elementor_templates The current Elementor templates.
+     * @param \WP_Post $post_object The post object.
+     * @return string The HTML for the template select options.
+     */
+    private static function build_template_select_html($templates, $elementor_templates, $post_object)
+    {
+        $html = '<label for="dce_post_template"><strong>' . esc_html__('Assign an Elementor Template', 'dynamic-content-for-elementor') . '</strong></label><br /><select id="dce_post_template" name="dyncontel_elementor_templates" class="js-dce-select">';
+        foreach ($templates as $key => $template) {
+            $selected = selected($elementor_templates, $key, \false);
+            $html .= '<option value="' . $key . '"' . $selected . '>' . $template . '</option>';
+        }
+        $html .= '</select>';
+        if ($post_object->post_parent) {
+            $elementor_templates_parent = get_post_meta($post_object->ID, 'dyncontel_elementor_templates_parent', \true);
+            $checked = $elementor_templates_parent ? ' checked' : '';
+            $html .= '<br /><label for="dce_post_template_parent"><input type="checkbox" value="1" name="dyncontel_elementor_templates_parent" id="dce_post_template_parent"' . $checked . '>' . __('From Parent', 'dynamic-content-for-elementor') . '</label>';
+        }
+        return $html;
+    }
+    /**
+     * Save the metabox data.
+     *
+     * @param int $post_id The ID of the post being saved.
+     * @param \WP_Post $post The post object.
+     * @return void
+     */
     public static function save_metaboxdata_template($post_id, $post)
     {
         if (\defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return $post_id;
+            return;
         }
-        // if post type is different from our selected one, do nothing
         if (\in_array($post->post_type, TemplateSystem::get_registered_types())) {
-            if (isset($_POST['dyncontel_elementor_templates'])) {
-                update_post_meta($post_id, 'dyncontel_elementor_templates', sanitize_text_field($_POST['dyncontel_elementor_templates']));
-            }
-            if (isset($_POST['dyncontel_elementor_templates_parent'])) {
-                update_post_meta($post_id, 'dyncontel_elementor_templates_parent', sanitize_text_field($_POST['dyncontel_elementor_templates_parent']));
-            } else {
-                delete_post_meta($post_id, 'dyncontel_elementor_templates_parent');
+            $elementor_templates = array('dyncontel_elementor_templates', 'dyncontel_elementor_templates_parent');
+            foreach ($elementor_templates as $template) {
+                if (\array_key_exists($template, $_POST)) {
+                    update_post_meta($post_id, $template, sanitize_text_field($_POST[$template]));
+                } else {
+                    if ($template == 'dyncontel_elementor_templates_parent') {
+                        delete_post_meta($post_id, $template);
+                    }
+                }
             }
         }
-        return $post_id;
     }
+    /**
+     * Add a metabox for the demo ID.
+     *
+     * @param string $post_type The type of the post.
+     * @param \WP_Post $post The post object.
+     */
     public static function metabox_demo_id($post_type, $post)
     {
-        $class = \get_class();
         if ($post_type == 'elementor_library') {
-            add_meta_box('dce_metabox', __('Template Preview', 'dynamic-content-for-elementor'), $class . '::metabox_demo_id_post', null, 'side');
-            //, 'post', 'normal', 'default' );
+            add_meta_box('dce_metabox', __('Template Preview', 'dynamic-content-for-elementor'), [self::class, 'metabox_demo_id_post'], null, 'side');
         }
     }
+    /**
+     * Output the contents of the demo ID metabox.
+     *
+     * @param \WP_Post $post_object The post object.
+     */
     public static function metabox_demo_id_post($post_object)
     {
         $html = '';
@@ -103,54 +144,67 @@ class Metabox
                     $html .= '<option value="' . $tkey . '"' . $selected . '>' . $ttmp . '</option>';
                 }
             }
-            $html .= '<select></p>';
+            $html .= '</select></p>';
         }
         echo $html;
     }
+    /**
+     * Save the demo ID metabox data.
+     *
+     * @param int $post_id The ID of the post being saved.
+     * @param \WP_Post $post The post object.
+     * @return void
+     */
     public static function save_metaboxdata_demo_id($post_id, $post)
     {
         if (\defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return $post_id;
+            return;
         }
         // if post type is different from our selected one, do nothing
-        if ($post->post_type == 'elementor_library') {
-            if (isset($_POST['demo_id'])) {
-                update_post_meta($post_id, 'demo_id', sanitize_text_field($_POST['demo_id']));
-                // se esiste anche Elementor Pro aggiorno pure lui
-                $proSettings = get_post_meta($post_id, '_elementor_page_settings', \true);
-                if (empty($proSettings)) {
-                    $proSettings = array();
-                }
-                $proSettings['preview_id'] = sanitize_text_field($_POST['demo_id']);
-                update_post_meta($post_id, '_elementor_page_settings', $proSettings);
+        if ($post->post_type == 'elementor_library' && isset($_POST['demo_id']) && current_user_can('edit_post', $post_id)) {
+            update_post_meta($post_id, 'demo_id', sanitize_text_field($_POST['demo_id']));
+            // se esiste anche Elementor Pro aggiorno pure lui
+            $proSettings = get_post_meta($post_id, '_elementor_page_settings', \true);
+            if (empty($proSettings)) {
+                $proSettings = array();
             }
+            $proSettings['preview_id'] = sanitize_text_field($_POST['demo_id']);
+            update_post_meta($post_id, '_elementor_page_settings', $proSettings);
         }
-        return $post_id;
     }
     /**
-     * custom option and settings
+     * Register the custom metaboxes for all public taxonomies.
      */
-    // ************************************** SETTINGS INIT
     public static function taxonomybox_init()
     {
-        if (current_user_can('manage_options')) {
-            $args = array('public' => \true);
-            $output = 'names';
-            // names or objects, note names is the default
-            $operator = 'and';
-            $class = \get_class();
-            $taxonomies_registered = get_taxonomies($args, $output, $operator);
-            foreach ($taxonomies_registered as $taxonomy) {
-                add_action($taxonomy . '_add_form_fields', $class . '::taxonomyname_metabox_add', 10, 1);
-                add_action($taxonomy . '_edit_form_fields', $class . '::taxonomyname_metabox_edit', 10, 1);
-                add_action('created_' . $taxonomy, $class . '::save_taxonomyname_metadata', 10, 1);
-                add_action('edited_' . $taxonomy, $class . '::save_taxonomyname_metadata', 10, 1);
-            }
+        $args = ['public' => \true];
+        $output = 'names';
+        // names or objects, note names is the default
+        $operator = 'and';
+        $taxonomies_registered = get_taxonomies($args, $output, $operator);
+        foreach ($taxonomies_registered as $taxonomy) {
+            add_action($taxonomy . '_add_form_fields', [self::class, 'taxonomyname_metabox_add'], 10, 1);
+            add_action($taxonomy . '_edit_form_fields', [self::class, 'taxonomyname_metabox_edit'], 10, 1);
+            add_action('created_' . $taxonomy, [self::class, 'save_taxonomyname_metadata'], 10, 1);
+            add_action('edited_' . $taxonomy, [self::class, 'save_taxonomyname_metadata'], 10, 1);
         }
     }
-    // Add metabox Terms
+    /**
+     * Render add metabox for taxonomy terms.
+     *
+     * This function is hooked into "{$taxonomy}_add_form_fields" action hook.
+     * It displays the metabox only if the user has 'manage_options' capability.
+     *
+     * @param \WP_Term $tag Current taxonomy term object.
+     *
+     * @return void
+     */
     public static function taxonomyname_metabox_add($tag)
     {
+        // Only proceed if the user has the 'manage_options' capability.
+        if (!current_user_can('manage_options')) {
+            return;
+        }
         ?>
 		<div id="dce_termbox" class="dce-term-box">
 			<div class="dce-term-head">
@@ -167,8 +221,22 @@ class Metabox
 			<style>#dce_termbox { display: none; }</style>
 			<?php 
     }
+    /**
+     * Render edit metabox for taxonomy terms.
+     *
+     * This function is hooked into "{$taxonomy}_edit_form_fields" action hook.
+     * It displays the metabox only if the user has 'manage_options' capability.
+     *
+     * @param \WP_Term $tag Current taxonomy term object.
+     *
+     * @return void
+     */
     public static function taxonomyname_metabox_edit($tag)
     {
+        // Only proceed if the user has the 'manage_options' capability.
+        if (!current_user_can('manage_options')) {
+            return;
+        }
         ?>
 		<tr class="form-field dce-term dce-term-edit">
 			<th scope="row" valign="top">
@@ -184,81 +252,22 @@ class Metabox
 		</tr>
 		<?php 
     }
-    public static function render_select_metabox($tag, $mode)
-    {
-        $templates = \DynamicContentForElementor\Helper::get_all_templates(\true);
-        $isSel = '';
-        ?>
-		<label><?php 
-        _e('Head', 'dynamic-content-for-elementor');
-        ?></label>
-		<select class="js-dce-select" id="dynamic_content_head" name="dynamic_content_head">
-		<?php 
-        foreach ($templates as $key => $value) {
-            if ($mode == 'edit') {
-                $isSel = get_term_meta($tag->term_id, 'dynamic_content_head', \true) == $key ? ' selected' : '';
-            }
-            ?>
-				<option value="<?php 
-            echo $key;
-            ?>"<?php 
-            echo $isSel;
-            ?>><?php 
-            echo $value;
-            ?></option>
-				<?php 
-        }
-        ?>
-		</select>
-		<br>
-		<label><?php 
-        _e('Blocks/Canvas', 'dynamic-content-for-elementor');
-        ?></label>
-		<select class="js-dce-select" id="dynamic_content_block" name="dynamic_content_block">
-			}
-		<?php 
-        foreach ($templates as $key => $value) {
-            if ($mode == 'edit') {
-                $isSel = get_term_meta($tag->term_id, 'dynamic_content_block', \true) == $key ? ' selected' : '';
-            }
-            ?>
-				<option value="<?php 
-            echo $key;
-            ?>"<?php 
-            echo $isSel;
-            ?>><?php 
-            echo $value;
-            ?></option>
-				<?php 
-        }
-        ?>
-		</select>
-		<br>
-		<label><?php 
-        _e('Single', 'dynamic-content-for-elementor');
-        ?></label>
-		<select class="js-dce-select" id="dynamic_content_single" name="dynamic_content_single">
-		<?php 
-        foreach ($templates as $key => $value) {
-            if ($mode == 'edit') {
-                $isSel = get_term_meta($tag->term_id, 'dynamic_content_single', \true) == $key ? ' selected' : '';
-            }
-            ?>
-				<option value="<?php 
-            echo $key;
-            ?>"<?php 
-            echo $isSel;
-            ?>><?php 
-            echo $value;
-            ?></option>
-				<?php 
-        }
-        ?>
-		</select>
-			<?php 
-    }
+    /**
+     * Save metadata for taxonomy terms.
+     *
+     * This function is hooked into "created_{$taxonomy}" and "edited_{$taxonomy}" action hooks.
+     * It saves the metadata only if the user has 'manage_options' capability.
+     *
+     * @param int $term_id Term ID.
+     *
+     * @return void
+     */
     public static function save_taxonomyname_metadata($term_id)
     {
+        // Only proceed if the user has the 'manage_options' capability.
+        if (!current_user_can('manage_options')) {
+            return;
+        }
         if (isset($_POST['dynamic_content_head'])) {
             update_term_meta($term_id, 'dynamic_content_head', sanitize_text_field($_POST['dynamic_content_head']));
         }
@@ -267,6 +276,55 @@ class Metabox
         }
         if (isset($_POST['dynamic_content_single'])) {
             update_term_meta($term_id, 'dynamic_content_single', sanitize_text_field($_POST['dynamic_content_single']));
+        }
+    }
+    /**
+     * Generate the HTML for select options.
+     *
+     * @param array<string,string>  $templates An array of templates.
+     * @param \WP_Term $tag       The term object.
+     * @param string $name      The name of the option.
+     * @param string $mode      The mode of the operation ('add' or 'edit').
+     *
+     * @return string The HTML string for the options.
+     */
+    public static function generate_options($templates, $tag, $name, $mode)
+    {
+        $output = '';
+        foreach ($templates as $key => $value) {
+            // Initialize the 'selected' attribute as an empty string
+            $selected = '';
+            // If we are in 'edit' mode and this option is the selected one, mark it as 'selected'
+            if ($mode == 'edit' && get_term_meta($tag->term_id, $name, \true) == $key) {
+                $selected = ' selected';
+            }
+            // Generate the option element for the select
+            $output .= \sprintf('<option value="%s"%s>%s</option>', $key, $selected, $value);
+        }
+        return $output;
+    }
+    /**
+     * Render a select metabox.
+     *
+     * @param object $tag  The term object.
+     * @param string $mode The mode of the operation ('add' or 'edit').
+     */
+    public static function render_select_metabox($tag, $mode)
+    {
+        // Get all templates
+        $templates = \DynamicContentForElementor\Helper::get_all_templates(\true);
+        // Define the labels for the select elements
+        $labels = ['dynamic_content_head' => __('Head', 'dynamic-content-for-elementor'), 'dynamic_content_block' => __('Blocks/Canvas', 'dynamic-content-for-elementor'), 'dynamic_content_single' => __('Single', 'dynamic-content-for-elementor')];
+        // Loop over each label and create a select element for it
+        foreach ($labels as $name => $label) {
+            // Output the label
+            \printf('<label>%s</label>', $label);
+            // Start the select element
+            \printf('<select class="js-dce-select" id="%s" name="%s">', $name, $name);
+            // Generate the options for the select
+            echo self::generate_options($templates, $tag, $name, $mode);
+            // End the select and insert a line break
+            echo '</select><br>';
         }
     }
 }

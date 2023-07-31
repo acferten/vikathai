@@ -53,10 +53,9 @@ const getAllFields = ($form, fieldIds) => {
 }
 
 // Receive a jQuery list of input elements. Returns true if they are all disabled.
-const areAllInputsDisabled = ( $inputs ) => {
-	for (const input of $inputs) {
-		const $input = jQuery(input);
-		if (! $input.prop('disabled')) {
+const areAllFieldsDisabled = ( $groups ) => {
+	for (const group of $groups) {
+		if (group.dataset.dceConditionsFieldStatus !== 'inactive') {
 			return false;
 		}
 	}
@@ -79,13 +78,14 @@ const initializeStepsJumping = ($form) => {
 	let steps = [];
 	for (const step of $steps) {
 		const $step = jQuery(step);
-		const $inputs = $step.find('input,select,textarea');
+		// immediate child > otherwise you'll also get the step buttons
+		const $fieldGroups = $step.find('> .elementor-field-group');
 		const $next = $step.find('.elementor-field-type-next button');
 		const $previous = $step.find('.elementor-field-type-previous button');
 		steps.push({
 			nextButton: $next,
 			previousButton: $previous,
-			inputs: $inputs
+			fieldGroups: $fieldGroups
 		})
 	}
 	// Set click handlers for next buttons:
@@ -93,7 +93,7 @@ const initializeStepsJumping = ($form) => {
 	for (let i = 0; i < (steps.length - 2); i++) {
 		const nextStep = steps[i+1];
 		steps[i].nextButton.on('click', () => {
-			if (areAllInputsDisabled(nextStep.inputs)) {
+			if (areAllFieldsDisabled(nextStep.fieldGroups)) {
 				nextStep.nextButton.trigger('click');
 			}
 		});
@@ -103,7 +103,7 @@ const initializeStepsJumping = ($form) => {
 	for (let i = 2; i < steps.length; i++) {
 		const prevStep = steps[i-1];
 		steps[i].previousButton.on('click', () => {
-			if (areAllInputsDisabled(prevStep.inputs)) {
+			if (areAllFieldsDisabled(prevStep.fieldGroups)) {
 				prevStep.previousButton.trigger('click');
 			}
 		});
@@ -218,7 +218,15 @@ function initializeConditionalFields($form) {
 			return arr === el;
 		}
 		return arr.includes(el);
-	})
+	});
+	lang.register('to_number', (e) => 'false', (args, str) => {
+		// convert string to number:
+		let n = +str;
+		if (isNan(n)) {
+			n = 0;
+		}
+		return n;
+	});
 	fieldIds = JSON.parse(fieldIds);
 	field_conditions = JSON.parse(typeof field_conditions === 'string' ? field_conditions : '[]' );
 	submit_conditions = JSON.parse(typeof submit_conditions === 'string' ? submit_conditions : '[]');

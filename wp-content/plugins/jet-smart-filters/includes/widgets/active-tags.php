@@ -4,29 +4,35 @@ namespace Elementor;
 
 use Elementor\Group_Control_Border;
 
+// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-} // Exit if accessed directly
+}
 
 class Jet_Smart_Filters_Active_Tags_Widget extends Widget_Base {
 
 	public function get_name() {
+
 		return 'jet-smart-filters-active-tags';
 	}
 
 	public function get_title() {
+
 		return __( 'Active Tags', 'jet-smart-filters' );
 	}
 
 	public function get_icon() {
+
 		return 'jet-smart-filters-icon-active-filters';
 	}
 
 	public function get_html_wrapper_class() {
+
 		return 'elementor-widget-' . $this->get_name() . ' hide-widget';
 	}
 
 	public function get_help_url() {
+
 		return jet_smart_filters()->widgets->prepare_help_url(
 			'https://crocoblock.com/knowledge-base/articles/jetsmartfilters-how-to-enable-visitors-to-disable-active-filters/',
 			$this->get_name()
@@ -34,6 +40,7 @@ class Jet_Smart_Filters_Active_Tags_Widget extends Widget_Base {
 	}
 
 	public function get_categories() {
+
 		return array( jet_smart_filters()->widgets->get_category() );
 	}
 
@@ -368,7 +375,6 @@ class Jet_Smart_Filters_Active_Tags_Widget extends Widget_Base {
 		);
 
 		$this->end_controls_section();
-
 
 		$this->start_controls_section(
 			'section_tag_styles',
@@ -803,17 +809,13 @@ class Jet_Smart_Filters_Active_Tags_Widget extends Widget_Base {
 		);
 
 		$this->end_controls_section();
-
 	}
 
 	/**
 	 * Returns CSS selector for nested element
-	 *
-	 * @param  [type] $el [description]
-	 *
-	 * @return [type]     [description]
 	 */
 	public function css_selector( $el = null ) {
+
 		return sprintf( '{{WRAPPER}} .%1$s%2$s', $this->get_name(), $el );
 	}
 
@@ -846,7 +848,5 @@ class Jet_Smart_Filters_Active_Tags_Widget extends Widget_Base {
 		}
 
 		echo '</div>';
-
 	}
-
 }

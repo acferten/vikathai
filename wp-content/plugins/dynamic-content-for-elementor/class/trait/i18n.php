@@ -34,6 +34,13 @@ trait I18n
             return apply_filters('wpml_object_id', $object_id, $type, \true, $current_language);
         }
     }
+    /**
+     * Returns the translated object ID(post_type or term) or original if missing
+     *
+     * @param int|string|array<mixed> $object_id The ID/s of the objects to check and return
+     * @param object $type the object type: post, page, {custom post type name}, nav_menu, nav_menu_item, category, tag etc.
+     * @return string|array<mixed>
+     */
     public static function wpml_translate_object_id($object_id)
     {
         $current_language = apply_filters('wpml_current_language', null);

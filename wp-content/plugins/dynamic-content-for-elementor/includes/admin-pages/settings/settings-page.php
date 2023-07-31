@@ -253,8 +253,12 @@ abstract class SettingsPage
             }
         }
     }
+    // for overriding:
+    public function before_register()
+    {
+    }
     /**
-     * Display settings page.
+     * display settings page.
      *
      * Output the content for the settings page.
      *
@@ -264,6 +268,7 @@ abstract class SettingsPage
      */
     public function display_settings_page()
     {
+        $this->before_register();
         $this->register_settings_fields();
         $tabs = $this->get_tabs();
         $active_tab_id = \array_key_first($tabs);

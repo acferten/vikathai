@@ -153,7 +153,16 @@ trait Navigation
         }
         return $icon;
     }
-    public static function numeric_query_pagination($pages, $settings, $class = '')
+    /**
+     *  Numeric Query Pagination
+     *
+     * @param int|string $pages
+     * @param array<mixed> $settings
+     * @param string $class
+     * @param bool $rtl
+     * @return void
+     */
+    public static function numeric_query_pagination($pages, $settings, $class = '', $rtl = \false)
     {
         $search_filter_query = \false;
         if (isset($settings['query_type']) && $settings['query_type'] === 'search_filter') {
@@ -175,11 +184,19 @@ trait Navigation
                 $pages = 1;
             }
         }
-        if (1 != $pages) {
+        if ($pages !== 1) {
             if ($class) {
-                echo '<div class="dce-pagination ' . $class . '">';
+                if (!$rtl) {
+                    echo '<div class="dce-pagination ' . $class . '">';
+                } else {
+                    echo '<div class="dce-pagination ' . $class . '" dir="rtl">';
+                }
             } else {
-                echo '<div class="dce-pagination">';
+                if (!$rtl) {
+                    echo '<div class="dce-pagination">';
+                } else {
+                    echo '<div class="dce-pagination" dir="rtl">';
+                }
             }
             // Progression
             if ($settings['pagination_show_progression']) {

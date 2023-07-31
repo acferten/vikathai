@@ -78,25 +78,6 @@ class PhpAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
         eval($code);
     }
     /**
-     * On Export
-     *
-     * Clears form settings on export
-     * @access Public
-     * @param array<mixed> $element
-     * @return void
-     */
-    public function on_export($element)
-    {
-        $tmp = array();
-        if (!empty($element)) {
-            foreach ($element['settings'] as $key => $value) {
-                if (\substr($key, 0, 4) === 'dce_') {
-                    unset($element['settings'][$key]);
-                }
-            }
-        }
-    }
-    /**
      * @param \ElementorPro\Modules\Forms\Widgets\Form $widget
      * @return void
      */
@@ -108,5 +89,9 @@ class PhpAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $widget->start_controls_section('section_dce_php_action', ['label' => '<span class="color-dce icon icon-dyn-logo-dce pull-right ml-1"></span> ' . __('PHP Action', 'dynamic-content-for-elementor'), 'condition' => ['submit_actions' => $this->get_name()]]);
         $widget->add_control('dce_php_action_code', ['label' => __('PHP Action Code', 'dynamic-content-for-elementor'), 'type' => Controls_Manager::CODE, 'language' => 'php', 'default' => '', 'separator' => 'after', 'description' => __('Use the variable $fields to access fields values (eg $fields["field_id"]).', 'dynamic-content-for-elementor')]);
         $widget->end_controls_section();
+    }
+    public function on_export($element)
+    {
+        return $element;
     }
 }

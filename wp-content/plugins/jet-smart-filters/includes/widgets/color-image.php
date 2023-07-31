@@ -4,25 +4,30 @@ namespace Elementor;
 
 use Elementor\Group_Control_Border;
 
+// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-} // Exit if accessed directly
+}
 
 class Jet_Smart_Filters_Color_Image_Widget extends Jet_Smart_Filters_Base_Widget {
 
 	public function get_name() {
+
 		return 'jet-smart-filters-color-image';
 	}
 
 	public function get_title() {
+
 		return __( 'Visual Filter', 'jet-smart-filters' );
 	}
 
 	public function get_icon() {
+
 		return 'jet-smart-filters-icon-color-image-filter';
 	}
 
 	public function get_help_url() {
+
 		return jet_smart_filters()->widgets->prepare_help_url(
 			'https://crocoblock.com/knowledge-base/articles/jetsmartfilters-how-to-create-visual-filter-with-taxonomies-data-source/',
 			$this->get_name()
@@ -624,7 +629,5 @@ class Jet_Smart_Filters_Color_Image_Widget extends Jet_Smart_Filters_Base_Widget
 		$this->base_controls_section_filter_apply_button( $css_scheme );
 
 		$this->base_controls_section_filter_group( $css_scheme );
-
 	}
-
 }

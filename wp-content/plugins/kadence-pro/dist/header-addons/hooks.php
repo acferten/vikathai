@@ -14,7 +14,7 @@ use function Kadence\kadence;
  */
 function mobile_secondary_navigation() {
 	?>
-	<nav id="mobile-secondary-site-navigation" class="mobile-navigation mobile-secondary-navigation drawer-navigation drawer-navigation-parent-toggle-<?php echo esc_attr( kadence()->option( 'mobile_secondary_navigation_parent_toggle' ) ? 'true' : 'false' ); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Secondary Mobile Navigation', 'kadence' ); ?>">
+	<nav id="mobile-secondary-site-navigation" class="mobile-navigation mobile-secondary-navigation drawer-navigation drawer-navigation-parent-toggle-<?php echo esc_attr( kadence()->option( 'mobile_secondary_navigation_parent_toggle' ) ? 'true' : 'false' ); ?>" role="navigation" aria-label="<?php esc_attr_e( 'Secondary Mobile Navigation', 'kadence-pro' ); ?>">
 		<?php kadence()->customizer_quick_link(); ?>
 		<div class="mobile-menu-container drawer-menu-container">
 			<?php
@@ -902,6 +902,7 @@ function account_popup() {
 	</div>
 	<?php
 }
+
 /**
  * Login Form
  */
@@ -911,17 +912,18 @@ function account_login_form() {
 	<p class="lost_password">
 		<small><a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Lost your password?', 'kadence-pro' ); ?></a></small>
 	</p>
-	<?php if ( kadence()->option( 'header_account_modal_registration' ) ) { ?>
+	<?php if ( kadence()->option( 'header_account_modal_registration' ) || kadence()->option( 'header_mobile_account_modal_registration' ) ) { ?>
 		<?php
 		//$register_link = kadence()->option( 'header_mobile_account_modal_registration_link' );
 		$register_link = kadence()->option( 'header_account_modal_registration_link' );
 		?>
-		<hr class="register-divider">
-		<p class="register-field"><?php esc_html_e( "Don't have an account yet?", 'kadence-pro' ); ?> <a class="register-link" href="<?php echo ( ! empty( $register_link ) ? esc_url( $register_link ) : esc_url( wp_registration_url() ) ); ?>"><?php esc_html_e( 'Sign up', 'kadence-pro' ); ?></a></p>
+		<hr class="register-divider <?php echo !kadence()->option( 'header_account_modal_registration' ) ? 'hide-desktop'  : ''; ?><?php echo !kadence()->option( 'header_mobile_account_modal_registration' ) ? 'hide-mobile' : ''; ?>">
+		<p class="register-field <?php echo !kadence()->option( 'header_account_modal_registration' ) ? 'hide-desktop' : ''; ?><?php echo !kadence()->option( 'header_mobile_account_modal_registration' ) ? 'hide-mobile' : ''; ?>"><?php esc_html_e( "Don't have an account yet?", 'kadence-pro' ); ?> <a class="register-link" href="<?php echo ( ! empty( $register_link ) ? esc_url( $register_link ) : esc_url( wp_registration_url() ) ); ?>"><?php esc_html_e( 'Sign up', 'kadence-pro' ); ?></a></p>
 		<?php
 	}
 }
 add_action( 'kadence_account_login_form', 'Kadence_Pro\account_login_form' );
+
 /**
  * Desktop contact
  */

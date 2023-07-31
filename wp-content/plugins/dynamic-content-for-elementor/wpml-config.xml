@@ -81,6 +81,20 @@
                 <field type="Fallback Text" editor_type="LINE">fallback_text</field>
             </fields>
         </widget>
+        <widget name="dce-dynamic-google-maps-directions">
+            <conditions>
+                <condition key="widgetType">dce-dynamic-google-maps-directions</condition>
+            </conditions>
+            <fields>
+                <field type="Geolocation Button Text" editor_type="LINE">geolocation_button_text</field>
+                <field type="Departure - Marker Title" editor_type="LINE">departure_marker_title</field>
+                <field type="Departure - Marker Label" editor_type="LINE">departure_marker_label</field>
+                <field type="Destination - Marker Title" editor_type="LINE">destination_marker_title</field>
+                <field type="Destination - Marker Label" editor_type="LINE">destination_marker_label</field>
+                <field type="Departure - InfoWindow" editor_type="AREA">departure_info_window</field>
+                <field type="Destination - InfoWindow" editor_type="AREA">destination_info_window</field>
+            </fields>
+        </widget>
         <widget name="dyncontel-acf-relation">
             <conditions>
                 <condition key="widgetType">dyncontel-acf-relation</condition>
@@ -293,7 +307,7 @@
                 <field type="Pagination Next Label" editor_type="LINE">pagination_next_label</field>
                 <field type="Pagination First Label" editor_type="LINE">pagination_first_label</field>
                 <field type="Pagination Last Label" editor_type="LINE">pagination_last_label</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Read More" editor_type="LINE">readmore_text</field>
@@ -311,7 +325,30 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
+                <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
+                <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
+                <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
+                <field type="Fallback Text" editor_type="LINE">fallback_text</field>
+            </fields>
+            <fields-in-item items_of="list_items">
+                <field type="Read more" editor_type="LINE">readmore_text</field>
+                <field type="Add to Cart" editor_type="LINE">add_to_cart_text</field>
+            </fields-in-item>
+        </widget>
+        <widget name="dce-acf-relationship">
+            <conditions>
+                <condition key="widgetType">dce-acf-relationship</condition>
+            </conditions>
+            <fields>
+                <field type="Pagination Previous Label" editor_type="LINE">pagination_prev_label</field>
+                <field type="Pagination Next Label" editor_type="LINE">pagination_next_label</field>
+                <field type="Pagination First Label" editor_type="LINE">pagination_first_label</field>
+                <field type="Pagination Last Label" editor_type="LINE">pagination_last_label</field>
+                <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
+                <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
+                <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -334,7 +371,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -357,7 +394,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -380,7 +417,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -403,7 +440,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -426,7 +463,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -449,7 +486,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -472,7 +509,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>
@@ -495,7 +532,7 @@
                 <field type="Infinite Scroll Label Loading" editor_type="LINE">infiniteScroll_label_loading</field>
                 <field type="Infinite Scroll Label Last" editor_type="LINE">infiniteScroll_label_last</field>
                 <field type="Infinite Scroll Label Error" editor_type="LINE">infiniteScroll_label_error</field>
-                <field type="Filter - All element text" editor_type="LINE">alltext_filter</field>
+                <field type="Filter - All element text" editor_type="LINE">grid_filters_alltext_filter</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_format</field>
                 <field type="Meta Date Format" editor_type="LINE">querydate_field_meta_future_format</field>
                 <field type="Caption Date Format" editor_type="LINE">slideshow_caption_date_format</field>

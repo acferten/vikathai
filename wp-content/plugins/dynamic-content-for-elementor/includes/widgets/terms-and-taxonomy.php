@@ -105,9 +105,7 @@ class TermsAndTaxonomy extends \DynamicContentForElementor\Widgets\WidgetPrototy
                 return;
             }
             Helper::notice('', __('This is a dummy content to help you choose the style and settings', 'dynamic-content-for-elementor'));
-            $dummy = ['Term1' => (object) ['term_id' => 1, 'name' => 'Term1', 'slug' => 'term1', 'term_group' => 0, 'term_order' => null, 'term_taxonomy_id' => 1, 'taxonomy' => 'category', 'description' => 'Description1', 'parent' => 0, 'count' => 1, 'object_id' => null], 'Term2' => (object) ['term_id' => 2, 'name' => 'Term2', 'slug' => 'term2', 'term_group' => 0, 'term_order' => null, 'term_taxonomy_id' => 1, 'taxonomy' => 'category', 'description' => 'Description2', 'parent' => 0, 'count' => 1, 'object_id' => null], 'Term3' => (object) ['term_id' => 3, 'name' => 'Term3', 'slug' => 'term3', 'term_group' => 0, 'term_order' => null, 'term_taxonomy_id' => 1, 'taxonomy' => 'category', 'description' => 'Description3', 'parent' => 0, 'count' => 1, 'object_id' => null]];
-            // Set dummy content on terms
-            $terms = $dummy;
+            $terms = get_terms(['taxonomy' => 'category', 'hide_empty' => \false]);
         }
         $separator = '';
         $this->set_render_attribute('wrapper', 'class', 'dce-terms');
@@ -296,7 +294,7 @@ class TermsAndTaxonomy extends \DynamicContentForElementor\Widgets\WidgetPrototy
                 $i++;
             }
             ?>
-		
+
 			</li>
 			<?php 
         }

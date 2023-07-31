@@ -33,6 +33,53 @@ gulp.task( 'css', function() {
 		.pipe( notify( 'Compile Sass Done!' ) );
 } );
 
+//css-suggestions
+gulp.task( 'css-suggestions', function() {
+	return gulp.src( './assets/scss/admin/suggestions.scss' )
+		.pipe(
+			plumber( {
+				errorHandler: function( error ) {
+					console.log( '=================ERROR=================' );
+					console.log( error.message );
+					this.emit( 'end' );
+				}
+			} )
+		)
+		.pipe( sass( { outputStyle: 'compressed' } ) )
+		.pipe( autoprefixer( {
+			browsers: ['last 10 versions'],
+			cascade:  false
+		} ) )
+
+		.pipe( rename( 'jet-search-suggestions.css' ) )
+		.pipe( gulp.dest( './assets/css/admin' ) )
+		.pipe( livereload() )
+		.pipe( notify( 'Compile Sass Done!' ) );
+} );
+
+//icons
+gulp.task( 'jet-search-icons', () => {
+	return gulp.src( './assets/scss/jet-search-icons.scss' )
+		.pipe(
+			plumber( {
+				errorHandler: function( error ) {
+					console.log( '=================ERROR=================' );
+					console.log( error.message );
+					this.emit( 'end' );
+				}
+			} )
+		)
+		.pipe( sass( { outputStyle: 'compressed' } ) )
+		.pipe( autoprefixer( {
+			browsers: ['last 10 versions'],
+			cascade:  false
+		} ) )
+
+		.pipe( rename( 'jet-search-icons.css' ) )
+		.pipe( gulp.dest( './assets/css/' ) )
+		.pipe( notify( 'Compile Sass Done!' ) );
+} );
+
 //css-editor
 gulp.task( 'css-editor', () => {
 	return gulp.src( './assets/scss/jet-search-editor.scss' )
@@ -60,7 +107,7 @@ gulp.task( 'css-editor', () => {
 //watch
 gulp.task( 'watch', function() {
 	//livereload.listen();
-	gulp.watch( './assets/scss/**', gulp.series( ...['css', 'css-editor'] ) );
+	gulp.watch( './assets/scss/**', gulp.series( ...['css', 'css-editor', 'css-suggestions', 'jet-search-icons'] ) );
 } );
 
 //checktextdomain
