@@ -1,0 +1,85 @@
+# Translation of Plugins - Force First and Last Name as Display Name - Stable (latest release) in Russian
+# This file is distributed under the same license as the Plugins - Force First and Last Name as Display Name - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2023-05-30 17:26:48+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.0-alpha.4\n"
+"Language: ru\n"
+"Project-Id-Version: Plugins - Force First and Last Name as Display Name - Stable (latest release)\n"
+
+#: force-first-last.php:223
+msgid "<strong>WARNING:</strong> This process may take a long time for sites with many users or hosted on a slow server. <strong>Running this script may hang up or cause other issues with your site.</strong> Use at your own risk."
+msgstr "<strong>ПРЕДУПРЕЖДЕНИЕ:</strong> Этот процесс может занять много времени для сайтов с большим количеством пользователей или размещенных на медленном сервере. <strong>Запуск этого скрипта может привести к зависанию вашего сайта или возникновению других проблем.</strong> Вы используйте его на свой страх и риск."
+
+#: force-first-last.php:221
+msgid "Update Existing Users"
+msgstr "Обновить существующих пользователей"
+
+#: force-first-last.php:216
+msgid "The <em>Force First and Last Name as Display Name</em> plugin will only fix display names at registration or when a profile is updated. If you just activated this plugin, please click on the button below to update the display names of your existing users."
+msgstr "Плагин <em>Force First and Last Name as Display Name</em> исправляет отображаемые имена только при регистрации или обновлении профиля. Если вы только что активировали этот плагин, нажмите кнопку ниже, чтобы обновить отображаемые имена существующих пользователей."
+
+#: force-first-last.php:204
+msgid "%s users updated"
+msgstr "Обновлено %s пользователей"
+
+#: force-first-last.php:192
+msgid "Force First and Last Name"
+msgstr "Force First and Last Name"
+
+#: force-first-last.php:188
+msgid "Blog"
+msgstr "Блог"
+
+#: force-first-last.php:188
+msgid "Stranger Studios Blog"
+msgstr "Блог Stranger Studios"
+
+#: force-first-last.php:187
+msgid "Themes"
+msgstr "Темы"
+
+#: force-first-last.php:187
+msgid "Stranger Studios WordPress Themes"
+msgstr "Темы WordPress Stranger Studios"
+
+#: force-first-last.php:186
+msgid "Plugins"
+msgstr "Плагины"
+
+#: force-first-last.php:186
+msgid "Stranger Studios WordPress Plugins"
+msgstr "Плагины WordPress Stranger Studios"
+
+#: force-first-last.php:184
+msgid "Stranger Studios(c) - All Rights Reserved"
+msgstr "Stranger Studios(c) - Все права защищены"
+
+#: force-first-last.php:137
+msgid "Force First Last"
+msgstr "Force First Last"
+
+#. Author URI of the plugin
+msgid "https://www.strangerstudios.com"
+msgstr "https://www.strangerstudios.com"
+
+#. Author of the plugin
+#: force-first-last.php:184
+msgid "Stranger Studios"
+msgstr "Stranger Studios"
+
+#. Description of the plugin
+msgid "Force the user field display_name to be set as the user's first and last name."
+msgstr "Принудительно установить поле display_name как имя и фамилию пользователя."
+
+#. Plugin URI of the plugin
+msgid "https://www.strangerstudios.com/wordpress-plugins/force-first-last/"
+msgstr "https://www.strangerstudios.com/wordpress-plugins/force-first-last/"
+
+#. Plugin Name of the plugin
+msgid "Force First and Last Name as Display Name"
+msgstr "Использовать имя и фамилию в качестве выводимого имени"
