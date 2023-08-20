@@ -1,0 +1,636 @@
+# Copyright (C) 2021 WPForms User Registration
+# This file is distributed under the same license as the WPForms User Registration package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WPForms User Registration\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: WPForms <support@wpforms.com>\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;"
+"_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;"
+"esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: src/Activation.php:99
+msgid ""
+"The link is expired please contact the site administrator for more details."
+msgstr ""
+"Срок действия ссылки истек, пожалуйста, свяжитесь с администратором сайта "
+"для получения более подробной информации."
+
+#: src/Admin/Builder.php:82
+msgid "Edit Template"
+msgstr "Правка шаблона"
+
+#: src/Admin/Builder.php:83
+msgid "Hide Template"
+msgstr "Скрыть шаблон"
+
+#: src/Admin/Builder.php:100, src/Admin/Builder/Registration.php:39
+msgid "User Registration"
+msgstr "Регистрация пользователя"
+
+#: src/Admin/Builder/Base.php:72
+msgid "Hide form if user is logged in"
+msgstr "Скрыть форму, если пользователь вошел в систему"
+
+#. translators: %1$s - user's first name, %2$s - logout url.
+#: src/Admin/Builder/Base.php:79
+msgid "Hi %1$s, you’re already logged in. <a href=\"%2$s\">Log out</a>."
+msgstr ""
+"Здравствуйте, %1$s! Вы уже вошли в систему. <a href=\"%2$s\">Выйдите из "
+"системы</a> ."
+
+#: src/Admin/Builder/Base.php:95
+msgid "Logged In Message"
+msgstr "Авторизованное сообщение"
+
+#: src/Admin/Builder/Base.php:102
+msgid "Message to display instead of a form for logged in users."
+msgstr ""
+"Сообщение для отображения вместо формы для зарегистрированных пользователей."
+
+#: src/Admin/Builder/Login.php:34
+msgid "User Registration - Login"
+msgstr "Регистрация пользователя - Войти"
+
+#: src/Admin/Builder/Registration.php:51
+msgid "Enable User Registration"
+msgstr "Разрешить регистрацию пользователей"
+
+#: src/Admin/Builder/Registration.php:62
+msgid "Field Mapping"
+msgstr "Преобразование полей"
+
+#: src/Admin/Builder/Registration.php:63
+msgid "Connect your form fields to information in the user’s account."
+msgstr "Свяжите поля формы с информацией в учетной записи пользователя."
+
+#: src/Admin/Builder/Registration.php:70
+msgid "User Roles"
+msgstr "Роли пользователей"
+
+#: src/Admin/Builder/Registration.php:78
+msgid "User Activation & Login"
+msgstr "Активация пользователя и вход в систему"
+
+#: src/Admin/Builder/Registration.php:86
+msgid "Email Notifications"
+msgstr "Email уведомления"
+
+#: src/Admin/Builder/Registration.php:94
+msgid "Custom User Meta"
+msgstr "Пользовательская мета-мета"
+
+#: src/Admin/Builder/Registration.php:95
+msgid ""
+"Connect additional form fields to custom fields which are associated with "
+"the user’s account."
+msgstr ""
+"Подключите дополнительные поля формы к настраиваемым полям, которые связаны "
+"с учетной записью пользователя."
+
+#: src/Admin/Builder/Registration.php:104
+msgid "Conditional Logic"
+msgstr "Условная логика"
+
+#: src/Admin/Builder/Registration.php:151, src/Templates/Registration.php:45
+msgid "Username"
+msgstr "имя пользователя"
+
+#: src/Admin/Builder/Registration.php:154,
+#: src/Admin/Builder/Registration.php:174,
+#: src/Admin/Builder/Registration.php:191,
+#: src/Admin/Builder/Registration.php:219,
+#: src/Admin/Builder/Registration.php:233,
+#: templates/builder/custom-user-meta.php:34
+msgid "--- Select Field ---"
+msgstr "--- Выбрать поле ---"
+
+#: src/Admin/Builder/Registration.php:155
+msgid ""
+"If a username is not set or provided, the user's email address will be used "
+"instead."
+msgstr ""
+"Если имя пользователя не задано или не указано, вместо него будет "
+"использоваться адрес электронной почты пользователя."
+
+#: src/Admin/Builder/Registration.php:171, src/Templates/Registration.php:52
+msgid "Email"
+msgstr "Электронная почта"
+
+#: src/Admin/Builder/Registration.php:188, src/Templates/Registration.php:37
+msgid "Name"
+msgstr "Имени"
+
+#: src/Admin/Builder/Registration.php:202, src/Templates/Login.php:45,
+#: src/Templates/Registration.php:63, src/Templates/Reset.php:45
+msgid "Password"
+msgstr "Пароль"
+
+#: src/Admin/Builder/Registration.php:205
+msgid "Auto generate"
+msgstr "Авто генерация"
+
+#: src/Admin/Builder/Registration.php:216
+msgid "Website"
+msgstr "Веб-сайт"
+
+#: src/Admin/Builder/Registration.php:230
+msgid "Biographical Info"
+msgstr "Биография"
+
+#: src/Admin/Builder/Registration.php:291
+msgid "Enable user activation"
+msgstr "Включить активацию пользователей"
+
+#: src/Admin/Builder/Registration.php:302
+msgid "User Activation Method"
+msgstr "Способ активации пользователя"
+
+#: src/Admin/Builder/Registration.php:306
+msgid "User Email"
+msgstr "Email пользователя"
+
+#: src/Admin/Builder/Registration.php:307
+msgid "Manual Approval"
+msgstr "Ручное утверждение"
+
+#: src/Admin/Builder/Registration.php:309
+msgid ""
+"User Email method sends an email to the user with a link to activate their "
+"account. Manual Approval requires site admin to approve account."
+msgstr ""
+"Метод User Email отправляет пользователю электронное письмо со ссылкой для "
+"активации его учетной записи. Для утверждения вручную требуется, чтобы "
+"администратор сайта утвердил учетную запись."
+
+#. translators: %d - a page ID.
+#: src/Admin/Builder/Registration.php:322
+msgid "#%d (no title)"
+msgstr "#%d (без заголовка)"
+
+#: src/Admin/Builder/Registration.php:332
+msgid "User Activation Confirmation Page"
+msgstr "Страница подтверждения активации пользователя"
+
+#: src/Admin/Builder/Registration.php:334
+msgid "-- Select Page --"
+msgstr "-- Выберите страницу --"
+
+#: src/Admin/Builder/Registration.php:336
+msgid "Select the page to show the user after they activate their account."
+msgstr ""
+"Выберите страницу, которая будет отображаться для пользователя после "
+"активации его учетной записи."
+
+#: src/Admin/Builder/Registration.php:346
+msgid "Enable auto log in"
+msgstr "Включить автоматический вход"
+
+#: src/Admin/Builder/Registration.php:348
+msgid "Automatically log the user in after they've registered."
+msgstr "Автоматический вход пользователя после регистрации."
+
+#: src/Admin/Builder/Registration.php:370
+msgid ""
+"<a href=\"#\" class=\"registration_email_template_toggle\">Edit Template</a>"
+msgstr ""
+"<a href=\"#\" class=\"registration_email_template_toggle\">Изменить шаблон</"
+"a>"
+
+#: src/Admin/Builder/Registration.php:385
+msgid "Email the admin when a new user is created."
+msgstr "Напишите администратору, когда будет создан новый пользователь."
+
+#: src/Admin/Builder/Registration.php:401
+msgid "Email the user with their account information."
+msgstr "Напишите пользователю информацию об его учетной записи."
+
+#: src/Admin/Builder/Registration.php:417
+msgid "Email the user once their account has been activated."
+msgstr ""
+"Напишите пользователю, как только его учетная запись будет активирована."
+
+#: src/Admin/Builder/Registration.php:473
+msgid "Create"
+msgstr "Создать"
+
+#: src/Admin/Builder/Registration.php:474
+msgid "Do not create"
+msgstr "Не создавайте"
+
+#: src/Admin/Builder/Registration.php:476
+msgid " a user account if..."
+msgstr " учетная запись пользователя, если..."
+
+#: src/Admin/Builder/Reset.php:36
+msgid "User Registration - Reset Password"
+msgstr "Регистрация пользователя - сброс пароля"
+
+#: src/Admin/Builder/Reset.php:45
+msgid "Reset Password Email"
+msgstr "Сброс пароля электронной почты"
+
+#: src/Admin/Builder/Reset.php:46
+msgid ""
+"You may customize the email that’s sent when a user requests a password "
+"reset."
+msgstr ""
+"Вы можете настроить электронное письмо, которое отправляется, когда "
+"пользователь запрашивает сброс пароля."
+
+#: src/Admin/Settings.php:42
+msgid "User Registration Template"
+msgstr "Шаблон регистрации пользователя"
+
+#: src/Admin/Settings.php:43
+msgid ""
+"Choose the HTML Template used with User Registration. Our Modern template is "
+"recommended if you have not customized the emails using code (WordPress "
+"hooks)."
+msgstr ""
+"Выберите HTML-шаблон, используемый при регистрации пользователя. Наш "
+"современный шаблон рекомендуется, если вы не настроили электронные письма с "
+"помощью кода (крючки WordPress)."
+
+#: src/Admin/Settings.php:48
+msgid "Legacy"
+msgstr "Наследие"
+
+#: src/Admin/Settings.php:49
+msgid "Modern"
+msgstr "Современный"
+
+#. translators: %1$s - link to unapproved users list admin page; %2$s - CSS class name; %3$s - count of unapproved users.
+#: src/Admin/UsersListing.php:84
+msgid ""
+"<a href=\"%1$s\" class=\"%2$s\" rel=\"noopener noreferrer\">Unapproved <span "
+"class=\"count\">(%3$s)</span></a>"
+msgstr ""
+"<a href=\"%1$s\" class=\"%2$s\" rel=\"noopener noreferrer\">Не утверждено "
+"<span class=\"count\">(%3$s)</span></a>"
+
+#: src/Admin/UsersListing.php:125
+msgid "Approve"
+msgstr "Подтвердить"
+
+#: src/Admin/UsersListing.php:126
+msgid "Unapprove"
+msgstr "Не подтверждать"
+
+#. translators: %s - Link to unapprove users action
+#: src/Admin/UsersListing.php:165
+msgid ""
+"<a href=\"%s\" class=\"submitunapprove\" rel=\"noopener "
+"noreferrer\">Unapprove</a>"
+msgstr ""
+"<a href=\"%s\" class=\"submitunapprove\" rel=\"noopener "
+"noreferrer\">Отклонить</a>"
+
+#. translators: %s - Link to approve users action
+#: src/Admin/UsersListing.php:194
+msgid ""
+"<a href=\"%s\" class=\"submitapprove\" rel=\"noopener noreferrer\">Approve</"
+"a>"
+msgstr ""
+"<a href=\"%s\" class=\"submitapprove\" rel=\"noopener "
+"noreferrer\">Утвердить</a>"
+
+#. translators: %s - Link to resend activation email
+#: src/Admin/UsersListing.php:221
+msgid "<a href=\"%s\" rel=\"noopener noreferrer\">Resend activation email</a>"
+msgstr ""
+"<a href=\"%s\" rel=\"noopener noreferrer\">Отправить повторно письмо для "
+"активации</a>"
+
+#. translators: %s - number of users.
+#: src/Admin/UsersListing.php:333
+msgid "%s user approved."
+msgid_plural "%s users approved."
+msgstr[0] "%s пользователь одобрен."
+msgstr[1] ""
+msgstr[2] ""
+
+#. translators: %s - number of users.
+#: src/Admin/UsersListing.php:352
+msgid "%s user unapproved."
+msgid_plural "%s users unapproved."
+msgstr[0] "%s пользователь не одобрен."
+msgstr[1] "%s пользователей не одобрены."
+msgstr[2] "%s пользователей не одобрены."
+
+#. translators: %s - number of users.
+#: src/Admin/UsersListing.php:371
+msgid "%s user was notified."
+msgid_plural "%s users were notified."
+msgstr[0] "%s пользователь был уведомлен."
+msgstr[1] ""
+msgstr[2] ""
+
+#: src/Admin/UsersListing.php:510
+msgid "You can&#8217;t unapprove users."
+msgstr "Вы не можете отклонять пользователей."
+
+#: src/Admin/UsersListing.php:604
+msgid "You can&#8217;t edit that user."
+msgstr "Вы не можете изменить пользователя."
+
+#: src/EmailNotifications/Helper.php:43
+msgid "Email Subject"
+msgstr "Тема письма"
+
+#: src/EmailNotifications/Helper.php:60
+msgid "Message"
+msgstr "Сообщение"
+
+#. translators: %s - {site_name} smart tag.
+#: src/EmailNotifications/Helper.php:88
+msgid "%s Activation Required"
+msgstr "%s Требуется активация"
+
+#: src/EmailNotifications/Helper.php:102
+msgid "IMPORTANT: You must activate your account before you can log in."
+msgstr ""
+"ВАЖНО: Вы должны активировать свою учетную запись, прежде чем сможете войти "
+"в систему."
+
+#: src/EmailNotifications/Helper.php:103
+msgid "Please visit the link below."
+msgstr "Пожалуйста, перейдите по ссылке ниже."
+
+#. translators: %s - {site_name} smart tag.
+#: src/EmailNotifications/Helper.php:119
+msgid "%s New User Registration"
+msgstr "%s Регистрация нового пользователя"
+
+#. translators: %s - {site_name} smart tag.
+#: src/EmailNotifications/Helper.php:134
+msgid "New user registration on your site %s:"
+msgstr "Регистрация нового пользователя на Вашем сайте %s:"
+
+#. translators: %s - {user_registration_login} smart tag.
+#. translators: %s - {user_registration_login} smart tag.
+#. translators: %s - {user_registration_login} smart tag.
+#: src/EmailNotifications/Helper.php:139,
+#: src/EmailNotifications/Helper.php:176, src/EmailNotifications/Helper.php:248
+msgid "Username: %s"
+msgstr "Имя: %s"
+
+#. translators: %s - {user_registration_email} smart tag.
+#: src/EmailNotifications/Helper.php:144
+msgid "Email: %s"
+msgstr "Электронная почта: %s"
+
+#. translators: %s - {site_name} smart tag.
+#: src/EmailNotifications/Helper.php:161
+msgid "%s Your username and password info"
+msgstr "%s Информация о вашем имени пользователя и пароле"
+
+#. translators: %s - {user_registration_password} smart tag.
+#: src/EmailNotifications/Helper.php:181
+msgid "Password: %s"
+msgstr "Пароль: %s"
+
+#. translators: %s - {site_name} smart tag.
+#: src/EmailNotifications/Helper.php:200
+msgid "%s Your account was successfully activated"
+msgstr "%s Ваш аккаунт успешно активирован"
+
+#: src/EmailNotifications/Helper.php:214
+msgid "You can log in with your credentials now."
+msgstr "Теперь вы можете войти в систему со своими учетными данными."
+
+#: src/EmailNotifications/Helper.php:229
+msgid "Reset Your Password"
+msgstr "Сбросить ваш пароль"
+
+#: src/EmailNotifications/Helper.php:241
+msgid "Someone has requested a password reset for the following account:"
+msgstr "Кто-то запросил сброс пароля для следующей учетной записи:"
+
+#. translators: %s - {site_name} smart tag.
+#: src/EmailNotifications/Helper.php:243
+msgid "Site Name: %s"
+msgstr "Имя сайта: %s"
+
+#: src/EmailNotifications/Helper.php:252
+msgid "If this was a mistake, just ignore this email and nothing will happen."
+msgstr ""
+"Если это ошибка, просто проигнорируйте это письмо, и ничего не случится."
+
+#. translators: %s - unapproved users list page URL.
+#: src/EmailNotifications/Notifications.php:410
+msgid "Manage user activations: %s"
+msgstr "Управление активациями пользователей: %s"
+
+#: src/EmailNotifications/Notifications.php:475
+msgid "(Activation Required)"
+msgstr "(Требуется активация)"
+
+#: src/EmailNotifications/Notifications.php:476
+msgid "Account activation is required before the user can log in."
+msgstr "Перед входом в систему требуется активация учетной записи."
+
+#: src/EmailNotifications/Notifications.php:480
+msgid "You must manually activate their account."
+msgstr "Вы должны вручную активировать их учетную запись."
+
+#: src/EmailNotifications/Notifications.php:485
+msgid "The user has been emailed a link to activate their account."
+msgstr ""
+"Пользователю была отправлена ссылка для активации его учетной записи по "
+"электронной почте."
+
+#: src/EmailNotifications/Notifications.php:504
+msgid "Site administrator must activate your account before you can log in."
+msgstr ""
+"Администратор сайта должен активировать вашу учетную запись, прежде чем вы "
+"сможете войти в систему."
+
+#: src/Frontend/Reset.php:82
+msgid "Your password has been reset."
+msgstr "Ваш пароль был сброшен."
+
+#: src/Frontend/Reset.php:96
+msgid "Check your email for the confirmation link."
+msgstr "Проверите свою электронную почту для подтверждения."
+
+#: src/Frontend/Reset.php:119
+msgid ""
+"<strong>Error:</strong> Your password reset link appears to be invalid. "
+"Please request a new link below."
+msgstr ""
+"<strong>Ошибка:</strong> Ваша ссылка для сброса пароля кажется "
+"недействительной. Пожалуйста, запросите новую ссылку ниже."
+
+#: src/Process/Login.php:43
+msgid "Username and Password are required."
+msgstr "Требуется имя пользователя и пароль."
+
+#: src/Process/Process.php:87
+msgid ""
+"<strong>ERROR:</strong> Your account must be activated before you can log in."
+msgstr ""
+"<strong>ОШИБКА:</strong> Ваша учетная запись должна быть активирована, "
+"прежде чем вы сможете войти в систему."
+
+#: src/Process/Registration.php:47
+msgid "Email address is required."
+msgstr "Email адрес требуется."
+
+#: src/Process/Registration.php:57
+msgid "A user with that username already exists."
+msgstr "Пользователь с таким именем уже существует."
+
+#: src/Process/Registration.php:84
+msgid ""
+"This username is invalid because it uses illegal characters. Please enter a "
+"valid username."
+msgstr ""
+"Это имя пользователя недопустимо, поскольку оно использует недопустимые "
+"символы. Пожалуйста введите действительное имя пользователя."
+
+#: src/Process/Registration.php:96
+msgid "A user with that email already exists."
+msgstr "Пользователь с таким e-mail уже существует. "
+
+#: src/Process/Reset.php:75
+msgid "Unable to reset user, Username or Email Address is missing."
+msgstr ""
+"Невозможно сбросить пользователя, отсутствует имя пользователя или адрес "
+"электронной почты."
+
+#: src/Process/Reset.php:103
+msgid "Unable to reset a password. The user does not exist."
+msgstr "Невозможно сбросить пароль. Пользователь не существует."
+
+#: src/SmartTags.php:34
+msgid "Site Name"
+msgstr "Название сайта"
+
+#: src/SmartTags.php:35
+msgid "User Registration Login"
+msgstr "Регистрация пользователя Войти"
+
+#: src/SmartTags.php:36
+msgid "User Registration Email"
+msgstr "Регистрация почты пользователя"
+
+#: src/SmartTags.php:37
+msgid "User Registration Password"
+msgstr "Пароль регистрации пользователя"
+
+#: src/SmartTags.php:38
+msgid "User Registration user activation URL"
+msgstr "URL-адрес активации пользователя для регистрации пользователя"
+
+#: src/SmartTags.php:39
+msgid "Admin manage users activations URL"
+msgstr "URL активации администратора для управления пользователями"
+
+#: src/SmartTags.php:40
+msgid "User Registration user password reset URL"
+msgstr "URL для сброса пароля пользователя при регистрации пользователя"
+
+#: src/Templates/Login.php:21
+msgid "User Login Form"
+msgstr "Форма Входа Пользователей"
+
+#: src/Templates/Login.php:23
+msgid ""
+"Allow your users to easily log in to your site with their username and "
+"password."
+msgstr ""
+"Позвольте вашим пользователям легко входить на ваш сайт со своим именем "
+"пользователя и паролем."
+
+#: src/Templates/Login.php:34, src/Templates/Reset.php:34
+msgid "Username or Email"
+msgstr "Имя пользователя или E-mail"
+
+#: src/Templates/Login.php:56, src/Templates/Login.php:61
+msgid "Remember me"
+msgstr "Запомнить меня"
+
+#: src/Templates/Registration.php:21
+msgid "User Registration Form"
+msgstr "Форма регистрации пользователей"
+
+#: src/Templates/Registration.php:23
+msgid ""
+"Create customized WordPress user registration forms and add them anywhere on "
+"your website."
+msgstr ""
+"Создавайте настраиваемые формы регистрации пользователей WordPress и "
+"добавляйте их в любое место на своем веб-сайте."
+
+#: src/Templates/Registration.php:28
+msgid "Don&#39;t Forget"
+msgstr "Не забудьте"
+
+#: src/Templates/Registration.php:29
+msgid ""
+"Additional user registration options are available in the settings panel."
+msgstr ""
+"Дополнительные возможности регистрации пользователя доступны в панели "
+"настроек."
+
+#: src/Templates/Registration.php:70
+msgid "Short Bio"
+msgstr "Краткая информация"
+
+#: src/Templates/Registration.php:71
+msgid "Share a little information about yourself."
+msgstr "Поделитесь небольшой информацией о себе."
+
+#: src/Templates/Reset.php:21
+msgid "User Password Reset Form"
+msgstr "Форма сброса пароля пользователя"
+
+#: src/Templates/Reset.php:23
+msgid "Allow your users to easily reset their password."
+msgstr "Позвольте вашим пользователям легко сбросить свой пароль."
+
+#: templates/builder/custom-user-meta.php:28
+msgid "Enter meta key..."
+msgstr "Введите мета-ключ..."
+
+#. translators: %d - field ID.
+#: templates/builder/custom-user-meta.php:40
+msgid "Field #%d"
+msgstr "Поле #%d"
+
+#. translators: %s - WPForms.com documentation page URL.
+#: wpforms-user-registration.php:111
+msgid ""
+"The WPForms User Registration plugin has been deactivated. Your site is "
+"running an outdated version of PHP that is no longer supported and is not "
+"compatible with the User Registration addon. <a href=\"%s\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Read more</a> for additional "
+"information."
+msgstr ""
+"Плагин регистрации пользователей WPForms был деактивирован. На вашем сайте "
+"используется устаревшая версия PHP, которая больше не поддерживается и "
+"несовместима с дополнением User Registration. <a href=\"%s\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Подробнее</a> для получения "
+"дополнительной информации."
+
+#: wpforms-user-registration.php:139
+msgid ""
+"The WPForms User Registration plugin has been deactivated, because it "
+"requires WPForms v1.7.1.2 or later to work."
+msgstr ""
+"Плагин WPForms User Registration был деактивирован, поскольку для его работы "
+"требуется WPForms v1.7.1.2 или более поздней версии."
