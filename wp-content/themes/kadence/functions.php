@@ -114,7 +114,7 @@ add_action('init','wpse23007_redirect');
 // Convert  project price
 add_filter('acf/format_value/name=project_price', 'fix_number', 10, 3);
 function fix_number($value, $post_id, $field) {
-  $value = number_format($value, 0, ',', ' ');
+  $value = number_format((int)$value, 0, ',', ' ');
   return $value;
 }
 
