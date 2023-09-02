@@ -129,3 +129,14 @@ function my_front_end_login_fail( $username ) {
       exit;
    }
 }
+
+function require_admin_approval($form, $post_id) {
+    // Проверяем, является ли пользователь агентом или собственником
+    if ( current_user_can( 'agent' ) || current_user_can('owner') ) {
+        // Если да, то устанавливаем статус публикации на "ожидает проверки"
+        wp_update_post( array( 'ID' => $post_id, 'post_status' => 'pending' ) );
+    }
+}
+add_action( 'frontend_admin/save_post', 'require_admin_approval', 10, 2 );
+
+
