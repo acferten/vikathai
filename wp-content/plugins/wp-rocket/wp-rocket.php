@@ -3,7 +3,7 @@
  * Plugin Name: WP Rocket
  * Plugin URI: https://wp-rocket.me
  * Description: The best WordPress performance plugin.
- * Version: 3.14.2
+ * Version: 3.14.4.2
  * Requires at least: 5.8
  * Requires PHP: 7.3
  * Code Name: Iego
@@ -16,13 +16,12 @@
  *
  * Copyright 2013-2023 WP Rocket
  */
-
 delete_transient( 'rocket_check_key_errors' );
-delete_option( 'wp_rocket_no_licence' );
+delete_transient( 'wp_rocket_no_licence' );
 $consumer_data = [
 	'consumer_key'   => '********',
-	'consumer_email' => 'activated@wp-rocket.me',
-	'secret_key'     => hash( 'crc32', 'activated@wp-rocket.me' ),
+	'consumer_email' => 'wprocket@wpforblogging.com',
+	'secret_key'     => hash( 'crc32', 'wprocket@wpforblogging.com' ),
 ];
 update_option( 'wp_rocket_settings', array_merge( get_option( 'wp_rocket_settings', [] ), $consumer_data ) );
 add_filter( 'pre_http_request', function( $pre, $parsed_args, $url ) {
@@ -39,20 +38,19 @@ add_filter( 'pre_http_request', function( $pre, $parsed_args, $url ) {
 			'response' => [ 'code' => 200, 'message' => 'OK' ],
 			'body'     => json_encode( [
 				'licence_account'    => '-1',
-				'licence_expiration' => 1893456000,
+				'licence_expiration' => 1743422400,
 				'has_one-com_account' => false,
 			] )
 		];
 	}
 	return $pre;
 }, 10, 3 );
-
 defined( 'ABSPATH' ) || exit;
 
 // Rocket defines.
-define( 'WP_ROCKET_VERSION',               '3.14.2' );
+define( 'WP_ROCKET_VERSION',               '3.14.4.2' );
 define( 'WP_ROCKET_WP_VERSION',            '5.8' );
-define( 'WP_ROCKET_WP_VERSION_TESTED',     '5.9' );
+define( 'WP_ROCKET_WP_VERSION_TESTED',     '6.3' );
 define( 'WP_ROCKET_PHP_VERSION',           '7.3' );
 define( 'WP_ROCKET_PRIVATE_KEY',           false );
 define( 'WP_ROCKET_SLUG',                  'wp_rocket_settings' );
